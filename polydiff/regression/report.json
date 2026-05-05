@@ -1,0 +1,467 @@
+{
+  "disagreements": [
+    {
+      "axis": "host",
+      "input_id": "REG-URL-001",
+      "parser_values": {
+        "guarded_fetcher": "trusted.example",
+        "python_urllib": "192.0.2.10",
+        "whatwg_like": "192.0.2.10"
+      },
+      "security_tags": [
+        "origin-confusion"
+      ]
+    },
+    {
+      "axis": "host_is_private_or_link_local",
+      "input_id": "REG-URL-001",
+      "parser_values": {
+        "guarded_fetcher": false,
+        "python_urllib": true,
+        "whatwg_like": true
+      },
+      "security_tags": [
+        "ssrf-private-network-classification"
+      ]
+    },
+    {
+      "axis": "host",
+      "input_id": "REG-URL-002",
+      "parser_values": {
+        "guarded_fetcher": "safe.example\\",
+        "python_urllib": "192.0.2.11",
+        "whatwg_like": "safe.example"
+      },
+      "security_tags": [
+        "origin-confusion"
+      ]
+    },
+    {
+      "axis": "path",
+      "input_id": "REG-URL-002",
+      "parser_values": {
+        "guarded_fetcher": "/admin",
+        "python_urllib": "/admin",
+        "whatwg_like": "/@192.0.2.11/admin"
+      },
+      "security_tags": [
+        "path-normalization-confusion"
+      ]
+    },
+    {
+      "axis": "userinfo_present",
+      "input_id": "REG-URL-002",
+      "parser_values": {
+        "guarded_fetcher": true,
+        "python_urllib": true,
+        "whatwg_like": false
+      },
+      "security_tags": [
+        "userinfo-confusion"
+      ]
+    },
+    {
+      "axis": "host_is_private_or_link_local",
+      "input_id": "REG-URL-002",
+      "parser_values": {
+        "guarded_fetcher": false,
+        "python_urllib": true,
+        "whatwg_like": false
+      },
+      "security_tags": [
+        "ssrf-private-network-classification"
+      ]
+    },
+    {
+      "axis": "path",
+      "input_id": "REG-URL-003",
+      "parser_values": {
+        "guarded_fetcher": "/%2e%2e/%2fadmin",
+        "python_urllib": "/%2e%2e/%2fadmin",
+        "whatwg_like": "/..//admin"
+      },
+      "security_tags": [
+        "path-normalization-confusion"
+      ]
+    }
+  ],
+  "fact_vectors": [
+    {
+      "host": "192.0.2.10",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-001",
+      "parse_error": null,
+      "parser_profile": "python_urllib",
+      "path": "/resource",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": true
+    },
+    {
+      "host": "192.0.2.10",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-001",
+      "parse_error": null,
+      "parser_profile": "whatwg_like",
+      "path": "/resource",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": true
+    },
+    {
+      "host": "trusted.example",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-001",
+      "parse_error": null,
+      "parser_profile": "guarded_fetcher",
+      "path": "/resource",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": true
+    },
+    {
+      "host": "192.0.2.11",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-002",
+      "parse_error": null,
+      "parser_profile": "python_urllib",
+      "path": "/admin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": true
+    },
+    {
+      "host": "safe.example",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-002",
+      "parse_error": null,
+      "parser_profile": "whatwg_like",
+      "path": "/@192.0.2.11/admin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": false
+    },
+    {
+      "host": "safe.example\\",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-002",
+      "parse_error": null,
+      "parser_profile": "guarded_fetcher",
+      "path": "/admin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": true
+    },
+    {
+      "host": "preview.example",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-003",
+      "parse_error": null,
+      "parser_profile": "python_urllib",
+      "path": "/%2e%2e/%2fadmin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": false
+    },
+    {
+      "host": "preview.example",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-003",
+      "parse_error": null,
+      "parser_profile": "whatwg_like",
+      "path": "/..//admin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": false
+    },
+    {
+      "host": "preview.example",
+      "host_is_private_or_link_local": false,
+      "input_id": "REG-URL-003",
+      "parse_error": null,
+      "parser_profile": "guarded_fetcher",
+      "path": "/%2e%2e/%2fadmin",
+      "port": null,
+      "scheme": "https",
+      "userinfo_present": false
+    },
+    {
+      "host": "::ffff:127.0.0.1",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-004",
+      "parse_error": null,
+      "parser_profile": "python_urllib",
+      "path": "/status",
+      "port": null,
+      "scheme": "http",
+      "userinfo_present": false
+    },
+    {
+      "host": "::ffff:127.0.0.1",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-004",
+      "parse_error": null,
+      "parser_profile": "whatwg_like",
+      "path": "/status",
+      "port": null,
+      "scheme": "http",
+      "userinfo_present": false
+    },
+    {
+      "host": "::ffff:127.0.0.1",
+      "host_is_private_or_link_local": true,
+      "input_id": "REG-URL-004",
+      "parse_error": null,
+      "parser_profile": "guarded_fetcher",
+      "path": "/status",
+      "port": null,
+      "scheme": "http",
+      "userinfo_present": false
+    }
+  ],
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "inputs_checked": 4,
+  "parser_profiles": [
+    "python_urllib",
+    "whatwg_like",
+    "guarded_fetcher"
+  ],
+  "records": [
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.synthetic-url",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-001",
+          "output_hash": "64abf1e6e8ec097b62aab46e396b117bdd6716cf8ff8196a8b1c8f7debafd38e",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": null,
+        "record_hash": "7fd2c740823d7a5594c8dc75084c88654367e8c88272cafbba67ead9f37e7b0e"
+      },
+      "id": "AG-EV-POLYDIFF-REG-001",
+      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "nodes": [
+        {
+          "evidence_source": "synthetic regression corpus",
+          "id": "entry.synthetic-url",
+          "label": "userinfo-host-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/REG-URL-001"
+        },
+        {
+          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_is_private_or_link_local",
+          "node_type": "fact_vector",
+          "source_anchor": "schema/fact-vector.schema.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 PolyDiff regression scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "phase0",
+        "name": "Synthetic URL parser regression corpus",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record for public historical bug class",
+        "id": "VAL-POLYDIFF-REG-001",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.synthetic-url",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-002",
+          "output_hash": "f608661948943504f14fa084092552cca732fa496ebd54024f1a308617250bca",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "7fd2c740823d7a5594c8dc75084c88654367e8c88272cafbba67ead9f37e7b0e",
+        "record_hash": "fdc0a9b24865866d1e2cdccf51b346b1c25301f030eb33d2f42a9082af9ad1b0"
+      },
+      "id": "AG-EV-POLYDIFF-REG-002",
+      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "nodes": [
+        {
+          "evidence_source": "synthetic regression corpus",
+          "id": "entry.synthetic-url",
+          "label": "backslash-authority-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/REG-URL-002"
+        },
+        {
+          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_is_private_or_link_local, path, userinfo_present",
+          "node_type": "fact_vector",
+          "source_anchor": "schema/fact-vector.schema.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 PolyDiff regression scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "phase0",
+        "name": "Synthetic URL parser regression corpus",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record for public historical bug class",
+        "id": "VAL-POLYDIFF-REG-002",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.synthetic-url",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-003",
+          "output_hash": "0bf5d4966c0922fc5fac781eb87eb042a1c4aecbb21ef416cd468282405c902d",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "fdc0a9b24865866d1e2cdccf51b346b1c25301f030eb33d2f42a9082af9ad1b0",
+        "record_hash": "41f44115c9f7c76b90a0d3f8eac7c52dd43600e0585091d1f193a3b6f882addd"
+      },
+      "id": "AG-EV-POLYDIFF-REG-003",
+      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "nodes": [
+        {
+          "evidence_source": "synthetic regression corpus",
+          "id": "entry.synthetic-url",
+          "label": "percent-encoded-path-boundary",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/REG-URL-003"
+        },
+        {
+          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: path",
+          "node_type": "fact_vector",
+          "source_anchor": "schema/fact-vector.schema.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 PolyDiff regression scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "phase0",
+        "name": "Synthetic URL parser regression corpus",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record for public historical bug class",
+        "id": "VAL-POLYDIFF-REG-003",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    }
+  ],
+  "safety_posture": "private_by_default",
+  "tier_p1_status": "pass",
+  "tool_output_type": "polydiff_regression_report",
+  "version": "v1.0"
+}

@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "outputs": [
+    "extraction/output/signal/graph.json",
+    "extraction/output/element-x/graph.json"
+  ],
+  "safety_posture": "private_by_default",
+  "status": "phase0_anchor_only",
+  "tool_output_type": "extraction_manifest",
+  "version": "v1.0"
+}

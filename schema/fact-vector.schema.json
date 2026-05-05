@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector.schema.json",
+  "title": "PolyDiff URL Fact Vector",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "scheme",
+    "host",
+    "port",
+    "path",
+    "userinfo_present",
+    "host_is_private_or_link_local",
+    "parse_error"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {"type": "string", "minLength": 1},
+    "scheme": {"type": ["string", "null"]},
+    "host": {"type": ["string", "null"]},
+    "port": {"type": ["integer", "null"]},
+    "path": {"type": ["string", "null"]},
+    "userinfo_present": {"type": "boolean"},
+    "host_is_private_or_link_local": {"type": "boolean"},
+    "parse_error": {"type": ["string", "null"]}
+  }
+}

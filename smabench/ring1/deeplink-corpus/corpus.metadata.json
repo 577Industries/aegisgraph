@@ -1,0 +1,7 @@
+{
+  "item_count": 3,
+  "name": "deeplink-corpus",
+  "publication_policy": "sanitized_candidate",
+  "sha256": "0af8fc95fc3e6586ec4ab0875263a7bc3db4747089e5edde63fbf4ea0449d154",
+  "source_policy": "synthetic"
+}

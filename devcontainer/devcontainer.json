@@ -1,0 +1,20 @@
+{
+  "name": "aegisgraph-tier3-research",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21"
+    },
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {}
+  },
+  "postCreateCommand": "python -m pip install -e . pytest jsonschema",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
+}

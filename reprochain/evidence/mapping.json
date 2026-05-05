@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "records": [
+    {
+      "claim_state": "validation_tasked",
+      "edges": [
+        {
+          "from": "entry.inbound-media",
+          "relationship": "may_route_to",
+          "to": "decoder.app-stack"
+        },
+        {
+          "from": "decoder.app-stack",
+          "relationship": "requires_decoder_indirection_validation",
+          "to": "sink.libwebp"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make reprochain-map",
+          "id": "REF-REPROCHAIN-SIGNAL-ANDROID",
+          "output_hash": "19c1ccab490b5d061dbcaace357b89152ce5b0ec42ba0329e11509bafe37fa05",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": null,
+        "record_hash": "89f4df8c7345230dab2b95554f52eb51a0aaf994c154f8d93eb2960aa5bffb78"
+      },
+      "id": "AG-EV-REPROCHAIN-SIGNAL-ANDROID-MAP-001",
+      "limitations": "This record maps the research question and scoring basis only. It does not include triggering corpus bytes, does not target a production app, and does not claim that the pinned target app is vulnerable. Android platform decoder and vendored-library boundaries must be resolved in the next phase.",
+      "nodes": [
+        {
+          "evidence_source": "extraction output anchor",
+          "id": "entry.inbound-media",
+          "label": "Inbound media path",
+          "node_type": "entry_point",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 map placeholder",
+          "id": "decoder.app-stack",
+          "label": "Glide/media decode path",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "public CVE writeup summary, exact commit pins pending",
+          "id": "sink.libwebp",
+          "label": "libwebp CVE-2023-4863 public-information reproduction target",
+          "node_type": "sink",
+          "source_anchor": "reprochain/analysis/CVE-2023-4863.md"
+        }
+      ],
+      "path_class": "media_decode",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 ReproChain mapping scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.9,
+        "auth_boundary": 0.6,
+        "confidence": 0.55,
+        "exploit_history": 0.9,
+        "mitigation_strength": 0.5,
+        "native_boundary": 0.8,
+        "observability": 0.4,
+        "parser_complexity": 0.8,
+        "privilege_impact": 0.7,
+        "remote_reachability": 0.9,
+        "total": 7.05
+      },
+      "target": {
+        "commit": "1043851",
+        "name": "Signal Android",
+        "repo_url": "https://github.com/signalapp/Signal-Android",
+        "source_policy": "anchor-only"
+      },
+      "validation_task": {
+        "command": "make reprochain-run",
+        "expected_output": "isolated ASAN-only libwebp differential result after commit pins are confirmed",
+        "id": "VAL-REPROCHAIN-SIGNAL-ANDROID",
+        "status": "blocked"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "validation_tasked",
+      "edges": [
+        {
+          "from": "entry.inbound-media",
+          "relationship": "may_route_to",
+          "to": "decoder.app-stack"
+        },
+        {
+          "from": "decoder.app-stack",
+          "relationship": "requires_decoder_indirection_validation",
+          "to": "sink.libwebp"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make reprochain-map",
+          "id": "REF-REPROCHAIN-ELEMENT-X-ANDROID",
+          "output_hash": "2d1c3710f8c14c7fa048040f248c00ec7571c36ca94b3e6b93e6911cf1d6190c",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "89f4df8c7345230dab2b95554f52eb51a0aaf994c154f8d93eb2960aa5bffb78",
+        "record_hash": "b60e7816122da6a6a0783681c2b9d29ea815f3d364e0260c9dfccf0ef2bef919"
+      },
+      "id": "AG-EV-REPROCHAIN-ELEMENT-X-ANDROID-MAP-001",
+      "limitations": "This record maps the research question and scoring basis only. It does not include triggering corpus bytes, does not target a production app, and does not claim that the pinned target app is vulnerable. Android platform decoder and vendored-library boundaries must be resolved in the next phase.",
+      "nodes": [
+        {
+          "evidence_source": "extraction output anchor",
+          "id": "entry.inbound-media",
+          "label": "Inbound media path",
+          "node_type": "entry_point",
+          "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
+        },
+        {
+          "evidence_source": "phase0 map placeholder",
+          "id": "decoder.app-stack",
+          "label": "Coil/media decode path",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
+        },
+        {
+          "evidence_source": "public CVE writeup summary, exact commit pins pending",
+          "id": "sink.libwebp",
+          "label": "libwebp CVE-2023-4863 public-information reproduction target",
+          "node_type": "sink",
+          "source_anchor": "reprochain/analysis/CVE-2023-4863.md"
+        }
+      ],
+      "path_class": "media_decode",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 ReproChain mapping scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.9,
+        "auth_boundary": 0.6,
+        "confidence": 0.55,
+        "exploit_history": 0.9,
+        "mitigation_strength": 0.5,
+        "native_boundary": 0.8,
+        "observability": 0.4,
+        "parser_complexity": 0.8,
+        "privilege_impact": 0.7,
+        "remote_reachability": 0.9,
+        "total": 7.05
+      },
+      "target": {
+        "commit": "91d265e6",
+        "name": "Element X Android",
+        "repo_url": "https://github.com/element-hq/element-x-android",
+        "source_policy": "anchor-only"
+      },
+      "validation_task": {
+        "command": "make reprochain-run",
+        "expected_output": "isolated ASAN-only libwebp differential result after commit pins are confirmed",
+        "id": "VAL-REPROCHAIN-ELEMENT-X-ANDROID",
+        "status": "blocked"
+      },
+      "version": "v1.0"
+    }
+  ],
+  "safety_posture": "private_by_default",
+  "tool_output_type": "reprochain_mapping",
+  "version": "v1.0"
+}

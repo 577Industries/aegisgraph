@@ -1,0 +1,8 @@
+{
+  "name": "Element X Android",
+  "repo_url": "https://github.com/element-hq/element-x-android",
+  "commit": "91d265e6",
+  "source_policy": "anchor-only",
+  "public_artifact_id": "elementx_android_91d265e6",
+  "notes": "Commit pin inherited from v0.3 public artifact package. No target source is redistributed in this private research repo."
+}

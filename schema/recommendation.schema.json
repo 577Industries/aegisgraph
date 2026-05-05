@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/recommendation.schema.json",
+  "title": "AegisGraph Recommendation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "category",
+    "graph_refs",
+    "evidence_refs",
+    "source_anchors",
+    "implementation_hint",
+    "expected_effect",
+    "residual_risk",
+    "effort_estimate",
+    "standards_mapping_caveat",
+    "derived_from_finding"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^AG-REC-[A-Z0-9-]+$"},
+    "version": {"const": "v1.0"},
+    "category": {"type": "string", "minLength": 1},
+    "graph_refs": {"type": "array", "items": {"type": "string"}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "source_anchors": {"type": "array", "items": {"type": "string"}},
+    "implementation_hint": {"type": "string", "minLength": 1},
+    "expected_effect": {"type": "string", "minLength": 1},
+    "residual_risk": {"type": "string", "minLength": 1},
+    "effort_estimate": {"type": "string", "minLength": 1},
+    "standards_mapping_caveat": {"type": "string", "minLength": 20},
+    "derived_from_finding": {"type": ["string", "null"]}
+  }
+}

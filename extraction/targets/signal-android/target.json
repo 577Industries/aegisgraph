@@ -1,0 +1,8 @@
+{
+  "name": "Signal Android",
+  "repo_url": "https://github.com/signalapp/Signal-Android",
+  "commit": "1043851",
+  "source_policy": "anchor-only",
+  "public_artifact_id": "signal_android_1043851",
+  "notes": "Commit pin inherited from v0.3 public artifact package. No target source is redistributed in this private research repo."
+}

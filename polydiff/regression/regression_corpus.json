@@ -1,0 +1,22 @@
+[
+  {
+    "id": "REG-URL-001",
+    "case": "userinfo-host-confusion",
+    "publication_policy": "synthetic-public-candidate"
+  },
+  {
+    "id": "REG-URL-002",
+    "case": "backslash-authority-confusion",
+    "publication_policy": "synthetic-public-candidate"
+  },
+  {
+    "id": "REG-URL-003",
+    "case": "percent-encoded-path-boundary",
+    "publication_policy": "synthetic-public-candidate"
+  },
+  {
+    "id": "REG-URL-004",
+    "case": "ipv6-mapped-loopback-classification",
+    "publication_policy": "synthetic-public-candidate"
+  }
+]

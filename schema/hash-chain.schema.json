@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/hash-chain.schema.json",
+  "title": "AegisGraph Hash Chain",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["canonicalization", "previous_hash", "record_hash"],
+  "properties": {
+    "canonicalization": {"const": "json-v1-sorted-no-hash-chain"},
+    "previous_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "record_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

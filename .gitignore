@@ -1,0 +1,23 @@
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+*.pyc
+
+tooling-versions.json
+validation-report.json
+
+# Crash-inducing or undisclosed inputs never belong in the public/private repo
+# history. Store only hashes, structure notes, and manually approved summaries.
+reprochain/corpora-private/*
+!reprochain/corpora-private/.gitkeep
+!reprochain/corpora-private/README.md
+
+# Generated exports are reproducible outputs, not source of truth.
+exports/private-submission/*
+!exports/private-submission/README.md
+exports/public-sanitized/*
+!exports/public-sanitized/README.md
+
+smabench/results/latest/
+reports/generated/

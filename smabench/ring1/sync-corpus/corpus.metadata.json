@@ -1,0 +1,7 @@
+{
+  "item_count": 3,
+  "name": "sync-corpus",
+  "publication_policy": "sanitized_candidate",
+  "sha256": "9166157ee64020df652946df2bbd899bbaac9e0135cd8636c3beb67ef9964471",
+  "source_policy": "synthetic"
+}

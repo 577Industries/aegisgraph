@@ -1,0 +1,17 @@
+[project]
+name = "aegisgraph-tier3-research"
+version = "0.1.0"
+description = "Private AegisGraph Tier 3 research platform for DARPA ASEMA defensive evaluation."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "jsonschema>=4.18",
+]
+
+[project.scripts]
+aegisgraph = "aegisgraph.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

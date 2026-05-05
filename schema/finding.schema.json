@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/finding.schema.json",
+  "title": "AegisGraph Finding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "title",
+    "finding_type",
+    "affected_component",
+    "disclosure_status",
+    "claim_state",
+    "evidence_record_ids",
+    "summary",
+    "limitations",
+    "safety_flags"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^AG-FIND-[A-Z0-9-]+$"},
+    "version": {"const": "v1.0"},
+    "title": {"type": "string", "minLength": 1},
+    "finding_type": {
+      "enum": ["regression", "synthetic_disagreement", "public_cve_reproduction", "novel_private_candidate"]
+    },
+    "affected_component": {"type": "string", "minLength": 1},
+    "disclosure_status": {
+      "enum": ["not_applicable", "public_historical", "private_review", "disclosed_pending_patch", "patched_public"]
+    },
+    "claim_state": {
+      "enum": ["observed", "anchored", "scored", "validation_tasked", "reviewed", "accepted", "limited", "retired"]
+    },
+    "evidence_record_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "summary": {"type": "string", "minLength": 10},
+    "limitations": {"type": "string", "minLength": 10},
+    "safety_flags": {
+      "type": "array",
+      "items": {"type": "object"}
+    }
+  }
+}

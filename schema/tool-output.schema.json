@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/tool-output.schema.json",
+  "title": "AegisGraph Tool Output Manifest",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["tool_output_type", "version", "generated_by", "generated_at", "safety_posture"],
+  "properties": {
+    "tool_output_type": {"type": "string", "minLength": 1},
+    "version": {"const": "v1.0"},
+    "generated_by": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "minLength": 1},
+    "safety_posture": {
+      "enum": ["private_by_default", "sanitized_candidate", "public_approved"]
+    }
+  }
+}

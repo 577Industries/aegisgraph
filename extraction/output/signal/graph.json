@@ -1,0 +1,159 @@
+{
+  "edges": [
+    {
+      "from": "entry.inbound-media",
+      "relationship": "routes_to",
+      "to": "handler.media-pipeline"
+    },
+    {
+      "from": "handler.media-pipeline",
+      "relationship": "delegates_decode",
+      "to": "decoder.image-stack"
+    },
+    {
+      "from": "decoder.image-stack",
+      "relationship": "may_reach_platform_or_library_webp_decoder",
+      "to": "sink.webp-decoder"
+    }
+  ],
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "nodes": [
+    {
+      "evidence_source": "target pin from v0.3 public artifact package",
+      "id": "entry.inbound-media",
+      "label": "Inbound media or attachment ingest",
+      "node_type": "entry_point",
+      "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+    },
+    {
+      "evidence_source": "phase0 extraction placeholder, anchor-only",
+      "id": "handler.media-pipeline",
+      "label": "Application media handling pipeline",
+      "node_type": "handler",
+      "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+    },
+    {
+      "evidence_source": "phase0 extraction placeholder, anchor-only",
+      "id": "decoder.image-stack",
+      "label": "Glide or Android platform image decode",
+      "node_type": "decoder",
+      "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+    },
+    {
+      "evidence_source": "ReproChain pin pending exact vulnerable/fixed commit decision",
+      "id": "sink.webp-decoder",
+      "label": "WebP decoding boundary to be validated through ReproChain",
+      "node_type": "sink",
+      "source_anchor": "reprochain/vendor/libwebp/README.md"
+    }
+  ],
+  "records": [
+    {
+      "claim_state": "validation_tasked",
+      "edges": [
+        {
+          "from": "entry.inbound-media",
+          "relationship": "routes_to",
+          "to": "handler.media-pipeline"
+        },
+        {
+          "from": "handler.media-pipeline",
+          "relationship": "delegates_decode",
+          "to": "decoder.image-stack"
+        },
+        {
+          "from": "decoder.image-stack",
+          "relationship": "may_reach_platform_or_library_webp_decoder",
+          "to": "sink.webp-decoder"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make extract",
+          "id": "REF-SIGNAL-ANDROID-TARGET-PIN",
+          "output_hash": "aa9efca51e7783b3e95ccff2659f6b6d8baffdf92e51d2458b44ac75b25ebbcf",
+          "tool": "aegisgraph-extraction",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": null,
+        "record_hash": "5adf27774f8b0013ead879e518bff84ab533184e72fdd3e85e64488e67c038f1"
+      },
+      "id": "AG-EV-EXTRACT-SIGNAL-ANDROID-MEDIA-001",
+      "limitations": "Phase 0 record preserves only source anchors and path hypothesis. It does not assert a Signal or Element vulnerability, does not redistribute target source, and explicitly leaves the Android platform decoder or libwebp indirection for later validation.",
+      "nodes": [
+        {
+          "evidence_source": "target pin from v0.3 public artifact package",
+          "id": "entry.inbound-media",
+          "label": "Inbound media or attachment ingest",
+          "node_type": "entry_point",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "handler.media-pipeline",
+          "label": "Application media handling pipeline",
+          "node_type": "handler",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "decoder.image-stack",
+          "label": "Glide or Android platform image decode",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "ReproChain pin pending exact vulnerable/fixed commit decision",
+          "id": "sink.webp-decoder",
+          "label": "WebP decoding boundary to be validated through ReproChain",
+          "node_type": "sink",
+          "source_anchor": "reprochain/vendor/libwebp/README.md"
+        }
+      ],
+      "path_class": "media_decode",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "phase0 automated extraction scaffold"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.9,
+        "auth_boundary": 0.6,
+        "confidence": 0.55,
+        "exploit_history": 0.9,
+        "mitigation_strength": 0.5,
+        "native_boundary": 0.8,
+        "observability": 0.4,
+        "parser_complexity": 0.8,
+        "privilege_impact": 0.7,
+        "remote_reachability": 0.9,
+        "total": 7.05
+      },
+      "target": {
+        "commit": "1043851",
+        "name": "Signal Android",
+        "repo_url": "https://github.com/signalapp/Signal-Android",
+        "source_policy": "anchor-only"
+      },
+      "validation_task": {
+        "command": "make extract && make reprochain-map",
+        "expected_output": "commit-pinned media path with explicit Android decoder/libwebp indirection limitations",
+        "id": "VAL-SIGNAL-ANDROID-MEDIA-REACHABILITY",
+        "status": "planned"
+      },
+      "version": "v1.0"
+    }
+  ],
+  "safety_posture": "private_by_default",
+  "source_policy": "anchor-only",
+  "target": "Signal Android",
+  "tool_output_type": "extraction_graph",
+  "version": "v1.0"
+}
