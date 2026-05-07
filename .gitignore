@@ -4,6 +4,11 @@ __pycache__/
 .venv/
 *.pyc
 
+# Parallel-stream isolation: per-stream worktrees live under .worktrees/ but
+# must never be committed to the parent branch. Each worktree has its own
+# checkout, branch, and node_modules symlink.
+.worktrees/
+
 tooling-versions.json
 validation-report.json
 
