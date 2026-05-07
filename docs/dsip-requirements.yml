@@ -1,42 +1,329 @@
 # dsip-requirements.yml
 #
-# Skeleton owned by the integration stream; populated by the validator-export
-# stream from solicitation HR0011SB20254-12 (DSIP Direct-to-Phase-II
-# proposal preparation instructions) so that every solicitation requirement
-# has a traceable response in the proposal package.
+# Owned schema: integration stream. Populated content: validator-export stream.
+#
+# Source: solicitation HR0011SB20254-12 (DSIP Direct-to-Phase-II proposal
+# preparation instructions), as referenced in the master proposal §1, §15,
+# and §17 [1][2]. The actual solicitation PDF is not redistributed here;
+# we reference it indirectly through the master proposal and the FAQ doc.
 #
 # Each entry captures:
 #
-#   - requirement_id:   stable internal identifier; format ^DSIP-[A-Z0-9-]+$
-#                       e.g. DSIP-PAGE-LIMIT-TECH, DSIP-EVAL-CRIT-3
-#   - source_anchor:    section reference inside HR0011SB20254-12
-#                       e.g. "Section II.A.1 Technical Volume"
-#   - requirement_text: verbatim quote from the solicitation (keep <500
-#                       chars; longer requirements should be summarized
-#                       with the full text linked via source_anchor)
-#   - category:         enum:
-#                         page_limit | format_requirement | evaluation_criterion
-#                       | deliverable | ksa_crosswalk | submission_artifact
+#   - requirement_id:    stable internal identifier; format ^DSIP-[A-Z0-9-]+$
+#                        e.g. DSIP-PAGE-LIMIT-TECH, DSIP-EVAL-CRIT-3
+#   - source_anchor:     section reference inside HR0011SB20254-12 (or the
+#                        proposal section that interprets it)
+#   - requirement_text:  verbatim quote from the solicitation (kept <500
+#                        chars; longer requirements summarized with the
+#                        full text linked via source_anchor)
+#   - category:          enum:
+#                          page_limit | format_requirement | evaluation_criterion
+#                        | deliverable | ksa_crosswalk | submission_artifact
 #   - response_location: optional string, doc-relative path inside
 #                        03_PROPOSAL where this requirement is addressed
-#   - status:           enum: open | drafted | satisfied
-#                         open      - validator-export has not yet checked
-#                                     this requirement against the proposal
-#                         drafted   - response_location is set but not
-#                                     yet final
-#                         satisfied - response is final and reviewed
+#   - status:            enum: open | drafted | satisfied
+#                          open      - not yet checked against the proposal
+#                          drafted   - response_location is set but not final
+#                          satisfied - response is final and reviewed
 #
-# Special-case keys (optional, additive):
+# Cross-references:
 #
-#   - ksa_crosswalk:    map of KSA bullet -> proposal section that
-#                       evidences the team's depth in that KSA
-#   - deliverables:     list of contracted deliverables (Phase II
-#                       expects 4 quarterly + a final). Each entry
-#                       carries: deliverable_id, due_quarter, contents.
-#
-# This skeleton ships empty. The validator-export stream populates it as
-# part of its merge.
+#   - Proposal claims that satisfy a requirement set
+#     `dsip_requirement: <requirement_id>` in proposal-claims-index.yml.
+#     The traceability matrix joins the two and reports unmatched
+#     requirements (claim_without_evidence) and unmatched claims
+#     (evidence_without_claim).
 
-requirements: []
-ksa_crosswalk: {}
-deliverables: []
+requirements:
+  # ----- Page limits (master proposal §16) -----
+  - requirement_id: DSIP-PAGE-LIMIT-WP
+    source_anchor: "HR0011SB20254-12 Volume 2 — Technical Volume / White Paper"
+    requirement_text: >-
+      White paper must not exceed 20 pages.
+    category: page_limit
+    response_location: "03_PROPOSAL/active-package/01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md"
+    status: drafted
+
+  - requirement_id: DSIP-PAGE-LIMIT-SLIDES
+    source_anchor: "HR0011SB20254-12 Volume 2 — Technical Volume / Slides"
+    requirement_text: >-
+      Technical volume slide deck must not exceed 15 slides.
+    category: page_limit
+    response_location: "03_PROPOSAL/active-package/01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md"
+    status: drafted
+
+  - requirement_id: DSIP-PAGE-LIMIT-TECH
+    source_anchor: "HR0011SB20254-12 Volume 2 — Technical Volume"
+    requirement_text: >-
+      Full technical volume (incl. work plan, references, figures) must not exceed
+      35 pages.
+    category: page_limit
+    response_location: "03_PROPOSAL/active-package/01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md"
+    status: drafted
+
+  # ----- Format requirements -----
+  - requirement_id: DSIP-FORMAT-FONT-SIZE
+    source_anchor: "HR0011SB20254-12 General Submission Instructions"
+    requirement_text: >-
+      Body text must be ≥11 pt; figure/table caption text ≥10 pt.
+    category: format_requirement
+    response_location: null
+    status: open
+
+  - requirement_id: DSIP-FORMAT-MARGINS
+    source_anchor: "HR0011SB20254-12 General Submission Instructions"
+    requirement_text: >-
+      All four margins must be ≥1 inch.
+    category: format_requirement
+    response_location: null
+    status: open
+
+  # ----- Evaluation criteria (HR0011SB20254-12 §V) -----
+  - requirement_id: DSIP-EVAL-CRIT-NOVELTY
+    source_anchor: "HR0011SB20254-12 Section V — Evaluation Criteria"
+    requirement_text: >-
+      Soundness, technical merit, and innovation of the proposed approach. The
+      proposer must distinguish novelty from composition of existing tools.
+    category: evaluation_criterion
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph"
+    status: drafted
+
+  - requirement_id: DSIP-EVAL-CRIT-FEASIBILITY
+    source_anchor: "HR0011SB20254-12 Section V — Evaluation Criteria"
+    requirement_text: >-
+      Phase I-equivalent feasibility documentation: completed feasibility study or
+      basic prototype system, properties desirable for DoD and civilian use,
+      comparisons with alternative methodologies, technical reports, and prototype
+      designs/models.
+    category: evaluation_criterion
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4-phase-i-equivalent-feasibility-and-prior-work"
+    status: drafted
+
+  - requirement_id: DSIP-EVAL-CRIT-COMMERCIAL
+    source_anchor: "HR0011SB20254-12 Section V — Evaluation Criteria"
+    requirement_text: >-
+      Commercialization plan including market thesis, target buyers, packaging and
+      pricing, paid pilot design, and Phase III funding pathway.
+    category: evaluation_criterion
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#12-commercialization-and-transition"
+    status: drafted
+
+  - requirement_id: DSIP-EVAL-CRIT-REPRO
+    source_anchor: "HR0011SB20254-12 Section V — Evaluation Criteria"
+    requirement_text: >-
+      Reproducibility of evidence: each real-target graph path must be reproducible
+      from target repository, pinned commit, evidence refs, source/file anchors,
+      baseline-tool status, score vector, validation task, and limitation note.
+    category: evaluation_criterion
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#10.3-reproducibility"
+    status: drafted
+
+  - requirement_id: DSIP-EVAL-CRIT-SAFETY
+    source_anchor: "HR0011SB20254-12 Section V — Evaluation Criteria"
+    requirement_text: >-
+      Safety scan must show no private paths, credentials, target-source
+      redistribution markers, unauthorized target traces, or unsupported static
+      security-finding language across the public package and exports.
+    category: evaluation_criterion
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#10.2-safety-scan"
+    status: drafted
+
+  # ----- Deliverables (Phase II base + option) -----
+  - requirement_id: DSIP-DELIVERABLE-KICKOFF
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Deliverables"
+    requirement_text: >-
+      Month 1 kickoff briefing with annotated slides; updated technical approach,
+      risks/mitigations, schedule, dependencies, and metrics.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-Q1
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Deliverables"
+    requirement_text: >-
+      Month 4 quarterly progress report with v0.3 evidence package, schema spec,
+      external validation packet draft.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-Q2
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Deliverables"
+    requirement_text: >-
+      Month 7 interim technical briefing with quantitative assessment of capabilities
+      developed to date; Ring 1 harness report; graph-path precision report.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.3-months-5-7"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-Q3
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Deliverables"
+    requirement_text: >-
+      Month 10 quarterly technical progress report; reviewer workbench prototype;
+      exportable top-five validator packet.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.4-months-8-10"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-FINAL
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Deliverables"
+    requirement_text: >-
+      Month 14 final demonstration: architecture, documented APIs, user manual,
+      system design, commercialization plan, and final technical briefing.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.5-months-11-14"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-OPTION-M19
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Option Period"
+    requirement_text: >-
+      Month 19 productization gap report.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.6-months-15-24-option"
+    status: drafted
+
+  - requirement_id: DSIP-DELIVERABLE-OPTION-M24
+    source_anchor: "HR0011SB20254-12 Section IV — Phase II Option Period"
+    requirement_text: >-
+      Month 24 final option briefing covering authorized dynamic evidence,
+      external validator critique, offline workbench deployment, and SBOM/VEX/SARIF
+      maturity.
+    category: deliverable
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.6-months-15-24-option"
+    status: drafted
+
+  # ----- Submission artifacts (compliance gates) -----
+  - requirement_id: DSIP-SUB-ART-SAM-GOV
+    source_anchor: "HR0011SB20254-12 Section II — Eligibility / DSIP Vol 1"
+    requirement_text: >-
+      Active SAM.gov registration with UEI, CAGE, and current representations.
+    category: submission_artifact
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    status: drafted
+
+  - requirement_id: DSIP-SUB-ART-VOL5-CERTS
+    source_anchor: "HR0011SB20254-12 DSIP Vol 5 — Certifications"
+    requirement_text: >-
+      Volume 5 DSIP certifications complete (SBA SBC representation, fraud,
+      lobbying, etc.).
+    category: submission_artifact
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    status: drafted
+
+  - requirement_id: DSIP-SUB-ART-VOL7-WEBFORM
+    source_anchor: "HR0011SB20254-12 DSIP Vol 7 — Webform"
+    requirement_text: >-
+      Volume 7 DSIP webform fields complete.
+    category: submission_artifact
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    status: drafted
+
+  - requirement_id: DSIP-SUB-ART-DATA-RIGHTS
+    source_anchor: "HR0011SB20254-12 General Submission Instructions"
+    requirement_text: >-
+      Data rights assertions cover proposer pre-existing software, proposal
+      artifacts, and generated evidence formats; do not assert rights over
+      third-party target source.
+    category: submission_artifact
+    response_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    status: drafted
+
+# KSA crosswalk: Knowledge / Skills / Abilities lifted from
+# HR0011SB20254-12 Section II.A.2 (DARPA proposer eligibility for ASEMA).
+# Each KSA row maps to the master-proposal section that evidences team
+# depth in the area.
+ksa_crosswalk:
+  computer_science:
+    description: >-
+      Computer Science depth: programming-language semantics, type systems, parser
+      and compiler implementation, static and dynamic program analysis, schema
+      design, graph algorithms, hash chains, and reproducible-build engineering.
+    proposal_section: "13.1 Key Personnel"
+    representative_artifacts:
+      - aegisgraph/safety.py
+      - aegisgraph/schema.py
+      - aegisgraph/hashchain.py
+      - schema/evidence.schema.json
+      - schema/fact-vector.schema.json
+  vulnerability_research:
+    description: >-
+      Vulnerability research: pre-disclosure simulation discipline, CVE corpus
+      handling, ASAN-bounded reproduction, harness construction with safety
+      boundaries (no exploitation, no production targeting), parser-disagreement
+      methodology, claim-state lifecycle preventing overclaim.
+    proposal_section: "4.4 What is novel about AegisGraph"
+    representative_artifacts:
+      - reprochain/evidence/build_manifest.json
+      - polydiff/regression/report.json
+      - aegisgraph/safety.py
+      - validator/sanitize_check.py
+  software_engineering:
+    description: >-
+      Software engineering: deterministic builds, REQUIRED_TOOLS pin tables,
+      strict-mode CI fail-closed gates, additive-only schema evolution, schema
+      validation in CI, integration test coverage of governance-critical
+      contracts.
+    proposal_section: "13.3 Execution Discipline"
+    representative_artifacts:
+      - Makefile
+      - aegisgraph/tooling.py
+      - devcontainer/
+      - tests/test_validation_e2e.py
+      - tests/test_export_private_complete.py
+
+# Deliverables list (machine-readable contract; mirrors the
+# DSIP-DELIVERABLE-* requirements above with explicit timing/contents).
+deliverables:
+  - deliverable_id: M1-KICKOFF
+    due_quarter: "Month 1"
+    contents:
+      - "Annotated kickoff slides"
+      - "Updated technical approach"
+      - "Risks / mitigations"
+      - "Schedule"
+      - "Dependencies"
+      - "Metrics"
+    requirement_id: DSIP-DELIVERABLE-KICKOFF
+  - deliverable_id: M4-Q1
+    due_quarter: "Month 4"
+    contents:
+      - "v0.3 evidence package + checksums"
+      - "Schema specification"
+      - "External validation packet draft"
+    requirement_id: DSIP-DELIVERABLE-Q1
+  - deliverable_id: M7-Q2
+    due_quarter: "Month 7"
+    contents:
+      - "Quantitative interim briefing"
+      - "Ring 1 harness report"
+      - "Graph-path precision report"
+    requirement_id: DSIP-DELIVERABLE-Q2
+  - deliverable_id: M10-Q3
+    due_quarter: "Month 10"
+    contents:
+      - "Reviewer workbench prototype"
+      - "Top-five validator packet"
+    requirement_id: DSIP-DELIVERABLE-Q3
+  - deliverable_id: M14-FINAL
+    due_quarter: "Month 14"
+    contents:
+      - "Final demonstration"
+      - "Architecture document"
+      - "API documentation"
+      - "User manual"
+      - "System design document"
+      - "Commercialization plan"
+    requirement_id: DSIP-DELIVERABLE-FINAL
+  - deliverable_id: M19-OPTION
+    due_quarter: "Month 19"
+    contents:
+      - "Productization gap report"
+    requirement_id: DSIP-DELIVERABLE-OPTION-M19
+  - deliverable_id: M24-OPTION-FINAL
+    due_quarter: "Month 24"
+    contents:
+      - "Final option briefing"
+      - "Authorized dynamic evidence"
+      - "Offline workbench deployment"
+      - "SBOM/VEX/SARIF maturity"
+    requirement_id: DSIP-DELIVERABLE-OPTION-M24
