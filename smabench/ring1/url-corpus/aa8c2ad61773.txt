@@ -1,0 +1,1 @@
+x-app://xn--bcher-kva.example:443/%2e%2e/admin#top

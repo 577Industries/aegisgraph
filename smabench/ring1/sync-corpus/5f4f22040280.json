@@ -1,0 +1,52 @@
+{
+  "_synthetic_kind": "matrix-replayed-event",
+  "_synthetic_replay_pair": [
+    "$synthetic_a908b713e95c939b:example.org",
+    "$synthetic_a908b713e95c939b:example.org"
+  ],
+  "_synthetic_round": 3,
+  "next_batch": "s_synthetic_774f4ebd",
+  "rooms": {
+    "invite": {},
+    "join": {
+      "!synthetic_0a965cda2c35:example.org": {
+        "account_data": {
+          "events": []
+        },
+        "ephemeral": {
+          "events": []
+        },
+        "state": {
+          "events": []
+        },
+        "timeline": {
+          "events": [
+            {
+              "content": {
+                "body": "synthetic",
+                "msgtype": "m.text"
+              },
+              "event_id": "$synthetic_a908b713e95c939b:example.org",
+              "origin_server_ts": 1500000000,
+              "sender": "@synthetic_4fa708c7e8:example.org",
+              "type": "m.room.message"
+            },
+            {
+              "content": {
+                "body": "synthetic",
+                "msgtype": "m.text"
+              },
+              "event_id": "$synthetic_a908b713e95c939b:example.org",
+              "origin_server_ts": 1500000005,
+              "sender": "@synthetic_4fa708c7e8:example.org",
+              "type": "m.room.message"
+            }
+          ],
+          "limited": false,
+          "prev_batch": "synthetic_prev"
+        }
+      }
+    },
+    "leave": {}
+  }
+}

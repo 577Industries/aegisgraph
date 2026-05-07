@@ -1,0 +1,1 @@
+javascript://user@[2001:db8::1]:0/article/page#sec%2Fone

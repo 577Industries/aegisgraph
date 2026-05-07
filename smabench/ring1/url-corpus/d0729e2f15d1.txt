@@ -1,0 +1,2 @@
+data://user@evil.
+example@xn--bcher-kva.example:0/../admin?a=b=c#top

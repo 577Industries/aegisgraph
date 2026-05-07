@@ -1,0 +1,1 @@
+x-app://@10.0.0.1/article;jsessionid=abc?q=hello%2520world#/room:example.org

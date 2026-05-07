@@ -1,0 +1,1 @@
+data://10.0.0.1:99999/../admin?q=one#sec%2Fone

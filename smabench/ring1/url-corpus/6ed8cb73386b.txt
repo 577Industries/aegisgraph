@@ -1,0 +1,1 @@
+x-app://user:pass@xn--bcher-kva.example//etc//passwd?a=1&b=2#/room:example.org

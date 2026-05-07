@@ -1,0 +1,1 @@
+javascript://us%65r:p%61ss@[fe80::1%25eth0]:0/%2e%2e/admin?a=1&b=2#/room:example.org

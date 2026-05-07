@@ -1,0 +1,1 @@
+sgnl://linkdevice?uuid=matrix..org

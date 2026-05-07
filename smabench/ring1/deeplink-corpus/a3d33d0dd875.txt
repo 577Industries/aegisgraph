@@ -1,0 +1,1 @@
+element://linkdevice/trusted.example\@evil.example../admin

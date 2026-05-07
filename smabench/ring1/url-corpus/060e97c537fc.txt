@@ -1,0 +1,1 @@
+file://trusted.example\@192.0.2.1:65535?q=hello%20world#sec%2Fone

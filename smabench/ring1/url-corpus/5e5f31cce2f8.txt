@@ -1,0 +1,1 @@
+data://user@evil.example@0300.0000.0002.0001:443//etc//passwd?a=1&amp;b=2#sec%2Fone

@@ -1,0 +1,1 @@
+javascript://trusted.example\@[fe80::1%25eth0]:443/?a=1&amp;b=2

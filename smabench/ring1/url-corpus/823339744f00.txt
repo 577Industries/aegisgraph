@@ -1,0 +1,1 @@
+data://user@evil.example@example?q=hello%20world#/room:example.org

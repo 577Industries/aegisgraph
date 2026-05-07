@@ -1,0 +1,1 @@
+data://user:pass@localhost/%252e%252e/admin?a=b=c

@@ -1,0 +1,1 @@
+http://user:pass@3221225985:80/%252e%252e/admin

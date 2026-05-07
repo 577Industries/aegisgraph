@@ -1,0 +1,1 @@
+javascript://user:pass@127.0.0.1:65535/?q=hello%2520world#top

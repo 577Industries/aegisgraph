@@ -1,0 +1,16 @@
+{
+  "_synthetic_round": 0,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "linked_device_added": {
+        "id": 1496414,
+        "name": "synthetic-device-78e2"
+      }
+    }
+  },
+  "device_id": 599217,
+  "kind": "device-link-confirm",
+  "source_uuid": "synthetic-78aa2447-c462-ddae-d16d-c0cf0b9cd7f7",
+  "timestamp_ms": 1500000000000
+}

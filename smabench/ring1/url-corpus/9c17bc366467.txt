@@ -1,0 +1,1 @@
+http://user@evil.example@127.0.0.1:80/../admin?q=hello%20world#top

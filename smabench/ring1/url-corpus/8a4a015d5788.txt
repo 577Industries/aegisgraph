@@ -1,0 +1,1 @@
+file://user:pass@localhost:65535/article;jsessionid=abc?q=hello%2520world#sec%2Fone

@@ -1,0 +1,1 @@
+https://trusted.example\@xn--bcher-kva.example:99999/article/page?a=1&b=2#/room:example.org

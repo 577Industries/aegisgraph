@@ -1,0 +1,1 @@
+javascript://user:pass@xn--bcher-kva.example:99999/article/?q=one#top

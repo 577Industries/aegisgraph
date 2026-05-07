@@ -1,0 +1,1 @@
+https://user:pass@[fe80::1%25eth0]:99999//etc//passwd?a=1&b=2#/room:example.org

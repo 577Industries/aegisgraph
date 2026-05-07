@@ -1,0 +1,2 @@
+data://us%65r:p%61ss@
+example:80/article/page?q=hello%20world#top

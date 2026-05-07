@@ -1,0 +1,1 @@
+https://trusted.example\@xn--80ak6aa92e.example:99999//etc//passwd?a=b=c#/room:example.org

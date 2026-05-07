@@ -1,0 +1,1 @@
+https://user@192.0.2.1:65535/%2e%2e/admin?a=b=c#top

@@ -1,0 +1,1 @@
+javascript://user:pass@example:80/article;jsessionid=abc?q=one#/room:example.org

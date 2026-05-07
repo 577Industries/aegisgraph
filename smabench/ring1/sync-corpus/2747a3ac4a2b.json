@@ -1,0 +1,52 @@
+{
+  "_synthetic_kind": "matrix-replayed-event",
+  "_synthetic_replay_pair": [
+    "$synthetic_338ff740312f05ca:example.org",
+    "$synthetic_338ff740312f05ca:example.org"
+  ],
+  "_synthetic_round": 10,
+  "next_batch": "s_synthetic_4932fe69",
+  "rooms": {
+    "invite": {},
+    "join": {
+      "!synthetic_352b6a6c37df:example.org": {
+        "account_data": {
+          "events": []
+        },
+        "ephemeral": {
+          "events": []
+        },
+        "state": {
+          "events": []
+        },
+        "timeline": {
+          "events": [
+            {
+              "content": {
+                "body": "synthetic",
+                "msgtype": "m.text"
+              },
+              "event_id": "$synthetic_338ff740312f05ca:example.org",
+              "origin_server_ts": 1500000000,
+              "sender": "@synthetic_88cbfcf84e:example.org",
+              "type": "m.room.message"
+            },
+            {
+              "content": {
+                "body": "synthetic",
+                "msgtype": "m.text"
+              },
+              "event_id": "$synthetic_338ff740312f05ca:example.org",
+              "origin_server_ts": 1500000005,
+              "sender": "@synthetic_88cbfcf84e:example.org",
+              "type": "m.room.message"
+            }
+          ],
+          "limited": false,
+          "prev_batch": "synthetic_prev"
+        }
+      }
+    },
+    "leave": {}
+  }
+}

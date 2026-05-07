@@ -1,0 +1,1 @@
+x-app://user:pass@192.0.2.1:65535/../admin?q=hello%2520world#/room:example.org

@@ -1,0 +1,1 @@
+javascript://trusted.example\@3221225985:0/article/page?a=1&amp;b=2

@@ -1,0 +1,2 @@
+http://user:pass@preview.example.:0/%2e%2e/a
+dmin?a=1&amp;b=2#top

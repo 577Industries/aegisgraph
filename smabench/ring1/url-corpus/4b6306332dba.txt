@@ -1,0 +1,1 @@
+http://user@evil.example@10.0.0.1:65535//etc//passwd?q=one#sec%2Fone

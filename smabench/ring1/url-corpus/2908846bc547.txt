@@ -1,0 +1,1 @@
+http://trusted.example\@169.254.169.254:443//etc//passwd?a=1&b=2#sec%2Fone

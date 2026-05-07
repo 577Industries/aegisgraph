@@ -1,0 +1,1 @@
+https://user@evil.example@0xC0000201:80/%2e%2e/admin?a=1&b=2#top

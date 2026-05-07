@@ -1,0 +1,1 @@
+x-app://.preview.example:99999/article/?q=one#/room:example.org

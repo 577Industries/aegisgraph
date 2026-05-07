@@ -1,0 +1,1 @@
+http://user:pass@localhost:80/%252e%252e/admin?q=one#sec%2Fone

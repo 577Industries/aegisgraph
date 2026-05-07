@@ -1,0 +1,1 @@
+https://user@[::ffff:127.0.0.1]:80//et c//passwd?a=1&amp;b=2#top

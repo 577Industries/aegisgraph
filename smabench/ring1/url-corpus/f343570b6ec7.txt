@@ -1,0 +1,1 @@
+file://trusted.example\@localhost:443/article/page?q=one#/room:example.org

@@ -1,0 +1,1 @@
+javascript://user:pass@[::ffff:127.0.0.1]:99999/article;jsessionid=abc?q=one#top

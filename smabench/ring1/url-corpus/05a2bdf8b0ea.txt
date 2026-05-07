@@ -1,0 +1,1 @@
+javascript://@xn--bcher-kva.example//etc//passwd?a=1&b=2#sec%2Fone

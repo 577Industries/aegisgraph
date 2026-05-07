@@ -1,0 +1,1 @@
+javascript://user@example:65535//etc//passwd#/room:example.org

@@ -1,0 +1,1 @@
+data://trusted.example\@169.254.169.254:99999/%252e%252e/admin?a=b=c

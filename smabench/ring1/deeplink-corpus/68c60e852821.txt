@@ -1,0 +1,1 @@
+sgnl://linkdevice?uuid=xn--bcher-kva.example

@@ -1,0 +1,2 @@
+javascript://trusted.example\@192.0.2.1:65
+535/article;jsessionid=abc?q=hello%2520world

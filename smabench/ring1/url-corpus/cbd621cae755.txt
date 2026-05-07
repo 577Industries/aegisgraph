@@ -1,0 +1,1 @@
+https://localhost:0/../admin?a=1&b=2

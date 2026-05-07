@@ -1,0 +1,1 @@
+matrix://event/matrix.org%2e%2e/admin

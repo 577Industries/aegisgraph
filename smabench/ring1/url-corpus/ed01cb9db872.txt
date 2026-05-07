@@ -1,0 +1,1 @@
+http://user:pass@.preview.example:0/%252e%252e/admin#top

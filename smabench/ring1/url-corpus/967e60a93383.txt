@@ -1,0 +1,1 @@
+x-app://user@evil.example@[fe80::1%25eth0]//etc//passwd?q=hello%20world

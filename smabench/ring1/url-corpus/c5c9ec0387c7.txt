@@ -1,0 +1,1 @@
+https://trusted.example\@[::ffff:127.0.0.1]:80?a=b=c#sec%2Fone

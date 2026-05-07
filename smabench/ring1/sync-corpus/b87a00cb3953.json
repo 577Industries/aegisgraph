@@ -1,0 +1,34 @@
+{
+  "_synthetic_kind": "matrix-key-rotation",
+  "_synthetic_round": 7,
+  "next_batch": "s_synthetic_625493ee",
+  "to_device": {
+    "events": [
+      {
+        "content": {
+          "action": "request",
+          "body": {
+            "algorithm": "m.megolm.v1.aes-sha2",
+            "session_id": "synthetic_8f6a04105398"
+          },
+          "request_id": "synthetic_4e07240f",
+          "requesting_device_id": "SYN6ad9"
+        },
+        "sender": "@synthetic_c782d7898d:example.org",
+        "type": "m.room_key_request"
+      },
+      {
+        "content": {
+          "algorithm": "m.megolm.v1.aes-sha2",
+          "forwarding_curve25519_key_chain": [],
+          "room_id": "!synthetic_fbe1a2418c2f:example.org",
+          "sender_claimed_ed25519_key": "synthetic_ed25519",
+          "session_id": "synthetic_568c037ce716",
+          "session_key": "synthetic_key_material_NOT_REAL"
+        },
+        "sender": "@synthetic_c782d7898d:example.org",
+        "type": "m.forwarded_room_key"
+      }
+    ]
+  }
+}

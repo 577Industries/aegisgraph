@@ -1,0 +1,1 @@
+javascript://@localhost:80/article/?a=b=c#sec%2Fone

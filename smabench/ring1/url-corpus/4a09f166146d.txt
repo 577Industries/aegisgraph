@@ -1,0 +1,1 @@
+data://user@evil.example@169.254.169.254:99999/%2e%2e/admin

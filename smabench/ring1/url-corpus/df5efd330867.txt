@@ -1,0 +1,1 @@
+https://trusted.example\@localhost:443/%2e%2e/admin?q=one#sec%2Fone

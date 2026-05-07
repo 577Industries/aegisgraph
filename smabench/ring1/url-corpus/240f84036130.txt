@@ -1,0 +1,1 @@
+javascript://user@evil.example@preview..example:99999/../admin?q=one#sec%2Fone

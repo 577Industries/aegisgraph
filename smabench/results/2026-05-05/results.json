@@ -1,0 +1,288 @@
+{
+  "delta": {
+    "baseline": "2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63",
+    "previous_run_present": true,
+    "ring1": {
+      "added_corpora": [],
+      "changed_corpora": [],
+      "removed_corpora": []
+    },
+    "ring2": {
+      "score_delta": 0.0,
+      "status_change": null
+    }
+  },
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "repeatability": {
+    "byte_identical": true,
+    "exclusions": [
+      "generated_at"
+    ],
+    "hash": "2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63",
+    "iterations": 2,
+    "secondary_hash": "2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63"
+  },
+  "rings": {
+    "ring1": {
+      "corpora": [
+        {
+          "generator": {
+            "axes": [
+              "scheme",
+              "userinfo",
+              "host",
+              "port",
+              "path",
+              "query",
+              "fragment"
+            ],
+            "axis_value_counts": {
+              "fragment": 4,
+              "host": 19,
+              "path": 10,
+              "port": 6,
+              "query": 7,
+              "scheme": 6,
+              "userinfo": 7
+            },
+            "module": "smabench.ring1.url_corpus"
+          },
+          "item_count": 10000,
+          "name": "url-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 10000,
+          "seed": 42,
+          "sha256": "68351331da9ebb57aba945c1b23b182df81f7c2cdfb8a0c2c7c81c36b21600b8",
+          "source_policy": "synthetic"
+        },
+        {
+          "generator": {
+            "case_count": 14,
+            "encoder": "placeholder_png",
+            "module": "smabench.ring1.qr_corpus",
+            "qrcode_lib_available": false
+          },
+          "item_count": 32,
+          "name": "qr-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 32,
+          "seed": 42,
+          "sha256": "dbddd85fd2897e294add0ac2588e408f57444425d3f893f2c6ed3501eb4ba92d",
+          "source_policy": "synthetic"
+        },
+        {
+          "generator": {
+            "axes": [
+              "scheme",
+              "sub_path",
+              "host",
+              "injection",
+              "fragment"
+            ],
+            "module": "smabench.ring1.deeplink_corpus",
+            "schemes": [
+              "signal",
+              "sgnl",
+              "matrix",
+              "element",
+              "matrix-to-https"
+            ]
+          },
+          "item_count": 1000,
+          "name": "deeplink-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 1000,
+          "seed": 42,
+          "sha256": "0b4a2fe890f47cf442341d3398e5ab28b438dd8270369c74eb9a456f3766f4c9",
+          "source_policy": "synthetic"
+        },
+        {
+          "generator": {
+            "matrix_cases": [
+              "empty-sync",
+              "replayed-event",
+              "key-rotation",
+              "withheld-key",
+              "presence-update",
+              "ephemeral-typing",
+              "redaction",
+              "membership-change"
+            ],
+            "module": "smabench.ring1.sync_corpus",
+            "signal_cases": [
+              "empty",
+              "rekey",
+              "pre-key-shim",
+              "device-link-confirm",
+              "verified-state-update",
+              "sticker-pack-sync",
+              "configuration-sync"
+            ]
+          },
+          "item_count": 200,
+          "name": "sync-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 200,
+          "seed": 42,
+          "sha256": "ea86ec3bc40783cf8edc764efb86853f0e759c4a1ddd69fe2974e7070a1dc0dd",
+          "source_policy": "synthetic"
+        },
+        {
+          "generator": {
+            "encoder": "pil",
+            "formats": [
+              "png",
+              "jpeg",
+              "gif",
+              "webp"
+            ],
+            "module": "smabench.ring1.media_corpus",
+            "pil_available": true,
+            "purpose": "Valid baseline samples to confirm reprochain harnesses do not false-positive on legal input. Crash-inducing bytes belong under reprochain/corpora-private only."
+          },
+          "item_count": 16,
+          "name": "media-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 16,
+          "seed": 42,
+          "sha256": "3b7968dd4c5391c0132d15a366692cf4a4b67d3c0472688d5caecbfe511238f6",
+          "source_policy": "synthetic"
+        },
+        {
+          "generator": {
+            "cases": [
+              "pqxdh-initial",
+              "pqxdh-rotation",
+              "pqxdh-migration",
+              "megolm-withheld",
+              "megolm-replayed",
+              "megolm-rotation"
+            ],
+            "module": "smabench.ring1.pq_corpus",
+            "policy": "synthetic_only_no_real_cryptography"
+          },
+          "item_count": 60,
+          "name": "pq-corpus",
+          "publication_policy": "sanitized_candidate",
+          "requested_count": 60,
+          "seed": 42,
+          "sha256": "e3a6c003ece2f46f85fce2ea05555d7a871f540b41cb57572b3569b6fa0786a8",
+          "source_policy": "synthetic"
+        }
+      ],
+      "generator_count": 6,
+      "status": "passing",
+      "statuses": [
+        {
+          "item_count": 10000,
+          "name": "url-corpus",
+          "sha256": "68351331da9ebb57aba945c1b23b182df81f7c2cdfb8a0c2c7c81c36b21600b8",
+          "status": "passing"
+        },
+        {
+          "item_count": 32,
+          "name": "qr-corpus",
+          "sha256": "dbddd85fd2897e294add0ac2588e408f57444425d3f893f2c6ed3501eb4ba92d",
+          "status": "passing"
+        },
+        {
+          "item_count": 1000,
+          "name": "deeplink-corpus",
+          "sha256": "0b4a2fe890f47cf442341d3398e5ab28b438dd8270369c74eb9a456f3766f4c9",
+          "status": "passing"
+        },
+        {
+          "item_count": 200,
+          "name": "sync-corpus",
+          "sha256": "ea86ec3bc40783cf8edc764efb86853f0e759c4a1ddd69fe2974e7070a1dc0dd",
+          "status": "passing"
+        },
+        {
+          "item_count": 16,
+          "name": "media-corpus",
+          "sha256": "3b7968dd4c5391c0132d15a366692cf4a4b67d3c0472688d5caecbfe511238f6",
+          "status": "passing"
+        },
+        {
+          "item_count": 60,
+          "name": "pq-corpus",
+          "sha256": "e3a6c003ece2f46f85fce2ea05555d7a871f540b41cb57572b3569b6fa0786a8",
+          "status": "passing"
+        }
+      ]
+    },
+    "ring2": {
+      "aggregate_score": 0.208,
+      "graphs_expected": 2,
+      "graphs_missing": 0,
+      "graphs_present": 2,
+      "inputs": [
+        "extraction/output/element-x/graph.json",
+        "extraction/output/signal/graph.json"
+      ],
+      "status": "ring2_extraction_phase0",
+      "targets": [
+        {
+          "graph_path": "extraction/output/signal/graph.json",
+          "name": "Signal Android",
+          "node_count": 4,
+          "nodes_with_real_evidence": 2,
+          "nodes_with_real_evidence_ratio": 0.5,
+          "path_class_coverage_count": 1,
+          "path_class_coverage_ratio": 0.125,
+          "path_class_coverage_total": 8,
+          "path_classes_seen": [
+            "media_decode"
+          ],
+          "record_count": 1,
+          "referenced_node_ids": [
+            "decoder.image-stack",
+            "entry.inbound-media",
+            "handler.media-pipeline",
+            "sink.webp-decoder"
+          ],
+          "score": 0.208,
+          "status": "ring2_partial",
+          "target": "signal",
+          "validation_task_passing_count": 0,
+          "validation_task_passing_ratio": 0.0,
+          "validation_task_total": 1
+        },
+        {
+          "graph_path": "extraction/output/element-x/graph.json",
+          "name": "Element X Android",
+          "node_count": 4,
+          "nodes_with_real_evidence": 2,
+          "nodes_with_real_evidence_ratio": 0.5,
+          "path_class_coverage_count": 1,
+          "path_class_coverage_ratio": 0.125,
+          "path_class_coverage_total": 8,
+          "path_classes_seen": [
+            "media_decode"
+          ],
+          "record_count": 1,
+          "referenced_node_ids": [
+            "decoder.image-stack",
+            "entry.inbound-media",
+            "handler.media-pipeline",
+            "sink.webp-decoder"
+          ],
+          "score": 0.208,
+          "status": "ring2_partial",
+          "target": "element-x",
+          "validation_task_passing_count": 0,
+          "validation_task_passing_ratio": 0.0,
+          "validation_task_total": 1
+        }
+      ]
+    },
+    "ring3": {
+      "policy": "requires written authorization before any dynamic target work",
+      "status": "authorization_placeholder"
+    }
+  },
+  "safety_posture": "private_by_default",
+  "tool_output_type": "smabench_results",
+  "version": "v1.0"
+}

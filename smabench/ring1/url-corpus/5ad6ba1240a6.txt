@@ -1,0 +1,1 @@
+x-app://user@evil.example@xn--bcher-kva.example?a=1&b=2#/room:example.org

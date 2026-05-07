@@ -1,0 +1,1 @@
+https://user@evil.example@localhost:65535/%2e%2e/admin?a=b=c#/room:example.org

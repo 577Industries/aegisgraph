@@ -1,0 +1,1 @@
+data://user@example/article/?a=1&amp;b=2#sec%2Fone

@@ -1,0 +1,2 @@
+x-app://user@previe
+w.example.:0/?q=hello%20world#sec%2Fone

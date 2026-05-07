@@ -1,0 +1,1 @@
+sgnl://linkdevice?uuid=trusted.example@evil.example../admin

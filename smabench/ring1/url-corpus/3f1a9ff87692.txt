@@ -1,0 +1,1 @@
+http://user:pass@[fe80::1%25eth0]:80/%252e%252e/admin#top

@@ -1,0 +1,1 @@
+data://user:pass@127.0.0.1:0/%252e%252e/admin?a=b=c#top

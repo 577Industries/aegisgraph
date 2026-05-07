@@ -1,0 +1,2 @@
+javascript://xn--80ak6aa92e.example:65535/../admin#s
+ec%2Fone

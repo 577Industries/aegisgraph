@@ -1,0 +1,31 @@
+{
+  "_synthetic_kind": "megolm-replayed",
+  "_synthetic_round": 4,
+  "events": [
+    {
+      "content": {
+        "algorithm": "m.megolm.v1.aes-sha2",
+        "forwarding_curve25519_key_chain": [],
+        "room_id": "!synthetic_d47d5552:example.org",
+        "sender_claimed_ed25519_key": "synthetic_ed25519",
+        "session_id": "synthetic_session_33e5901a19bb",
+        "session_key": "synthetic_NOT_REAL_session_key"
+      },
+      "timestamp_ms": 1500000000000,
+      "type": "m.forwarded_room_key"
+    },
+    {
+      "content": {
+        "algorithm": "m.megolm.v1.aes-sha2",
+        "forwarding_curve25519_key_chain": [],
+        "room_id": "!synthetic_c7f47e8e:example.org",
+        "sender_claimed_ed25519_key": "synthetic_ed25519",
+        "session_id": "synthetic_session_33e5901a19bb",
+        "session_key": "synthetic_NOT_REAL_session_key"
+      },
+      "timestamp_ms": 1500000005000,
+      "type": "m.forwarded_room_key"
+    }
+  ],
+  "session_id": "synthetic_session_33e5901a19bb"
+}

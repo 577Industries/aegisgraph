@@ -1,0 +1,1 @@
+file://trusted.example\@xn--bcher-kva.example:0/%2e%2e/admin#top

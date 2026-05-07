@@ -1,0 +1,1 @@
+data://trusted.example\@xn--bcher-kva.example?a=b=c#top

@@ -1,0 +1,1 @@
+javascript://user@evil.example@127.0.0.1:65535?a=b=c#/room:example.org

@@ -1,0 +1,1 @@
+data://user:pass@localhost:65535/article/?q=hello%20world

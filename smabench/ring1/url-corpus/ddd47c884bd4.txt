@@ -1,0 +1,1 @@
+file://trusted.example\@0xC0.0.2.1:0//etc//passwd?q=hello%20world

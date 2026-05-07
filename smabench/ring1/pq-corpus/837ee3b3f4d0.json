@@ -1,0 +1,13 @@
+{
+  "_synthetic_kind": "megolm-withheld",
+  "_synthetic_round": 4,
+  "content": {
+    "algorithm": "m.megolm.v1.aes-sha2",
+    "code": "m.unverified",
+    "reason": "synthetic withheld",
+    "room_id": "!synthetic_4d42f8ac:example.org",
+    "sender_key": "synthetic_NOT_REAL_curve25519",
+    "session_id": "synthetic_session_2acaf127972d"
+  },
+  "type": "m.room_key.withheld"
+}

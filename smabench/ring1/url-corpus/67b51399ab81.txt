@@ -1,0 +1,1 @@
+javascr	ipt://user@0xC0000201:443/article/page?q=hello%2520world

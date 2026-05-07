@@ -1,0 +1,1 @@
+javascript://user:pass@example:65535/article;jsessionid=abc?a=1&amp;b=2#sec%2Fone

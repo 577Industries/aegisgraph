@@ -1,0 +1,1 @@
+http://user@evil.examp le@[fe80::1%25eth0]:0/../admin

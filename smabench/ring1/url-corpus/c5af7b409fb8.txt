@@ -1,0 +1,1 @@
+file://trusted.example\@192.0.2.1:99999/%2e%2e/admin?q=hello%20world#top

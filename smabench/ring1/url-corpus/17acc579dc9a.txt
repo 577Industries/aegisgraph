@@ -1,0 +1,1 @@
+javascript://user@evil.example@example:0/article/page#sec%2Fone

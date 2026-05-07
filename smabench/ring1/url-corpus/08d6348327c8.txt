@@ -1,0 +1,1 @@
+javascript://trusted.example\@0xC0000201:443/%2e%2e/admin?a=b=c

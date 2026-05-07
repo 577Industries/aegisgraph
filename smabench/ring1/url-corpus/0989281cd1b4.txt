@@ -1,0 +1,1 @@
+file://@localhost:65535/%252e%252e/admin?a=1&b=2

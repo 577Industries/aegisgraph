@@ -1,0 +1,1 @@
+x-app://@192.0.2.1:65535/%2e%2e/admin?q=hello%2520world#sec%2Fone

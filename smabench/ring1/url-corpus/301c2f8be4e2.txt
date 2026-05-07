@@ -1,0 +1,1 @@
+file://trusted.example\@example:443/article/page?q=hello%20world

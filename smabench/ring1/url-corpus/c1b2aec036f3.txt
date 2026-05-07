@@ -1,0 +1,1 @@
+data://[::ffff:127.0.0.1]:80//etc//passwd?q=hello%20world#sec%2Fone

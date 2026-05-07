@@ -1,0 +1,1 @@
+signal://conversation/trusted.example\@evil.example../admin

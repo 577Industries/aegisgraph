@@ -1,0 +1,1 @@
+x-app://localhost:99999//etc//passwd?a=1&b=2

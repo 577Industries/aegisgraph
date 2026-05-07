@@ -1,0 +1,1 @@
+data://user:pass@10.0.0.1:65535/?q=hello%2520world#sec%2Fone

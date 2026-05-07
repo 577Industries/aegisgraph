@@ -1,0 +1,1 @@
+javascript://trusted.example\@[2001:db8::1]:0#top

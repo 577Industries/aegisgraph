@@ -1,0 +1,2 @@
+http://0xC00002
+01:0/../admin?a=b=c#top

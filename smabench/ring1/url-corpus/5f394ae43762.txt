@@ -1,0 +1,1 @@
+file://user:pass@localhost:65535/article;jsessionid=abc?a=1&b=2#sec%2Fone

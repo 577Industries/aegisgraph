@@ -1,0 +1,1 @@
+file://10.0.0.1/article;jsessionid=abc?a=1&amp;b=2#/room:example.org

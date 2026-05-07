@@ -1,0 +1,1 @@
+file://trusted.example\@.preview.example:443/%2e%2e/admin#/room:example.org

@@ -1,0 +1,1 @@
+javascript://192.0.2.1:0/%2e%2e/admin?a=b=c#sec%2Fone

@@ -1,0 +1,1 @@
+https://user:pass@169.254.169.254:99999/article;jsessionid=abc?q=one#/room:example.org

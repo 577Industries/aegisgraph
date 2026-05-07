@@ -1,0 +1,1 @@
+file://us%65r:p%61ss@example:80?a=1&b=2

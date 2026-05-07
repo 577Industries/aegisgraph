@@ -1,0 +1,1 @@
+data://user@[2001:db8::1]:99999/../admin?q=hello%20world#/room:example.org

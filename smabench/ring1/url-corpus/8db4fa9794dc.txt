@@ -1,0 +1,1 @@
+x-app://user@evil.example@xn--80ak	6aa92e.example:443/%2e%2e/admin

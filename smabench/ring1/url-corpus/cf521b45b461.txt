@@ -1,0 +1,1 @@
+javascript://user@0xC0000201:443/article/?a=b=c#sec%2Fone

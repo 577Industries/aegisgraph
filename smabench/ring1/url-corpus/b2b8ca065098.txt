@@ -1,0 +1,2 @@
+javascript://user:pass@3221225985:99999/article/?q=hello%
+20world#/room:example.org

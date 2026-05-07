@@ -1,0 +1,1 @@
+https://user@evil.example@[2001:db8::1]:99999/%252e%252e/admin#top

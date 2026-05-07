@@ -1,0 +1,1 @@
+file://user@evil.example@[::ffff:127.0.0.1]/%252e%252e/admin?a=1&amp;b=2#top

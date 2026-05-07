@@ -1,0 +1,1 @@
+javascript://trusted.example\@[fe80::1%25eth0]:443/article/page?q=hello%20world#/room:example.org

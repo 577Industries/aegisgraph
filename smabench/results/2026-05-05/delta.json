@@ -1,0 +1,13 @@
+{
+  "baseline": "2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63",
+  "previous_run_present": true,
+  "ring1": {
+    "added_corpora": [],
+    "changed_corpora": [],
+    "removed_corpora": []
+  },
+  "ring2": {
+    "score_delta": 0.0,
+    "status_change": null
+  }
+}

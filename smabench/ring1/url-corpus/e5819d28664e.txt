@@ -1,0 +1,1 @@
+javascript://us%65r:p%61ss@localhost:65535/../admin?a=b=c#/room:example.org

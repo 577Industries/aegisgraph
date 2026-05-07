@@ -1,0 +1,1 @@
+javascript://user@evil.example@localhost:443/article;jsessionid=abc?q=one#top

@@ -1,0 +1,1 @@
+javascript://user:pass@[2001:db8::1]/../admin?q=hello%20world

@@ -1,0 +1,2 @@
+x-app://@xn--80ak6aa92e.example:99999/article/?a=1&
+b=2

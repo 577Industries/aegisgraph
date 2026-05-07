@@ -1,0 +1,1 @@
+http://trusted.example\@[2001:db8::1]:0//etc//passwd?q=hello%20world#sec%2Fone

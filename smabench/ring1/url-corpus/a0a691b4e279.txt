@@ -1,0 +1,1 @@
+javascript://user:pass@127.0.0.1/article;js essionid=abc?q=hello%20world#top

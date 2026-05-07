@@ -1,0 +1,13 @@
+{
+  "_synthetic_round": 4,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "empty": true
+    }
+  },
+  "device_id": 667017,
+  "kind": "empty",
+  "source_uuid": "synthetic-e8726434-35ee-ad3b-6e9e-8325916a427b",
+  "timestamp_ms": 1500000000000
+}

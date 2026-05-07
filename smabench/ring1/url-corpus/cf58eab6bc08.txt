@@ -1,0 +1,1 @@
+javascript://us%65r:p%61ss@xn--80ak6aa92e.example//etc//passwd?q=hello%20world

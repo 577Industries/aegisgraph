@@ -1,0 +1,1 @@
+file://user:pass@preview.example./../admin#sec%2Fone

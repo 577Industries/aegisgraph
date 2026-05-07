@@ -1,0 +1,20 @@
+{
+  "_synthetic_kind": "matrix-empty-sync",
+  "_synthetic_round": 1,
+  "device_lists": {
+    "changed": [],
+    "left": []
+  },
+  "next_batch": "s_synthetic_be898736",
+  "presence": {
+    "events": []
+  },
+  "rooms": {
+    "invite": {},
+    "join": {},
+    "leave": {}
+  },
+  "to_device": {
+    "events": []
+  }
+}

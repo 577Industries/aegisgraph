@@ -1,0 +1,1 @@
+data://user@0xC0000201/%252e%252e/admin?a=1&b=2#sec%2Fone

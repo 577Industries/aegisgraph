@@ -1,0 +1,1 @@
+https://user:pass@localhost:99999/%2e%2e/admin?a=b=c

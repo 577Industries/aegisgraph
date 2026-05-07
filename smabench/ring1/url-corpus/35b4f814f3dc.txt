@@ -1,0 +1,2 @@
+data://user:pass@preview..example
+:65535?a=b=c

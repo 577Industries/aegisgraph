@@ -1,0 +1,2 @@
+javascript://[fe80::1%25eth0]:443/?q=hel
+lo%20world#top

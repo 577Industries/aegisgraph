@@ -1,0 +1,1 @@
+http://user@evil.example@[2001:db8::1]:99999/article/?a=1&amp;b=2#sec%2Fone

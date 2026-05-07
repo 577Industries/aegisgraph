@@ -1,0 +1,2 @@
+data://user@localhost/artic
+le/page?q=one

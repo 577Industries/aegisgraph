@@ -1,0 +1,1 @@
+x-app://user@evil.example@xn--80ak6aa92e.example:99999/article/?q=hello%2520world#/room:example.org

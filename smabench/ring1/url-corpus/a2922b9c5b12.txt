@@ -1,0 +1,2 @@
+http://user@evil.example@0xC00002
+01:443?q=hello%2520world#top

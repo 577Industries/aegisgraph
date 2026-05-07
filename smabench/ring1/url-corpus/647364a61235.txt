@@ -1,0 +1,1 @@
+data://@0xC0000201:65535/../admin?q=hello%20world

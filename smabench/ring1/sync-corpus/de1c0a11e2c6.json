@@ -1,0 +1,17 @@
+{
+  "_synthetic_round": 4,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "verified": {
+        "destination_uuid": "synthetic-0443b2bc3a9a45df",
+        "identity_key": "synthetic_ed25519_NOT_REAL",
+        "state": "VERIFIED"
+      }
+    }
+  },
+  "device_id": 1361431,
+  "kind": "verified-state-update",
+  "source_uuid": "synthetic-a5b75c99-450c-15a7-3f4a-27ba52ae0867",
+  "timestamp_ms": 1500000000000
+}

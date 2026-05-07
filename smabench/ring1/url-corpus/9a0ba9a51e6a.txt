@@ -1,0 +1,1 @@
+x-app://user@evil.example@localhost:99999/../admin?q=one

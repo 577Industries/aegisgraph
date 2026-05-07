@@ -1,0 +1,1 @@
+data://@[2001:db8::1]/../admin?q=hello%2520world#top

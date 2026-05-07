@@ -1,0 +1,2 @@
+http://user@evil.e
+xample@xn--80ak6aa92e.example:65535/?q=one#sec%2Fone

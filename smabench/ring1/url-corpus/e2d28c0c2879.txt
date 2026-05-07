@@ -1,0 +1,1 @@
+x-app://user:pass@3221225985:65535/article;jsessionid=abc?a=b=c#/room:example.org

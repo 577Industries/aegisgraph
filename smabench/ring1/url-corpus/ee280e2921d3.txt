@@ -1,0 +1,1 @@
+javascript://trusted.example\@example:65535?q=hello%20world#top

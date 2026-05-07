@@ -1,0 +1,1 @@
+javascript://trusted.example\@.preview.example:80?q=hello%20wo rld#/room:example.org

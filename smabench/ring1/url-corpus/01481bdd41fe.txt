@@ -1,0 +1,1 @@
+javascript://user:pass@169.254.169.254:443//etc//passwd?a=b=c

@@ -1,0 +1,16 @@
+{
+  "_synthetic_round": 3,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "linked_device_added": {
+        "id": 1977563,
+        "name": "synthetic-device-650e"
+      }
+    }
+  },
+  "device_id": 1485555,
+  "kind": "device-link-confirm",
+  "source_uuid": "synthetic-6e92df49-784d-c2ef-cd1b-237b51cad303",
+  "timestamp_ms": 1500000000000
+}

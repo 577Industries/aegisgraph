@@ -1,0 +1,1 @@
+javascript://trusted.example\@[::ffff:127.0.0.1]:80/../admin?q=hello%2520world#top

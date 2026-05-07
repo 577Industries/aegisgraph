@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AegisGraph SMABench Dashboard</title>
+<style>
+  :root {
+    --fg: #1a1a1a; --bg: #fafafa; --accent: #00766b; --muted: #888; --line: #e5e5e5;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 2rem auto; max-width: 1100px; color: var(--fg); background: var(--bg);
+    padding: 0 1.5rem; line-height: 1.5; }
+  h1 { border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; }
+  h2 { color: var(--accent); margin-top: 2rem; }
+  table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.5rem; }
+  th, td { border-bottom: 1px solid var(--line); padding: 0.5rem 0.6rem; text-align: left;
+    vertical-align: top; }
+  th { background: #fff; font-weight: 600; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em;
+    background: #fff; padding: 0.1rem 0.3rem; border: 1px solid var(--line);
+    border-radius: 0.2rem; }
+  .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 1rem;
+    font-size: 0.75rem; background: var(--accent); color: #fff; }
+  .pill-warn { background: #d97706; }
+  .pill-bad { background: #b91c1c; }
+  .muted { color: var(--muted); }
+  .cat { background: #eef; padding: 0.1rem 0.4rem; border-radius: 0.2rem;
+    font-size: 0.75rem; color: #226; }
+  details summary { cursor: pointer; padding: 0.5rem 0; font-weight: 600; }
+  pre { background: #fff; border: 1px solid var(--line); padding: 1rem;
+    overflow: auto; font-size: 0.78em; max-height: 480px; }
+  ul { padding-left: 1.4rem; }
+  ul li { margin: 0.4rem 0; }
+</style>
+</head>
+<body>
+<h1>AegisGraph Tier 3 — SMABench Dashboard</h1>
+<p class="muted">Generated 2026-05-05T00:00:00Z · safety posture: private_by_default</p>
+
+<h2>Ring 1 — Synthetic corpora <span class="pill ">passing</span></h2>
+<table>
+  <thead><tr><th>Corpus</th><th>Items</th><th>Source policy</th><th>SHA-256 (manifest)</th></tr></thead>
+  <tbody>
+<tr><td>url-corpus</td><td>10000</td><td>synthetic</td><td><code>68351331da9ebb57…</code></td></tr>
+<tr><td>qr-corpus</td><td>32</td><td>synthetic</td><td><code>dbddd85fd2897e29…</code></td></tr>
+<tr><td>deeplink-corpus</td><td>1000</td><td>synthetic</td><td><code>0b4a2fe890f47cf4…</code></td></tr>
+<tr><td>sync-corpus</td><td>200</td><td>synthetic</td><td><code>ea86ec3bc40783cf…</code></td></tr>
+<tr><td>media-corpus</td><td>16</td><td>synthetic</td><td><code>3b7968dd4c5391c0…</code></td></tr>
+<tr><td>pq-corpus</td><td>60</td><td>synthetic</td><td><code>e3a6c003ece2f46f…</code></td></tr>
+  </tbody>
+</table>
+
+<h2>Ring 2 — Real extraction consumer <span class="pill pill-warn">ring2_extraction_phase0</span></h2>
+<p class="muted">aggregate score 0.208 · graphs present 2/2</p>
+<table>
+  <thead><tr><th>Target</th><th>Status</th><th>Nodes</th><th>Real-evidence ratio</th><th>Validation passing ratio</th><th>Score</th></tr></thead>
+  <tbody>
+<tr><td>signal</td><td>ring2_partial</td><td>4</td><td>0.5</td><td>0.0</td><td>0.208</td></tr>
+<tr><td>element-x</td><td>ring2_partial</td><td>4</td><td>0.5</td><td>0.0</td><td>0.208</td></tr>
+  </tbody>
+</table>
+
+<h2>Ring 3 <span class="pill pill-warn">authorization_placeholder</span></h2>
+<p>requires written authorization before any dynamic target work</p>
+
+<h2>Repeatability <span class="pill ">byte_identical</span></h2>
+<p>iterations=2 · hash <code>2bffc1fdb1f81d67186854eac1c8483b…</code></p>
+
+<h2>Delta vs. previous run</h2>
+<p class="muted">baseline=2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63 · corpora_changed=0 · ring2_score_delta=0.0</p>
+
+<h2>Recommendations</h2>
+<ul>
+<li class='muted'>No recommendations emitted (no Ring 2 target met the score-≥0.7 gating threshold).</li>
+</ul>
+
+<h2>Raw JSON</h2>
+<details>
+  <summary>Show embedded results / repeatability / delta / recommendations</summary>
+  <pre>{
+  &quot;delta&quot;: {
+    &quot;baseline&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;,
+    &quot;previous_run_present&quot;: true,
+    &quot;ring1&quot;: {
+      &quot;added_corpora&quot;: [],
+      &quot;changed_corpora&quot;: [],
+      &quot;removed_corpora&quot;: []
+    },
+    &quot;ring2&quot;: {
+      &quot;score_delta&quot;: 0.0,
+      &quot;status_change&quot;: null
+    }
+  },
+  &quot;recommendations&quot;: [],
+  &quot;repeatability&quot;: {
+    &quot;byte_identical&quot;: true,
+    &quot;exclusions&quot;: [
+      &quot;generated_at&quot;
+    ],
+    &quot;hash&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;,
+    &quot;iterations&quot;: 2,
+    &quot;secondary_hash&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;
+  },
+  &quot;results&quot;: {
+    &quot;delta&quot;: {
+      &quot;baseline&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;,
+      &quot;previous_run_present&quot;: true,
+      &quot;ring1&quot;: {
+        &quot;added_corpora&quot;: [],
+        &quot;changed_corpora&quot;: [],
+        &quot;removed_corpora&quot;: []
+      },
+      &quot;ring2&quot;: {
+        &quot;score_delta&quot;: 0.0,
+        &quot;status_change&quot;: null
+      }
+    },
+    &quot;generated_at&quot;: &quot;2026-05-05T00:00:00Z&quot;,
+    &quot;generated_by&quot;: &quot;aegisgraph-tier3-research&quot;,
+    &quot;repeatability&quot;: {
+      &quot;byte_identical&quot;: true,
+      &quot;exclusions&quot;: [
+        &quot;generated_at&quot;
+      ],
+      &quot;hash&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;,
+      &quot;iterations&quot;: 2,
+      &quot;secondary_hash&quot;: &quot;2bffc1fdb1f81d67186854eac1c8483b982a2fec4c47934ec0a6110092fc4c63&quot;
+    },
+    &quot;rings&quot;: {
+      &quot;ring1&quot;: {
+        &quot;corpora&quot;: [
+          {
+            &quot;generator&quot;: {
+              &quot;axes&quot;: [
+                &quot;scheme&quot;,
+                &quot;userinfo&quot;,
+                &quot;host&quot;,
+                &quot;port&quot;,
+                &quot;path&quot;,
+                &quot;query&quot;,
+                &quot;fragment&quot;
+              ],
+              &quot;axis_value_counts&quot;: {
+                &quot;fragment&quot;: 4,
+                &quot;host&quot;: 19,
+                &quot;path&quot;: 10,
+                &quot;port&quot;: 6,
+                &quot;query&quot;: 7,
+                &quot;scheme&quot;: 6,
+                &quot;userinfo&quot;: 7
+              },
+              &quot;module&quot;: &quot;smabench.ring1.url_corpus&quot;
+            },
+            &quot;item_count&quot;: 10000,
+            &quot;name&quot;: &quot;url-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 10000,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;68351331da9ebb57aba945c1b23b182df81f7c2cdfb8a0c2c7c81c36b21600b8&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          },
+          {
+            &quot;generator&quot;: {
+              &quot;case_count&quot;: 14,
+              &quot;encoder&quot;: &quot;placeholder_png&quot;,
+              &quot;module&quot;: &quot;smabench.ring1.qr_corpus&quot;,
+              &quot;qrcode_lib_available&quot;: false
+            },
+            &quot;item_count&quot;: 32,
+            &quot;name&quot;: &quot;qr-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 32,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;dbddd85fd2897e294add0ac2588e408f57444425d3f893f2c6ed3501eb4ba92d&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          },
+          {
+            &quot;generator&quot;: {
+              &quot;axes&quot;: [
+                &quot;scheme&quot;,
+                &quot;sub_path&quot;,
+                &quot;host&quot;,
+                &quot;injection&quot;,
+                &quot;fragment&quot;
+              ],
+              &quot;module&quot;: &quot;smabench.ring1.deeplink_corpus&quot;,
+              &quot;schemes&quot;: [
+                &quot;signal&quot;,
+                &quot;sgnl&quot;,
+                &quot;matrix&quot;,
+                &quot;element&quot;,
+                &quot;matrix-to-https&quot;
+              ]
+            },
+            &quot;item_count&quot;: 1000,
+            &quot;name&quot;: &quot;deeplink-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 1000,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;0b4a2fe890f47cf442341d3398e5ab28b438dd8270369c74eb9a456f3766f4c9&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          },
+          {
+            &quot;generator&quot;: {
+              &quot;matrix_cases&quot;: [
+                &quot;empty-sync&quot;,
+                &quot;replayed-event&quot;,
+                &quot;key-rotation&quot;,
+                &quot;withheld-key&quot;,
+                &quot;presence-update&quot;,
+                &quot;ephemeral-typing&quot;,
+                &quot;redaction&quot;,
+                &quot;membership-change&quot;
+              ],
+              &quot;module&quot;: &quot;smabench.ring1.sync_corpus&quot;,
+              &quot;signal_cases&quot;: [
+                &quot;empty&quot;,
+                &quot;rekey&quot;,
+                &quot;pre-key-shim&quot;,
+                &quot;device-link-confirm&quot;,
+                &quot;verified-state-update&quot;,
+                &quot;sticker-pack-sync&quot;,
+                &quot;configuration-sync&quot;
+              ]
+            },
+            &quot;item_count&quot;: 200,
+            &quot;name&quot;: &quot;sync-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 200,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;ea86ec3bc40783cf8edc764efb86853f0e759c4a1ddd69fe2974e7070a1dc0dd&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          },
+          {
+            &quot;generator&quot;: {
+              &quot;encoder&quot;: &quot;pil&quot;,
+              &quot;formats&quot;: [
+                &quot;png&quot;,
+                &quot;jpeg&quot;,
+                &quot;gif&quot;,
+                &quot;webp&quot;
+              ],
+              &quot;module&quot;: &quot;smabench.ring1.media_corpus&quot;,
+              &quot;pil_available&quot;: true,
+              &quot;purpose&quot;: &quot;Valid baseline samples to confirm reprochain harnesses do not false-positive on legal input. Crash-inducing bytes belong under reprochain/corpora-private only.&quot;
+            },
+            &quot;item_count&quot;: 16,
+            &quot;name&quot;: &quot;media-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 16,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;3b7968dd4c5391c0132d15a366692cf4a4b67d3c0472688d5caecbfe511238f6&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          },
+          {
+            &quot;generator&quot;: {
+              &quot;cases&quot;: [
+                &quot;pqxdh-initial&quot;,
+                &quot;pqxdh-rotation&quot;,
+                &quot;pqxdh-migration&quot;,
+                &quot;megolm-withheld&quot;,
+                &quot;megolm-replayed&quot;,
+                &quot;megolm-rotation&quot;
+              ],
+              &quot;module&quot;: &quot;smabench.ring1.pq_corpus&quot;,
+              &quot;policy&quot;: &quot;synthetic_only_no_real_cryptography&quot;
+            },
+            &quot;item_count&quot;: 60,
+            &quot;name&quot;: &quot;pq-corpus&quot;,
+            &quot;publication_policy&quot;: &quot;sanitized_candidate&quot;,
+            &quot;requested_count&quot;: 60,
+            &quot;seed&quot;: 42,
+            &quot;sha256&quot;: &quot;e3a6c003ece2f46f85fce2ea05555d7a871f540b41cb57572b3569b6fa0786a8&quot;,
+            &quot;source_policy&quot;: &quot;synthetic&quot;
+          }
+        ],
+        &quot;generator_count&quot;: 6,
+        &quot;status&quot;: &quot;passing&quot;,
+        &quot;statuses&quot;: [
+          {
+            &quot;item_count&quot;: 10000,
+            &quot;name&quot;: &quot;url-corpus&quot;,
+            &quot;sha256&quot;: &quot;68351331da9ebb57aba945c1b23b182df81f7c2cdfb8a0c2c7c81c36b21600b8&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          },
+          {
+            &quot;item_count&quot;: 32,
+            &quot;name&quot;: &quot;qr-corpus&quot;,
+            &quot;sha256&quot;: &quot;dbddd85fd2897e294add0ac2588e408f57444425d3f893f2c6ed3501eb4ba92d&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          },
+          {
+            &quot;item_count&quot;: 1000,
+            &quot;name&quot;: &quot;deeplink-corpus&quot;,
+            &quot;sha256&quot;: &quot;0b4a2fe890f47cf442341d3398e5ab28b438dd8270369c74eb9a456f3766f4c9&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          },
+          {
+            &quot;item_count&quot;: 200,
+            &quot;name&quot;: &quot;sync-corpus&quot;,
+            &quot;sha256&quot;: &quot;ea86ec3bc40783cf8edc764efb86853f0e759c4a1ddd69fe2974e7070a1dc0dd&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          },
+          {
+            &quot;item_count&quot;: 16,
+            &quot;name&quot;: &quot;media-corpus&quot;,
+            &quot;sha256&quot;: &quot;3b7968dd4c5391c0132d15a366692cf4a4b67d3c0472688d5caecbfe511238f6&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          },
+          {
+            &quot;item_count&quot;: 60,
+            &quot;name&quot;: &quot;pq-corpus&quot;,
+            &quot;sha256&quot;: &quot;e3a6c003ece2f46f85fce2ea05555d7a871f540b41cb57572b3569b6fa0786a8&quot;,
+            &quot;status&quot;: &quot;passing&quot;
+          }
+        ]
+      },
+      &quot;ring2&quot;: {
+        &quot;aggregate_score&quot;: 0.208,
+        &quot;graphs_expected&quot;: 2,
+        &quot;graphs_missing&quot;: 0,
+        &quot;graphs_present&quot;: 2,
+        &quot;inputs&quot;: [
+          &quot;extraction/output/element-x/graph.json&quot;,
+          &quot;extraction/output/signal/graph.json&quot;
+        ],
+        &quot;status&quot;: &quot;ring2_extraction_phase0&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;graph_path&quot;: &quot;extraction/output/signal/graph.json&quot;,
+            &quot;name&quot;: &quot;Signal Android&quot;,
+            &quot;node_count&quot;: 4,
+            &quot;nodes_with_real_evidence&quot;: 2,
+            &quot;nodes_with_real_evidence_ratio&quot;: 0.5,
+            &quot;path_class_coverage_count&quot;: 1,
+            &quot;path_class_coverage_ratio&quot;: 0.125,
+            &quot;path_class_coverage_total&quot;: 8,
+            &quot;path_classes_seen&quot;: [
+              &quot;media_decode&quot;
+            ],
+            &quot;record_count&quot;: 1,
+            &quot;referenced_node_ids&quot;: [
+              &quot;decoder.image-stack&quot;,
+              &quot;entry.inbound-media&quot;,
+              &quot;handler.media-pipeline&quot;,
+              &quot;sink.webp-decoder&quot;
+            ],
+            &quot;score&quot;: 0.208,
+            &quot;status&quot;: &quot;ring2_partial&quot;,
+            &quot;target&quot;: &quot;signal&quot;,
+            &quot;validation_task_passing_count&quot;: 0,
+            &quot;validation_task_passing_ratio&quot;: 0.0,
+            &quot;validation_task_total&quot;: 1
+          },
+          {
+            &quot;graph_path&quot;: &quot;extraction/output/element-x/graph.json&quot;,
+            &quot;name&quot;: &quot;Element X Android&quot;,
+            &quot;node_count&quot;: 4,
+            &quot;nodes_with_real_evidence&quot;: 2,
+            &quot;nodes_with_real_evidence_ratio&quot;: 0.5,
+            &quot;path_class_coverage_count&quot;: 1,
+            &quot;path_class_coverage_ratio&quot;: 0.125,
+            &quot;path_class_coverage_total&quot;: 8,
+            &quot;path_classes_seen&quot;: [
+              &quot;media_decode&quot;
+            ],
+            &quot;record_count&quot;: 1,
+            &quot;referenced_node_ids&quot;: [
+              &quot;decoder.image-stack&quot;,
+              &quot;entry.inbound-media&quot;,
+              &quot;handler.media-pipeline&quot;,
+              &quot;sink.webp-decoder&quot;
+            ],
+            &quot;score&quot;: 0.208,
+            &quot;status&quot;: &quot;ring2_partial&quot;,
+            &quot;target&quot;: &quot;element-x&quot;,
+            &quot;validation_task_passing_count&quot;: 0,
+            &quot;validation_task_passing_ratio&quot;: 0.0,
+            &quot;validation_task_total&quot;: 1
+          }
+        ]
+      },
+      &quot;ring3&quot;: {
+        &quot;policy&quot;: &quot;requires written authorization before any dynamic target work&quot;,
+        &quot;status&quot;: &quot;authorization_placeholder&quot;
+      }
+    },
+    &quot;safety_posture&quot;: &quot;private_by_default&quot;,
+    &quot;tool_output_type&quot;: &quot;smabench_results&quot;,
+    &quot;version&quot;: &quot;v1.0&quot;
+  }
+}</pre>
+</details>
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+javascript://user:pass@example:99999/article/page?q=hello%2520world

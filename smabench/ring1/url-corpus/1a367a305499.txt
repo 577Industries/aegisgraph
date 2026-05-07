@@ -1,0 +1,1 @@
+javascript://user:pass@example:65535/?a=b=c#top

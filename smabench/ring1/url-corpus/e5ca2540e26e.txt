@@ -1,0 +1,1 @@
+x-app://user@preview.example:65535//etc//passwd?q=hello%2520world#sec%2Fone

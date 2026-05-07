@@ -1,0 +1,1 @@
+http://trusted.example\@[2001:db8::1]:0/?a=1&b=2#/room:example.org

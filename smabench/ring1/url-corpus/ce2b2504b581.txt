@@ -1,0 +1,1 @@
+file://trusted.example\@169.254.169.254:99999/%252e%252e/admin?q=hello%2520world#/room:example.org

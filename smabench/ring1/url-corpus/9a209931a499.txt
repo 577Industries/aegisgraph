@@ -1,0 +1,1 @@
+x-app://user@evil.example@[2001:db8::1]:0?q=hello%2520world#sec%2Fone

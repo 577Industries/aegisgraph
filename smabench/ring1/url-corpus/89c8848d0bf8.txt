@@ -1,0 +1,1 @@
+http://[fe80::1%25eth0]:80/%2e%2e/admin?a=b=c#top

@@ -1,0 +1,1 @@
+matrix://event/trusted.example@evil.example../admin

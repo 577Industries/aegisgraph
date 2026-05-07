@@ -1,0 +1,1 @@
+data://trusted.example\@xn--80ak6aa92e.example:80/article/?a=1&amp;b=2#sec%2Fone

@@ -1,0 +1,1 @@
+x-app://trusted.example\@127.0.0.1:99999/article/?q=one#/room:example.org

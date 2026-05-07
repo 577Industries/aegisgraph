@@ -1,0 +1,1 @@
+x-app://user@example:65535/../admin?a=b=c#/room:example.org

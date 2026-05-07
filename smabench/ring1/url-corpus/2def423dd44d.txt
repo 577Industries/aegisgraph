@@ -1,0 +1,1 @@
+data://trusted.example\@0xC0000201/../admin#/room:example.org

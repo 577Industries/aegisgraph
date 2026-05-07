@@ -1,0 +1,1 @@
+https://@[fe80::1%25eth0]/%2e%2e/admin?a=b=c#top

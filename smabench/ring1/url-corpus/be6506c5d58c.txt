@@ -1,0 +1,1 @@
+http://.preview.example/article/?q=hello%20world

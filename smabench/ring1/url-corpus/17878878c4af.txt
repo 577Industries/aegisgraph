@@ -1,0 +1,1 @@
+x-app://trusted.example\@0300.0000.0002.0001:65535/article/page#/room:example.org

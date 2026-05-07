@@ -1,0 +1,1 @@
+sgnl://linkdevice?uuid=169.254.169.254

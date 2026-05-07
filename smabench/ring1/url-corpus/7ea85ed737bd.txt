@@ -1,0 +1,1 @@
+data://user:pass@xn--80ak	6aa92e.example:443/article;jsessionid=abc?q=hello%2520world#top

@@ -1,0 +1,1 @@
+javascript://user@3221225985:99999/article/page?q=hello%2520world#sec%2Fone

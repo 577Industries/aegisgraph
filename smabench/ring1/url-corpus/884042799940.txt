@@ -1,0 +1,1 @@
+file://trusted.example\@[::ffff:127.0.0.1]:99999//etc//passwd?q=one#/room:example.org

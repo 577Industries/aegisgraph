@@ -1,0 +1,21 @@
+{
+  "_synthetic_kind": "pqxdh-rotation",
+  "_synthetic_round": 3,
+  "device_id": 1784579,
+  "kyber_pre_key": {
+    "key_id": 511234,
+    "public_key": "synthetic_NOT_REAL_kyber_pk_new",
+    "signature": "synthetic_NOT_REAL_kyber_sig_new"
+  },
+  "previous_signed_pre_key": {
+    "key_id": 340803,
+    "public_key": "synthetic_NOT_REAL_curve25519_prev"
+  },
+  "rotated_at_ms": 1500000000000,
+  "session_uuid": "synthetic-6b8a8806-27df-7ffe-0297-c79bfbdabe89",
+  "signed_pre_key": {
+    "key_id": 190673,
+    "public_key": "synthetic_NOT_REAL_curve25519_new",
+    "signature": "synthetic_NOT_REAL_signature_new"
+  }
+}

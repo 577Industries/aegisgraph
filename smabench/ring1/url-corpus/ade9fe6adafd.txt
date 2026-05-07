@@ -1,0 +1,1 @@
+file://user:pass@192.0.2.1/%252e%252e/admin?q=hello%20world

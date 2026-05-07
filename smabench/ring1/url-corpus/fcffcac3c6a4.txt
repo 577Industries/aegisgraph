@@ -1,0 +1,1 @@
+http://trusted.example\@example:80//etc//passwd?a=b=c#/room:example.org

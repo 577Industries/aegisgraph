@@ -1,0 +1,2 @@
+data://user@evil.ex
+ample@xn--80ak6aa92e.example/article/#top

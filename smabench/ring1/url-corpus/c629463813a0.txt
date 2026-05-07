@@ -1,0 +1,1 @@
+x-app://[fe80::1%25eth0]:65535/%252e%252e/admin?q=hello%2520world#sec%2Fone

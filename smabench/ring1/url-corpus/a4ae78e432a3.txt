@@ -1,0 +1,1 @@
+javascript://trusted.example\@127.0.0.1/%2e%2e/admin#top

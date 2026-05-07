@@ -1,0 +1,1 @@
+javascript://user@evil.example@xn--bcher-kva.example:0/%2e%2e/admin?a=1&amp;b=2#top

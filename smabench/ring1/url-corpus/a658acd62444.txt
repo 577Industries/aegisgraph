@@ -1,0 +1,1 @@
+x-app://user@evil.example@preview.example:99999/../admin#/room:example.org

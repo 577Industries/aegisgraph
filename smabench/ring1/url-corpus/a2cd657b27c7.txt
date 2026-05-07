@@ -1,0 +1,1 @@
+javascript://user@evil.example@localhost?a=1&b=2#sec%2Fone

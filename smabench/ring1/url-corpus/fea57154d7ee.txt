@@ -1,0 +1,1 @@
+file://trusted.example\@192.0.2.1:0/article;jsessionid=ab	c#sec%2Fone

@@ -1,0 +1,1 @@
+file://user:pass@example//etc//passwd?q=hello%2520world#/room:example.org

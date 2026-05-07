@@ -1,0 +1,1 @@
+file://trusted.example\@.preview.example/article;jsessionid=abc?a=1&b=2#top

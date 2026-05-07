@@ -1,0 +1,1 @@
+data://user:pass@example:80/%252e%252e/admin?a=b=c#top

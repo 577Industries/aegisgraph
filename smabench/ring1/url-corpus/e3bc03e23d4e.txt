@@ -1,0 +1,1 @@
+data://us%65r:p%61ss@10.0.0.1:443/%2e%2e/admin?a=b=c#top

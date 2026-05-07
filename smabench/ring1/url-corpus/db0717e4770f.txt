@@ -1,0 +1,1 @@
+data://user@evil.example@3221225985:80/%252e%252e/admin?a=b=c#/room:example.org

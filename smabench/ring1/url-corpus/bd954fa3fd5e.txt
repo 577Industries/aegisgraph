@@ -1,0 +1,1 @@
+http://trusted.example\@192.0.2.1:80/%2e%2e/admin?q=hello%2520world#top

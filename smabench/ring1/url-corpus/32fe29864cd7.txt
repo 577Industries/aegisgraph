@@ -1,0 +1,2 @@
+x-app://trusted.example\@xn--bcher-kva.example:443/article
+;jsessionid=abc?a=b=c#sec%2Fone

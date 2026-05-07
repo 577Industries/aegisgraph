@@ -1,0 +1,1 @@
+javascript://192.0.2.1:65535/?q=hello%2520world#/room:example.org

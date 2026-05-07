@@ -1,0 +1,1 @@
+http://trusted.example\@[fe80::1%25eth0]:65535/article/page?a=1&b=2#top

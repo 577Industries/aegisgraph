@@ -1,0 +1,1 @@
+javascript://user:pass@xn--bcher-kva.example:0/%252e%252e/admin?a=b=c#sec%2Fone

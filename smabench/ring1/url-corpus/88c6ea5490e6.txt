@@ -1,0 +1,1 @@
+javascript://user@[::ffff:127.0.0.1]:65535/%252e%252e/admin?q=hello%2520world#/room:example.org

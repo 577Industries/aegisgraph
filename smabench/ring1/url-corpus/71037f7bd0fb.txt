@@ -1,0 +1,1 @@
+data://user@xn--80ak6aa92e.example:0/article;jsessionid=abc?q=hello%2520world#/room:example.org

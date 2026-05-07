@@ -1,0 +1,1 @@
+data://user@xn--80ak6aa92e.example:65535/?q=hello%2520world

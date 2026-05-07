@@ -1,0 +1,1 @@
+data://trusted.example\@localhost:65535/%2e%2e/admin?q=one#/room:example.org

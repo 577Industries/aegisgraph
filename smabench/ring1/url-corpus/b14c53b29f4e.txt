@@ -1,0 +1,1 @@
+data://trusted.example\@10.0.0.1/../admin?q=hello%20world#top

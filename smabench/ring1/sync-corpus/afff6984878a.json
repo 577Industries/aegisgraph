@@ -1,0 +1,23 @@
+{
+  "_synthetic_kind": "matrix-ephemeral-typing",
+  "_synthetic_round": 1,
+  "next_batch": "s_synthetic_e4c6428d",
+  "rooms": {
+    "join": {
+      "!synthetic_a8099f4efbac:example.org": {
+        "ephemeral": {
+          "events": [
+            {
+              "content": {
+                "user_ids": [
+                  "@synthetic_ea67c7d1af:example.org"
+                ]
+              },
+              "type": "m.typing"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

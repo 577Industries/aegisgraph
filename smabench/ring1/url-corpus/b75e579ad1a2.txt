@@ -1,0 +1,1 @@
+javascript://user@evil.example@example:80/../admin?q=hello%20world#top

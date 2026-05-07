@@ -1,0 +1,1 @@
+file://user@evil.example@3221225985:80/../admin?a=1&b=2

@@ -1,0 +1,1 @@
+javascript://user:pass@[2001:db8::1]/article/?a=1&b=2#top

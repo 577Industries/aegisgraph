@@ -1,0 +1,1 @@
+https://user:pass@0xC0.0.2.1:443/%252e%252e/admin?a=b=c

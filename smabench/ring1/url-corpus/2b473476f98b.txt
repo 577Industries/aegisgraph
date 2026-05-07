@@ -1,0 +1,1 @@
+https://trusted.example\@preview..example:0/../admin?a=b=c#top

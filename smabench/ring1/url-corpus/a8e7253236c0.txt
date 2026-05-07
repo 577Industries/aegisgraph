@@ -1,0 +1,1 @@
+http://user@example:0/../admin?q=hello%20world#/room:example.org

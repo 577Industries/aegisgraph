@@ -1,0 +1,1 @@
+data://trusted.example\@127.0.0.1:80/%2e%2e/admin#sec%2Fone

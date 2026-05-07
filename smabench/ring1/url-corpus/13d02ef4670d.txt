@@ -1,0 +1,1 @@
+data://user:pass@example?a=1&amp;b=2

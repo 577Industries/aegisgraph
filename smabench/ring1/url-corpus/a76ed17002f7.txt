@@ -1,0 +1,1 @@
+https://user:pass@0xC0.0.2.1//etc//passwd?q=hello%20world

@@ -1,0 +1,1 @@
+http://trusted.example\@[2001:db8::1]:80/article;jsessionid=abc#sec%2Fone

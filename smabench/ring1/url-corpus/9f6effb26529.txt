@@ -1,0 +1,1 @@
+x-app://user@evil.example@.preview.example/article/ ?a=1&b=2#top

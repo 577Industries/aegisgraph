@@ -1,0 +1,1 @@
+https://trusted.example\@[2001:db8::1]:443//etc//passwd?q=hello%2520world

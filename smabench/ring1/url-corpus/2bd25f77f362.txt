@@ -1,0 +1,1 @@
+https://user@evil.example@127.0.0.1:0/%2e%2e/admin?a=b=c#top

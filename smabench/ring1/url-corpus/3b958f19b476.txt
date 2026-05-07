@@ -1,0 +1,1 @@
+javascript://user@127.0.0.1/article;jsessionid=abc?q=one#sec%2Fone

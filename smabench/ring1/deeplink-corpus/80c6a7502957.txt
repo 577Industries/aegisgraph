@@ -1,0 +1,1 @@
+sgnl://send/trusted.example\@evil.example

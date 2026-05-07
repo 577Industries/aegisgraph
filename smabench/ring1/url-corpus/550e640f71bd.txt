@@ -1,0 +1,1 @@
+javascript://user@evil.example@example?a=1&b=2#/room:example.org

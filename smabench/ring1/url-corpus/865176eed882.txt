@@ -1,0 +1,1 @@
+file://trusted.example\@preview..example:80//etc//passwd#top

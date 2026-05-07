@@ -1,0 +1,2 @@
+x-app://user@evil.example@xn
+--80ak6aa92e.example:80/?q=one#top

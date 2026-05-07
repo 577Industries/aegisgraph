@@ -1,0 +1,1 @@
+file://user@example:65535/../admin?q=hello%20world#sec%2Fone

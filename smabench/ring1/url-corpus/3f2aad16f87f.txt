@@ -1,0 +1,1 @@
+https://user@example//etc//passwd?q=one#top
