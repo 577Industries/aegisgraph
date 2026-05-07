@@ -1,0 +1,18 @@
+{
+  "tool_output_type": "public_sanitized_export",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "safety_posture": "private_by_default",
+  "release_authorized": false,
+  "release_note": "fixture - intentionally malformed",
+  "validation_status": "pass",
+  "dry_run": false,
+  "artifacts": [
+    {
+      "path": "exports/private-submission/manifest.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "excluded": []
+}

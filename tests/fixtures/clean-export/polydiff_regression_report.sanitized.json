@@ -1,0 +1,25 @@
+{
+  "tool_output_type": "polydiff_regression_report",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "safety_posture": "sanitized_candidate",
+  "parser_profiles": ["python_urllib", "whatwg_like", "guarded_fetcher"],
+  "inputs_checked": 4,
+  "fact_vectors": [
+    {
+      "input_id": "REG-URL-001",
+      "parser_profile": "python_urllib",
+      "scheme": "https",
+      "host": "192.0.2.10",
+      "port": null,
+      "path": "/resource",
+      "userinfo_present": true,
+      "host_is_private_or_link_local": false,
+      "parse_error": null
+    }
+  ],
+  "disagreements": [],
+  "records": [],
+  "tier_p1_status": "pass"
+}

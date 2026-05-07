@@ -1,38 +1,320 @@
 # proposal-claims-index.yml
 #
-# Skeleton owned by the integration stream; populated by the
-# validator-export stream from the v0.3 master proposal at
-# /home/twawe/577i-Projects/SBIR Working Folder/ASEMA/03_PROPOSAL/active-package/
-#   01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md
+# Owned schema: integration stream. Populated content: validator-export stream.
 #
 # Each entry pairs a claim_id (a stable cross-reference token used in
 # evidence_refs[*].claim_id and in the traceability matrix) with the
-# source location in the proposal and the owning section. The validator-export
-# stream's `traceability` command joins this index with /reports/
-# evidence-record outputs to produce reports/traceability_matrix.{json,md}.
+# source location in the proposal and the owning section.
 #
 # Schema (additive-only; new fields nullable):
 #
-#   - claim_id:        string, format ^AG-CLAIM-[A-Z0-9-]+$
-#                      stable identifier; once published, never renamed
-#   - source_location: string, doc-relative path + section anchor
-#                      e.g. "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#technical-volume-section-3.2"
-#   - claim_text:      string, verbatim quote from the proposal (keep
-#                      under 500 chars; longer claims should be summarized
-#                      and the full text linked via source_location)
-#   - owner_section:   string, one of:
-#                        technical_volume | management_plan | sbir_application
-#                      | dsip_response | proposal_appendix
-#   - evidence_record: optional string, the AG-EV-* record id that
-#                      currently substantiates this claim (null until a
-#                      record exists)
-#   - status:          enum: drafted | substantiated | retired
-#                      drafted     - claim is in the proposal but no
-#                                    evidence record yet
-#                      substantiated - evidence_record is set and validates
-#                      retired     - claim was removed from the proposal
+#   - claim_id:         string, format ^AG-CLAIM-[A-Z0-9-]+$
+#                       stable identifier; once published, never renamed
+#   - source_location:  string, doc-relative path + section anchor
+#                       e.g. "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#technical-volume-section-3.2"
+#   - claim_text:       string, verbatim quote from the proposal (keep
+#                       under 500 chars; longer claims are summarized
+#                       and the full text linked via source_location)
+#   - owner_section:    string, one of:
+#                         technical_volume | management_plan | sbir_application
+#                       | dsip_response | proposal_appendix
+#   - spec_section:     optional string. Section anchor in
+#                       /SPEC.md the claim is grounded in (Tier-3
+#                       research spec). One of "1" / "2.1" / "4.7" / etc.
+#   - dsip_requirement: optional string. requirement_id from
+#                       docs/dsip-requirements.yml the claim addresses.
+#   - evidence_record:  optional string, the AG-EV-* record id that
+#                       currently substantiates this claim (null until a
+#                       record exists)
+#   - evidence_artifacts: optional list of repo-relative paths the
+#                         claim depends on (used by the traceability
+#                         matrix to verify on-disk presence).
+#   - status:           enum: drafted | substantiated | retired
+#                         drafted     - claim is in the proposal but no
+#                                       evidence record yet (or the
+#                                       record's pipeline hasn't merged)
+#                         substantiated - evidence_record is set and
+#                                         passing validation
+#                         retired     - claim was removed from the
+#                                       proposal
 #
-# This skeleton ships empty. The validator-export stream populates it as
-# part of its merge.
+# Population rules (applied for v0.3 master proposal):
+#
+#   - Every "novel contribution" sub-bullet in §4.4 gets a claim_id.
+#   - Every metric in §9.x gate tables gets a claim_id (these are the
+#     auditable success criteria).
+#   - Every Phase II deliverable in §9.x gets a claim_id (these are the
+#     contractual artifacts; DSIP requirements lift right into them).
+#   - Compliance gates in §15 get a claim_id but are owned by the
+#     proposal-package agent, not validator-export. We mark them
+#     status: drafted with no evidence_record (humans complete those).
+#   - Workstream artifacts (ReproChain harness, PolyDiff regression set,
+#     SMABench rings) get claim_ids tied to the corresponding evidence
+#     pipeline. status=drafted until the engineering streams merge.
 
-claims: []
+claims:
+  # ----- §4.4 What is novel about AegisGraph (4 contributions) -----
+  - claim_id: AG-CLAIM-NOVEL-REPROCHAIN-PRE-DISCLOSURE
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph"
+    claim_text: >-
+      ReproChain — reachability-prioritized assessment with pre-disclosure simulation.
+      AegisGraph constructs a reachability graph from external attacker inputs through
+      parsers and decoders to sensitive boundaries, weights it with a transparent
+      10-dimension score vector, and demonstrates against CVE-2023-4863 (libwebp
+      BuildHuffmanTable heap overflow) that the methodology surfaces relevant
+      attack-surface evidence ahead of public disclosure.
+    owner_section: technical_volume
+    spec_section: "4"
+    evidence_record: AG-EV-REPROCHAIN-SIGNAL-ANDROID-MAP-001
+    evidence_artifacts:
+      - reprochain/evidence/build_manifest.json
+      - reprochain/evidence/run_status.json
+      - reprochain/evidence/mapping.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-NOVEL-POLYDIFF-FACT-VECTOR
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph"
+    claim_text: >-
+      PolyDiff — differential-parser methodology with normalized fact vectors and
+      rediscovery anchor. The novelty is (a) the fact-vector schema that normalizes
+      parse-tree disagreements across 7+ parser implementations into comparable feature
+      vectors, (b) the security-relevance classifier that distinguishes spec-permitted
+      variation from security-relevant disagreement, and (c) the rediscovery anchor —
+      without seeding, the regression set rediscovers ≥3 known historical URL-parser
+      bugs, providing reviewers a direct measurement of methodology effectiveness.
+    owner_section: technical_volume
+    spec_section: "5"
+    evidence_record: AG-EV-POLYDIFF-REG-001
+    evidence_artifacts:
+      - polydiff/regression/report.json
+      - polydiff/evidence/regression.evidence.json
+      - schema/fact-vector.schema.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-NOVEL-CLAIM-STATE-GOVERNANCE
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph"
+    claim_text: >-
+      Claim-state governance with score-vector calibration. The lifecycle (observed →
+      anchored → scored → validation-tasked → reviewed → accepted/limited/retired)
+      prevents static observations from being promoted to vulnerability claims, and
+      pairs with a transparent score-vector model that supports synthetic-mitigation
+      deltas. The Tier-3 spec demonstrates this through a deliberate-corruption test
+      in the validator: introducing a forbidden-pattern violation, target-source
+      redistribution marker, or score-vector key mismatch is caught and rejected.
+    owner_section: technical_volume
+    spec_section: "8"
+    evidence_record: null
+    evidence_artifacts:
+      - schema/evidence.schema.json
+      - aegisgraph/safety.py
+      - aegisgraph/score.py
+      - validator/sanitize_check.py
+    status: drafted
+
+  - claim_id: AG-CLAIM-NOVEL-SMABENCH-THREE-RING
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph"
+    claim_text: >-
+      Reproducible benchmark surface (SMABench three-ring structure). Ring 1 fixtures
+      are reproducible from sealed inputs; Ring 2 evidence rebuilds from pinned commits;
+      Ring 3 is gated by written authorization. SMABench is a benchmark surface other
+      proposers and academics can use to compare assessment systems without needing
+      access to live targets.
+    owner_section: technical_volume
+    spec_section: "7"
+    evidence_record: null
+    evidence_artifacts:
+      - smabench/results/latest/results.json
+    status: drafted
+
+  # ----- §6 v0.3 Real-Target Evidence Release (concrete graph threads) -----
+  - claim_id: AG-CLAIM-V03-TWO-PUBLIC-TARGETS
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#6.2-target-summary"
+    claim_text: >-
+      v0.3 evidence release covers two pinned public-source SMA targets: Signal Android
+      (commit 1043851423b3034728b09d4a1991608d49205963) and Element X Android
+      (commit 54525d855e7fdb7104f28f6fa5016312d5a2e160), with at least 8 path classes
+      modeled per target.
+    owner_section: technical_volume
+    spec_section: "6"
+    evidence_record: null
+    evidence_artifacts:
+      - extraction/output/manifest.json
+      - extraction/output/signal/graph.json
+      - extraction/output/element-x/graph.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-V03-SIX-GRAPH-THREADS
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#6.3-concrete-graph-threads"
+    claim_text: >-
+      v0.3 ships at least six concrete graph path threads (SIG-GP-001/002/003 and
+      ELX-GP-001/002/003) across the two public targets, covering link preview, QR
+      device linking, PQ migration, deep links, and group/sync state.
+    owner_section: technical_volume
+    spec_section: "6"
+    evidence_record: null
+    evidence_artifacts:
+      - extraction/output/signal/graph.json
+      - extraction/output/element-x/graph.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-V03-REPROCHAIN-LIBWEBP-CVE-2023-4863
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#6.6-reprochain-pre-disclosure-simulation"
+    claim_text: >-
+      ReproChain reproduces the libwebp CVE-2023-4863 BuildHuffmanTable heap overflow
+      under AddressSanitizer on the pre-fix commit and confirms the post-fix commit no
+      longer triggers. Crash bytes never enter the repository — only SHA-256 hashes,
+      top-5 stack frame names, and structure annotations.
+    owner_section: technical_volume
+    spec_section: "4"
+    evidence_record: AG-EV-REPROCHAIN-SIGNAL-ANDROID-MAP-001
+    evidence_artifacts:
+      - reprochain/evidence/build_manifest.json
+      - reprochain/evidence/run_status.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-V03-POLYDIFF-REDISCOVERY-3
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#6.7-polydiff-differential-parser-fuzzing"
+    claim_text: >-
+      Without seeding, the PolyDiff regression set rediscovers ≥3 known historical
+      URL-parser disagreement bugs from a public corpus drawn from the Snyk 2022
+      "How URL parsers can become weapons" study and disclosed CVEs.
+    owner_section: technical_volume
+    spec_section: "5"
+    evidence_record: AG-EV-POLYDIFF-REG-001
+    evidence_artifacts:
+      - polydiff/regression/report.json
+    status: drafted
+
+  # ----- §9.2 Months 1-4 Metrics (deliverables + measurable gates) -----
+  - claim_id: AG-CLAIM-METRIC-PATH-CLASSES-EIGHT
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    claim_text: >-
+      Month 4 target: at least eight ASEMA path classes per target.
+    owner_section: management_plan
+    spec_section: "6"
+    dsip_requirement: DSIP-DELIVERABLE-Q1
+    evidence_record: null
+    evidence_artifacts:
+      - extraction/output/manifest.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-METRIC-GRAPH-THREADS-SIX
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    claim_text: >-
+      Month 4 target: at least six concrete graph path threads.
+    owner_section: management_plan
+    spec_section: "6"
+    dsip_requirement: DSIP-DELIVERABLE-Q1
+    evidence_record: null
+    evidence_artifacts:
+      - extraction/output/signal/graph.json
+      - extraction/output/element-x/graph.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-METRIC-RECOMMENDATIONS-TWELVE
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    claim_text: >-
+      Month 4 target: twelve recommendation records meeting required fields.
+    owner_section: management_plan
+    spec_section: "8.2"
+    dsip_requirement: DSIP-DELIVERABLE-Q1
+    evidence_record: null
+    evidence_artifacts: []
+    status: drafted
+
+  - claim_id: AG-CLAIM-METRIC-SAFETY-SCAN-CLEAN
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4"
+    claim_text: >-
+      Month 4 target: safety scan finds no private paths, credentials, target-source
+      redistribution markers, unauthorized target traces, or unsupported static
+      security-finding language.
+    owner_section: management_plan
+    spec_section: "8.3"
+    dsip_requirement: DSIP-EVAL-CRIT-SAFETY
+    evidence_record: null
+    evidence_artifacts:
+      - validator/sanitize_check.py
+      - aegisgraph/safety.py
+    status: drafted
+
+  # ----- §10 Evaluation and Verification -----
+  - claim_id: AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#10.1-package-verification"
+    claim_text: >-
+      Public package verification confirms version v0.3, ≥2 real public-source targets,
+      pinned 40-character commits per target, ≥6 ASEMA path classes per target, ≥3
+      concrete graph path threads per target, valid score-vector keys/ranges and totals,
+      exactly twelve recommendation records, baseline-tools-included SOTA matrix, clean
+      package safety scan, and regenerable checksums.
+    owner_section: technical_volume
+    spec_section: "10"
+    dsip_requirement: DSIP-EVAL-CRIT-REPRO
+    evidence_record: null
+    evidence_artifacts:
+      - validation-report.json
+      - reports/traceability_matrix.json
+    status: drafted
+
+  - claim_id: AG-CLAIM-VERIFICATION-EXPORT-HUMAN-GATE
+    source_location: "docs/decision-log/0011-public-export-human-gate.md"
+    claim_text: >-
+      Public-sanitized export emits release_authorized=False until BOTH
+      AEGISGRAPH_RELEASE_AUTHORIZED=1 is set AND validator/sanitize_check.py certifies
+      the rendered exports/public-sanitized/ tree. Either condition alone keeps the
+      gate closed (fail-closed contract).
+    owner_section: technical_volume
+    spec_section: "8.5"
+    dsip_requirement: DSIP-EVAL-CRIT-SAFETY
+    evidence_record: null
+    evidence_artifacts:
+      - aegisgraph/export.py
+      - validator/sanitize_check.py
+      - tests/test_export_private_complete.py
+    status: drafted
+
+  # ----- §15 Compliance Gates (human-owned; not auto-substantiable) -----
+  - claim_id: AG-CLAIM-COMPLIANCE-SAM-GOV
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    claim_text: >-
+      SAM.gov registration is active with valid representations, UEI, and CAGE details
+      before submission.
+    owner_section: sbir_application
+    dsip_requirement: DSIP-SUB-ART-SAM-GOV
+    evidence_record: null
+    evidence_artifacts: []
+    status: drafted
+
+  - claim_id: AG-CLAIM-COMPLIANCE-DATA-RIGHTS
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates"
+    claim_text: >-
+      Data rights assertions cover AegisGraph pre-existing software, proposal artifacts,
+      and generated evidence formats; no claim is asserted over third-party target source.
+    owner_section: sbir_application
+    dsip_requirement: DSIP-SUB-ART-DATA-RIGHTS
+    evidence_record: null
+    evidence_artifacts: []
+    status: drafted
+
+  # ----- §16 Final Master Package Assembly (page-limit constraints) -----
+  - claim_id: AG-CLAIM-PACKAGE-WHITE-PAPER-20PG
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#16-final-master-package-assembly-plan"
+    claim_text: >-
+      DARPA-required 20-page white paper compresses executive story, ASEMA alignment,
+      feasibility evidence, technical approach, work plan, metrics, risks, team,
+      commercialization, and validation.
+    owner_section: technical_volume
+    dsip_requirement: DSIP-PAGE-LIMIT-WP
+    evidence_record: null
+    evidence_artifacts: []
+    status: drafted
+
+  - claim_id: AG-CLAIM-PACKAGE-SLIDES-15
+    source_location: "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#16-final-master-package-assembly-plan"
+    claim_text: >-
+      DARPA-required 15-slide technical volume tells the source-anchor → graph-path →
+      validation-task → recommendation story visually using the figure pack.
+    owner_section: technical_volume
+    dsip_requirement: DSIP-PAGE-LIMIT-SLIDES
+    evidence_record: null
+    evidence_artifacts: []
+    status: drafted
