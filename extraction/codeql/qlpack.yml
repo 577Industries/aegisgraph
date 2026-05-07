@@ -1,0 +1,22 @@
+name: codeql/aegisgraph-sma-queries
+version: 0.1.0
+library: false
+extractor: java
+description: |
+  AegisGraph Tier 3 Secure Messenger Apps (SMA) static-analysis query pack.
+
+  Eight queries covering Android-specific entry points, message handlers,
+  link previews, QR/device-link flows, media decoders, native bridges,
+  device-linking, and key storage. Output is SARIF; the
+  extraction/adapters/codeql_to_graph.py adapter normalizes results into
+  AegisGraph evidence nodes/edges anchored to pinned target commits.
+
+  The pack is reproducible inside the AegisGraph devcontainer (CodeQL CLI
+  pinned in devcontainer/Dockerfile). When CodeQL is unavailable in the
+  current environment the queries are still committed source-of-truth so
+  later runs replace placeholder output cleanly.
+
+dependencies:
+  codeql/java-all: "*"
+
+defaultSuiteFile: queries/aegisgraph-sma.qls

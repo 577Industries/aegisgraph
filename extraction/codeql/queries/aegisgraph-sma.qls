@@ -1,0 +1,11 @@
+# AegisGraph SMA query suite. Every query in this pack must appear here so
+# `codeql database analyze --format=sarifv2.1.0` runs all eight from a single
+# invocation. Order is informational; SARIF rules are unique by `id`.
+- query: queries/entry-point-intent.ql
+- query: queries/inbound-message-handler.ql
+- query: queries/link-preview-fetch.ql
+- query: queries/qr-handler.ql
+- query: queries/media-decoder-entry.ql
+- query: queries/native-method-with-tainted-input.ql
+- query: queries/device-linking-flow.ql
+- query: queries/key-storage-access.ql
