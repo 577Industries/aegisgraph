@@ -186,15 +186,18 @@ def export_public_sanitized(root: Path, *, dry_run: bool = False) -> dict[str, A
     return manifest
 
 
-def _sanitize_check_passes(root: Path) -> bool:  # pragma: no cover - stub
-    """Stub for the validator-export stream's sanitize check.
+def _sanitize_check_passes(root: Path) -> bool:
+    """Real sanitize-check, replaces the integration stub per ADR 0021.
 
-    Returns False unconditionally until validator/sanitize_check.py lands.
-    The validator-export stream replaces this body with a real call:
-        from validator.sanitize_check import scan_public_export
-        return scan_public_export(root / "exports" / "public-sanitized").ok
-
-    Keeping the stub here (rather than at import time) means the export
-    module can be imported and unit-tested in isolation.
+    Lazily imports validator.sanitize_check.is_export_safe so this module
+    can still be imported in isolation and so a removed/broken validator
+    package fails the gate closed.
     """
-    return False
+    try:
+        from validator.sanitize_check import is_export_safe
+    except Exception:
+        return False
+    try:
+        return is_export_safe(root / "exports" / "public-sanitized")
+    except Exception:
+        return False
