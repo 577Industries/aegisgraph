@@ -1,0 +1,2 @@
+javascript://user@32212259
+85:99999/article/page?a=1&b=2#sec%2Fone

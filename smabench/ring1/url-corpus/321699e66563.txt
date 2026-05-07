@@ -1,0 +1,1 @@
+https://trusted.example\@3221225985//etc//passwd

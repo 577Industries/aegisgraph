@@ -1,0 +1,2 @@
+file://.preview.example:443/%252e%252e/ad
+min?q=hello%2520world

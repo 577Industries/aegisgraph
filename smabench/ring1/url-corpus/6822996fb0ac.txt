@@ -1,0 +1,1 @@
+file://trusted.example\@127.0.0.1:80/article;jsessionid=abc?q=hello%20world#sec%2Fone

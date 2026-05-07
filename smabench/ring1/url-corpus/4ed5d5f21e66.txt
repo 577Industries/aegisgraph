@@ -1,0 +1,1 @@
+javascript://user:pass@xn--80ak6aa92e.example:443//etc//passwd?q=hello%20world#top

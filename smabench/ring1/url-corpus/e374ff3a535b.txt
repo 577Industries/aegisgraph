@@ -1,0 +1,1 @@
+http://user:pass@example/%252e%252e/admin?q=hello%20world

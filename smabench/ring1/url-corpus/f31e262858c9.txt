@@ -1,0 +1,1 @@
+javascript://user@evil.example@[fe80::1%25eth0]:443//etc//passwd#sec%2Fone

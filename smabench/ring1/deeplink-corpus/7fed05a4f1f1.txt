@@ -1,0 +1,1 @@
+matrix://linkdevice/trusted.example@evil.example

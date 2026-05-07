@@ -1,0 +1,1 @@
+http://@xn--80ak6aa92e.example:443/../admin?a=1&b=2#sec%2Fone

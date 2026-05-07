@@ -1,0 +1,1 @@
+http://user:pass@[2001:db8::1]:80/article/page?q=hello%20world

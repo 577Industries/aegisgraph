@@ -1,0 +1,1 @@
+https://user:pass@.preview.example:99999/%252e%252e/admin?q=one#top

@@ -1,0 +1,1 @@
+http://user:pass@example:99999/../admin?q=one#sec%2Fone

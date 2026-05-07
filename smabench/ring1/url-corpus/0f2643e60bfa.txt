@@ -1,0 +1,1 @@
+http://192.0.2.1:0/%252e%252e/admin?a=b=c#/room:example.org

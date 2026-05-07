@@ -1,0 +1,24 @@
+{
+  "_synthetic_kind": "pqxdh-initial",
+  "_synthetic_round": 4,
+  "device_id": 1366316,
+  "identity_key": "synthetic_NOT_REAL_ed25519",
+  "kyber_ciphertext": "synthetic_NOT_REAL_kyber_ct",
+  "kyber_pre_key": {
+    "key_id": 291669,
+    "public_key": "synthetic_NOT_REAL_kyber_pk",
+    "signature": "synthetic_NOT_REAL_kyber_sig"
+  },
+  "one_time_kyber_pre_key_consumed": false,
+  "one_time_pre_key": {
+    "key_id": 960572,
+    "public_key": "synthetic_NOT_REAL_curve25519_otpk"
+  },
+  "registration_id": 8503,
+  "session_uuid": "synthetic-5df2fbda-a35a-df9c-1e2a-8a3c0ed16bfe",
+  "signed_pre_key": {
+    "key_id": 463712,
+    "public_key": "synthetic_NOT_REAL_curve25519",
+    "signature": "synthetic_NOT_REAL_signature"
+  }
+}

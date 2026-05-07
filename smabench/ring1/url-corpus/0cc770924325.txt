@@ -1,0 +1,1 @@
+https://user@evil.example@[::ffff:127.0.0.1]:443/%252e%252e/admin?q=hello%20world#/room:example.org

@@ -1,0 +1,1 @@
+javascript://user@[::ffff:127.0.0.1]:443/%2e%2e/admin#top

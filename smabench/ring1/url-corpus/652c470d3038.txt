@@ -1,0 +1,1 @@
+x-app://@example?a=b=c#sec%2Fone

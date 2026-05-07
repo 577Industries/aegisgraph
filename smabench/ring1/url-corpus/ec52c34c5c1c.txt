@@ -1,0 +1,1 @@
+http://user:pass@example:443/article;jsessionid=abc?q=hello%2520world

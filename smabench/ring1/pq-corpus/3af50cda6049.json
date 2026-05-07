@@ -1,0 +1,10 @@
+{
+  "_synthetic_kind": "megolm-rotation",
+  "_synthetic_round": 5,
+  "new_session_id": "synthetic_session_d3ada8b4f222",
+  "old_session_id": "synthetic_session_ed336de7daec",
+  "room_id": "!synthetic_2d3b41a3:example.org",
+  "rotation_period_ms": 604800000,
+  "rotation_period_msgs": 100,
+  "trigger": "membership_change"
+}

@@ -1,0 +1,1 @@
+file://user:pass@169.254.169.254:443/%252e%252e/admin?a=b=c#/room:example.org

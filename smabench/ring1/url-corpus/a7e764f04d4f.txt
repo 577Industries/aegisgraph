@@ -1,0 +1,1 @@
+file://user@169.254.169.254/article;jsessionid=abc?q=hello%2520world

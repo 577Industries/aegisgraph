@@ -1,0 +1,1 @@
+javascript://user:pass@10.0.0.1:80/%2e%2e/admin?q=one

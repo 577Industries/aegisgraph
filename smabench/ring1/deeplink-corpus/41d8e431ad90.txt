@@ -1,0 +1,1 @@
+https://matrix.to/#/!trusted.example\@evil.example

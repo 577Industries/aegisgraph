@@ -1,0 +1,17 @@
+{
+  "_synthetic_round": 11,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "sender_key_distribution": {
+        "distribution_blob": "synthetic_NOT_REAL_KEY",
+        "distribution_id": "synthetic_dist_458249d5",
+        "group_id": "synthetic_group_ac823359"
+      }
+    }
+  },
+  "device_id": 123553,
+  "kind": "rekey",
+  "source_uuid": "synthetic-a5019c3a-4da8-c316-77fc-381aed2f0d70",
+  "timestamp_ms": 1500000000000
+}

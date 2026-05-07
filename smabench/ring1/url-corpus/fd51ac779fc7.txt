@@ -1,0 +1,2 @@
+data://user@evil.ex
+ample@127.0.0.1:65535/../admin

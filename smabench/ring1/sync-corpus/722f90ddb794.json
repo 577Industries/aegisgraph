@@ -1,0 +1,16 @@
+{
+  "_synthetic_round": 8,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "base_key": "synthetic_curve25519_NOT_REAL",
+    "envelope_type": "PREKEY_BUNDLE",
+    "identity_key": "synthetic_ed25519_NOT_REAL",
+    "pre_key_id": 300749,
+    "registration_id": 1352,
+    "signed_pre_key_id": 508308
+  },
+  "device_id": 265965,
+  "kind": "pre-key-shim",
+  "source_uuid": "synthetic-28848880-354e-b587-f51a-244fdc7e56b1",
+  "timestamp_ms": 1500000000000
+}

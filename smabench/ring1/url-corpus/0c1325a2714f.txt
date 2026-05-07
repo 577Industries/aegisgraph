@@ -1,0 +1,1 @@
+file://0xC0000201:65535/%2e%2e/admin?a=b=c#/room:example.org

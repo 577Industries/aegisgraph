@@ -1,0 +1,1 @@
+x-app://us%65r:p%61ss@preview	..example:80?q=hello%2520world#sec%2Fone

@@ -1,0 +1,1 @@
+http://user@0xC0000201:443/../admin?a=b=c#sec%2Fone

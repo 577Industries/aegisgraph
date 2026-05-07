@@ -1,0 +1,1 @@
+file://user:pass@192.0.2.1:443//etc//passwd?q=one#sec%2Fone

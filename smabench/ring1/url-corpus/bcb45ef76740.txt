@@ -1,0 +1,1 @@
+x-app://user@evil.example@xn--bcher-kva.example:65535/article/page#sec%2Fone

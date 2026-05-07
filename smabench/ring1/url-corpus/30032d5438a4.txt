@@ -1,0 +1,1 @@
+file://user@evil.example@0xC0.0.2.1:99999/%252e%252e/admin?a=b=c#top

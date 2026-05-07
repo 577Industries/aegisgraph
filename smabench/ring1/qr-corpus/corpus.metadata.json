@@ -1,7 +1,433 @@
 {
-  "item_count": 3,
+  "generator": {
+    "case_count": 14,
+    "encoder": "placeholder_png",
+    "module": "smabench.ring1.qr_corpus",
+    "qrcode_lib_available": false
+  },
+  "item_count": 32,
+  "items": [
+    {
+      "category": "signal-oversized",
+      "extra": {
+        "case_id": "signal_oversized",
+        "disposition": "oversized",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-30877432-d102-6706-d7e8-05da846a32c3&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9&padding=a3766e4d58e72e310275dff6c15c0c8e9df469611a11f5125227c3712da86a78c49ea20e32684b27b95e909348334896a68f812d810a485ed03241b4d419b1b673bd4755d05ad7853c1f76eb97706ca828bca0385813dbad3c681d06bd2aa399dac946dc59c0996daeee6f529a279764017f2ed6cfc7403d75e173e4eaede5fe878f78e2978aa2447c462ddaed16dc0cf0b9cd7f78df0cac5e40c02d4e518ca6eaac8d82f01b7210760474f36e8b5359309cc6273931bdb2a0df3dbe4d58fed8a728e7eca0fa5f6b8a880627df7ffe0297c79bfbdabe898736a3566f893697b590481194f309ffea518f32cf21449273d7cee9d9136682575250def91799e2786d3748421599e3e9c8fe21da80270815fe85df2fbdaa35adf9c1e2a8a3c0ed16bfe16849ef307590d273e34f98dff7e4c6428da8099f4efbacea67c7d1afcc4f14a3e3e04d42f8ac2acaf127972d33e5901a19bbd47d5552c7f47e8e80e952eb9d8e96cf37cb990c801f97b7684319e1b429ad564b858f9a3e247cb2c083eb8cb37f0a72e9d34119f3374cebd4d3fd81b6ee7b3bb1c863e2601a7462667a40844853040b7a05814d32feb3e719e01fcd3fe22a4248ac9ed336de7daecd3ada8b4f2222d3b41a3dbd199b364f73bb387d080589ab054c24026cdea5b9a2145128edfed863bd39f917c10696489a30fd54c7b2c1d0e2adcd93c0a5eb2d37dc2c9a7a5236bb4734865425feeaa4e2fe981b29ee11b922ce1e6af41e3a2517ee5bb9cda1a2a3c984a24b9c429ca42db0b956af67442931a4c4555e1db7e9e779f6bee9cd56481fb339258e4d27eb0d1cb7c2b70a3a4419f4fe020864d3979317de23f0749d0b7d52b20cf1cb80b2b73a41ba5ef542e196161a9cf8169b1a83bdceca5ffb82d2d59a32a99ed5ebe1bd812cb504e1427bbc14ebbe24bca87305fc388e69f6342e5e2ab29955b73647f0bbe4229cfdd24a2eeb454d134955a7b92868492545a102186d0f99f7c9e215edfe6a4aabc4b3a7e38e74319cd75aa65fef9f02ce76b119ff903d48bcb1c16b92ce8343cbab46c1114afe44aa5c9af9f0ba3d90f871f5c471360ead4d6df146afca5eab8f67897996fafb893ccb49192be8f6688437717713daf3405dff69a912715d51cf591093a9ef4e863a5e850a965cda2c354fa708c7e8a908b713e95c939b774f4ebdf672eb231645ae36f2e1e4de1e90c80621db212f19d54dbcecc24b35c47009edc77eb48631d076231e171ce761497aa7947d9815df1bcadd49c5f7794e1dd4c786a2eb2618c1266f6a90663f76c7a9ceb98bfe3fa6bad17408d946a7c7fa8ffe5b54f511210d472406eb1ff00d00890d5334768b8c2bce779212cccf1052fda3176f812815a064c2957cac42b13d72aca08ef7bcd5c2972284c4cab3209eb83425ded302b2ac09dc275c54898f425d8d9f2b87f6e3490cacaead49a6fa5ca9f7ac8cb3650e6e92df49784dc2efcd1b237b51cad303877ebce4b0f39d234b9ae6fbf3eea29130a35755ade7c55dc06edc0668235ba6e38facc3bbe5924a37935b4cd4cd5f55f945ae1b0f46cfdfdef5207918795ef338b1e6d3791e8b2e376bd54661b85a99834d184474a7cf48dce22c8befa02eb2c6d6f8a9a4fa113e035ee0d649582b82b51c97d2306f247e00a3d4f27c233ab94c44205eb64de62343cbda4782790966c917fc37f20ba4cdb5f20208611c9ddc24829264ac29d7172d3e19530405fb85b4830ad8282feb1f5b5833701071fbc451d7a7da82b31571c2e99a2e0b6997ebf6740d07b0a0c9367df148217dbe234c21d4798acaae872643435eead3b6e9e8325916a427bc19850ce73e34301746cb282026e42a31e15dcf0cd5b6588e4179fdf128c4d670cbffbac850a7081fb75377817cb557ab0b46f95f121770f0a64a5a10443b2bc3a9a45dfa5b75c99450c15a73f4a27ba52ae08672b8301ced5dfcbc3f75e2190a832a5c522af0d5",
+        "round": 0
+      },
+      "filename": "0ff7dd2a03e4.png",
+      "sha256": "0ff7dd2a03e48fb81424137fc7147b5760ba7c193f693e84e108ef095ccf71cc",
+      "size_bytes": 3300
+    },
+    {
+      "category": "signal-wrong-account",
+      "extra": {
+        "case_id": "signal_wrong_account",
+        "disposition": "wrong_account",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-bb81e3c2-9b62-1792-73c8-eb5bb682575e&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9",
+        "round": 0
+      },
+      "filename": "179a9f8d1b15.png",
+      "sha256": "179a9f8d1b157635c4cb7fbcea661f2f710a36744e4c3373a8d8ccd434a550cf",
+      "size_bytes": 470
+    },
+    {
+      "category": "matrix-valid",
+      "extra": {
+        "case_id": "matrix_valid",
+        "disposition": "valid",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633",
+        "round": 0
+      },
+      "filename": "2196b39a7f4e.png",
+      "sha256": "2196b39a7f4e4fdc7264d87d1e3f79a409ee662e0cd74f03a8e9509728fec8dd",
+      "size_bytes": 410
+    },
+    {
+      "category": "signal-malformed-truncated",
+      "extra": {
+        "case_id": "signal_truncated",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic_de264b57",
+        "round": 2
+      },
+      "filename": "2892d21e8b11.png",
+      "sha256": "2892d21e8b1104402f045b9d5c835a897ab031d3729b5463dae228a499918ba2",
+      "size_bytes": 361
+    },
+    {
+      "category": "signal-malformed-checksum",
+      "extra": {
+        "case_id": "signal_bad_checksum",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-d513a66d-8997-31cf-41b0-d29f6306592f&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998&csum=DEADBEEF",
+        "round": 1
+      },
+      "filename": "57840aa6995c.png",
+      "sha256": "57840aa6995cfc1e49fc249c519490e9bba0c027a8cb12dfbd6627b13dff3a32",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-idn-host",
+      "extra": {
+        "case_id": "matrix_idn",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5&server=xn--bcher-kva.example",
+        "round": 1
+      },
+      "filename": "60a118e33fd2.png",
+      "sha256": "60a118e33fd2c3722ccc12a39d7dfa5b0604266808a4c5f1f7f92d20373de832",
+      "size_bytes": 442
+    },
+    {
+      "category": "matrix-idn-host",
+      "extra": {
+        "case_id": "matrix_idn",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633&server=xn--bcher-kva.example",
+        "round": 0
+      },
+      "filename": "617d5d931231.png",
+      "sha256": "617d5d9312316946c64011aba47fbf30b2128e21905c05fe215e118cdfa7950d",
+      "size_bytes": 444
+    },
+    {
+      "category": "matrix-expired",
+      "extra": {
+        "case_id": "matrix_expired",
+        "disposition": "expired",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633&exp=1500000000",
+        "round": 0
+      },
+      "filename": "61d26d78e907.png",
+      "sha256": "61d26d78e90712f70e9c8f88748be55dbdfdfa0168ffcb3953a422a03a76d061",
+      "size_bytes": 427
+    },
+    {
+      "category": "signal-expired",
+      "extra": {
+        "case_id": "signal_expired",
+        "disposition": "expired",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-30877432-d102-6706-d7e8-05da846a32c3&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9&exp=1500000000",
+        "round": 0
+      },
+      "filename": "74430fd09365.png",
+      "sha256": "74430fd093653f50cb64f3737590c15535ea2272cad78e2cf5c7260228e38a03",
+      "size_bytes": 488
+    },
+    {
+      "category": "signal-valid",
+      "extra": {
+        "case_id": "signal_valid",
+        "disposition": "valid",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-d513a66d-8997-31cf-41b0-d29f6306592f&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998",
+        "round": 1
+      },
+      "filename": "8631afbd62c2.png",
+      "sha256": "8631afbd62c2a1e02046c38bcfa97a6410ce237d25dd2d9364e39629b460bcc4",
+      "size_bytes": 467
+    },
+    {
+      "category": "matrix-wrong-account",
+      "extra": {
+        "case_id": "matrix_wrong_account",
+        "disposition": "wrong_account",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5&user=@mismatch:example.org",
+        "round": 1
+      },
+      "filename": "949edaf2a720.png",
+      "sha256": "949edaf2a720aed7496069c2d8fa846c390d7e8e8a1326fb9606b7050aba0ded",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-malformed-truncated",
+      "extra": {
+        "case_id": "matrix_truncated",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_8290c156",
+        "round": 1
+      },
+      "filename": "9819e43839e4.png",
+      "sha256": "9819e43839e4ac5aa6e0c01be52469fa0ec0a460a038ee1eb2fa2cbc897fe13b",
+      "size_bytes": 365
+    },
+    {
+      "category": "signal-malformed-truncated",
+      "extra": {
+        "case_id": "signal_truncated",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic_8290c156",
+        "round": 1
+      },
+      "filename": "98daeb9e5475.png",
+      "sha256": "98daeb9e5475e1fc0e7c7ca4a11854caa36945fa306cc5da1af8dc81bc09041b",
+      "size_bytes": 365
+    },
+    {
+      "category": "signal-expired",
+      "extra": {
+        "case_id": "signal_expired",
+        "disposition": "expired",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-3a6be34d-d221-d4f6-e2bc-c8fdefd544fe&pub_key=synthetic_f03b21df9eacf44eee4a2dc7ca1e8250932616f0350867e2ac1f0ad5d0ac8233&exp=1500000000",
+        "round": 2
+      },
+      "filename": "a23a3d298556.png",
+      "sha256": "a23a3d29855644b74eb35bacfacb72353adacfb28c0e6188c3a8db0ff0a408b2",
+      "size_bytes": 484
+    },
+    {
+      "category": "matrix-malformed-checksum",
+      "extra": {
+        "case_id": "matrix_bad_checksum",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5&csum=DEADBEEF",
+        "round": 1
+      },
+      "filename": "a42dfa0f53b3.png",
+      "sha256": "a42dfa0f53b3551c720557ac70cf89226ddd2d7130b1dc747ac7a53e8f5d08b8",
+      "size_bytes": 423
+    },
+    {
+      "category": "matrix-malformed-checksum",
+      "extra": {
+        "case_id": "matrix_bad_checksum",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633&csum=DEADBEEF",
+        "round": 0
+      },
+      "filename": "a9b34f361b67.png",
+      "sha256": "a9b34f361b67a379738bd5c95e5d77b9c9b3ac9d64c5444a340543becff3a276",
+      "size_bytes": 426
+    },
+    {
+      "category": "signal-wrong-account",
+      "extra": {
+        "case_id": "signal_wrong_account",
+        "disposition": "wrong_account",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-436ef15b-3d33-b914-3b9b-99f044d19965&pub_key=synthetic_f03b21df9eacf44eee4a2dc7ca1e8250932616f0350867e2ac1f0ad5d0ac8233",
+        "round": 2
+      },
+      "filename": "ad0b8cccb878.png",
+      "sha256": "ad0b8cccb878aceea1d3c3abd12f03cd4c7a9bc528ae08803eab1acdfe84029d",
+      "size_bytes": 473
+    },
+    {
+      "category": "matrix-wrong-account",
+      "extra": {
+        "case_id": "matrix_wrong_account",
+        "disposition": "wrong_account",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633&user=@mismatch:example.org",
+        "round": 0
+      },
+      "filename": "ad1f0cafdb91.png",
+      "sha256": "ad1f0cafdb91f36f414f2f4715432368d86d54fbade953f73295d3b6a63ce9a6",
+      "size_bytes": 444
+    },
+    {
+      "category": "signal-idn-host",
+      "extra": {
+        "case_id": "signal_idn",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-d513a66d-8997-31cf-41b0-d29f6306592f&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998&relay=xn--bcher-kva.example",
+        "round": 1
+      },
+      "filename": "ad8c38c81a74.png",
+      "sha256": "ad8c38c81a74155eb6d6142c22ec3d50061fab3b9c4dbfdb8ad0c07164d6fec9",
+      "size_bytes": 495
+    },
+    {
+      "category": "matrix-oversized",
+      "extra": {
+        "case_id": "matrix_oversized",
+        "disposition": "oversized",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_71722f244f58d669cbee3772a077021721a278f64f7fd633&padding=a3766e4d58e72e310275dff6c15c0c8e9df469611a11f5125227c3712da86a78c49ea20e32684b27b95e909348334896a68f812d810a485ed03241b4d419b1b673bd4755d05ad7853c1f76eb97706ca828bca0385813dbad3c681d06bd2aa399dac946dc59c0996daeee6f529a279764017f2ed6cfc7403d75e173e4eaede5fe878f78e2978aa2447c462ddaed16dc0cf0b9cd7f78df0cac5e40c02d4e518ca6eaac8d82f01b7210760474f36e8b5359309cc6273931bdb2a0df3dbe4d58fed8a728e7eca0fa5f6b8a880627df7ffe0297c79bfbdabe898736a3566f893697b590481194f309ffea518f32cf21449273d7cee9d9136682575250def91799e2786d3748421599e3e9c8fe21da80270815fe85df2fbdaa35adf9c1e2a8a3c0ed16bfe16849ef307590d273e34f98dff7e4c6428da8099f4efbacea67c7d1afcc4f14a3e3e04d42f8ac2acaf127972d33e5901a19bbd47d5552c7f47e8e80e952eb9d8e96cf37cb990c801f97b7684319e1b429ad564b858f9a3e247cb2c083eb8cb37f0a72e9d34119f3374cebd4d3fd81b6ee7b3bb1c863e2601a7462667a40844853040b7a05814d32feb3e719e01fcd3fe22a4248ac9ed336de7daecd3ada8b4f2222d3b41a3dbd199b364f73bb387d080589ab054c24026cdea5b9a2145128edfed863bd39f917c10696489a30fd54c7b2c1d0e2adcd93c0a5eb2d37dc2c9a7a5236bb4734865425feeaa4e2fe981b29ee11b922ce1e6af41e3a2517ee5bb9cda1a2a3c984a24b9c429ca42db0b956af67442931a4c4555e1db7e9e779f6bee9cd56481fb339258e4d27eb0d1cb7c2b70a3a4419f4fe020864d3979317de23f0749d0b7d52b20cf1cb80b2b73a41ba5ef542e196161a9cf8169b1a83bdceca5ffb82d2d59a32a99ed5ebe1bd812cb504e1427bbc14ebbe24bca87305fc388e69f6342e5e2ab29955b73647f0bbe4229cfdd24a2eeb454d134955a7b92868492545a102186d0f99f7c9e215edfe6a4aabc4b3a7e38e74319cd75aa65fef9f02ce76b119ff903d48bcb1c16b92ce8343cbab46c1114afe44aa5c9af9f0ba3d90f871f5c471360ead4d6df146afca5eab8f67897996fafb893ccb49192be8f6688437717713daf3405dff69a912715d51cf591093a9ef4e863a5e850a965cda2c354fa708c7e8a908b713e95c939b774f4ebdf672eb231645ae36f2e1e4de1e90c80621db212f19d54dbcecc24b35c47009edc77eb48631d076231e171ce761497aa7947d9815df1bcadd49c5f7794e1dd4c786a2eb2618c1266f6a90663f76c7a9ceb98bfe3fa6bad17408d946a7c7fa8ffe5b54f511210d472406eb1ff00d00890d5334768b8c2bce779212cccf1052fda3176f812815a064c2957cac42b13d72aca08ef7bcd5c2972284c4cab3209eb83425ded302b2ac09dc275c54898f425d8d9f2b87f6e3490cacaead49a6fa5ca9f7ac8cb3650e6e92df49784dc2efcd1b237b51cad303877ebce4b0f39d234b9ae6fbf3eea29130a35755ade7c55dc06edc0668235ba6e38facc3bbe5924a37935b4cd4cd5f55f945ae1b0f46cfdfdef5207918795ef338b1e6d3791e8b2e376bd54661b85a99834d184474a7cf48dce22c8befa02eb2c6d6f8a9a4fa113e035ee0d649582b82b51c97d2306f247e00a3d4f27c233ab94c44205eb64de62343cbda4782790966c917fc37f20ba4cdb5f20208611c9ddc24829264ac29d7172d3e19530405fb85b4830ad8282feb1f5b5833701071fbc451d7a7da82b31571c2e99a2e0b6997ebf6740d07b0a0c9367df148217dbe234c21d4798acaae872643435eead3b6e9e8325916a427bc19850ce73e34301746cb282026e42a31e15dcf0cd5b6588e4179fdf128c4d670cbffbac850a7081fb75377817cb557ab0b46f95f121770f0a64a5a10443b2bc3a9a45dfa5b75c99450c15a73f4a27ba52ae08672b8301ced5dfcbc3f75e2190a832a5c522af0d5",
+        "round": 0
+      },
+      "filename": "c6467ea1d9c8.png",
+      "sha256": "c6467ea1d9c82060add44f68569b8e695625056efb2dd53d2da5187ebfa3e7d8",
+      "size_bytes": 3241
+    },
+    {
+      "category": "signal-oversized",
+      "extra": {
+        "case_id": "signal_oversized",
+        "disposition": "oversized",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-d513a66d-8997-31cf-41b0-d29f6306592f&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998&padding=7768d00f4507898dcbe86e9c30b993f2a8a8896471ca40f98dcc16a7fb95593f485a27b79dab89e3f12f63c9d1446ade4a52fa5a10e8655f24ddcdfc016b0a60077b943c952199ead4afb65c07746053b1c8113013dec38f4609d384d33933f6686bd951f6fa70023f422387e98e13519bad331045abe82ba53cce8cfd534153dfe5cb04ff3de128a07a3d7fbc4105ff52fa7a817cc72eee2fea3f03cd10296eab17eafbe3370ab9b315f4d38663c6e6a3d13ee4f01df5543cacd78ca9e44d9a6669b45a3bfd9d030c4116859841961be37c791ccda1086e7b669e52553c1d884580ae414a19fb2a7525dc2b76aab96f03be771ac3c890bef196a2350266d36d240ea122158278dcecda0c30212b39929ecc0f574c949b04310c296b6d455786351e292836fab473926afea94bad50a77d8b4afeeb9f35284682200c618f4bc794e2cb0754e554fb17f728b716bcfe11a3885ccb28c7cbbff04e57286455b37da3fff65d071454141585c0926eff57d4585ae27cc4306d435f132f40ddb1d7fcb3d48f729d860030c6adb34d88db8c6df5bf89bc437e536ca15c024fd2287b21cc915fe06961751b70528cbcc60229bb876ec085d329a388ecf7aee0f382c77adb08792ca25fab6856f67786767b4332f01fbaf8f58c741df1bc5e3ea006c3ab85878fab5fd6dbbc8e547387dc644f05df4af981c35168f3ea8bb8b0d3b659bafe2c9e45adc225a7aa98c8ebed550478265c332f10c23842c9779e44501bafe8e45ed9bf72e9bd849004b9f0ff90d970b6ddc75cc782d7898d625493ee8f6a041053984e07240f6ad9fbe1a2418c2f568c037ce716e36fc9a5138f96b1637da0583c701f4b275f2a11b434f7abe60cb481fe9f65bae8524e98be0c50b7a2c6f49ada332145163f631cf81b7206f2e1bdb1812926337c6675d3bed355ca5ebaabdda76c8beec0190490976a08431eb448b77892c62af5f391c21abdd370c191a4a741ce27d9c44a2f1c82cd44f6fc67728da23ddbb6ab095be4e176b42317490a39ef0a6668f40c18519681e02c8b309c7c3af256e0179afc50bbb97818c0874ac42c7d74d9ae4646494d45a235a40add9e846345087770b2f4fb5cff45671d08d76625efae7dc1cac13ee17c1c169ec99e5d914ee2354cdae05e6e28a5323eb2c5cc15a45451d99e95346080eff0f76fede207861541b1419a213d5595eb129abc2d29f438ad66132f9da8b4fff5796030e36dd1ab60698299a03aac056aaff14f4eaed19a06ab2480ac5c539a18d2f7be96953b162e0f46af9a43461ec30912ae139096a6698ae384583036ba8497529ae140f13c12dc5eb9a62e42e3e9ef7748bc5aaef02f3bfe59b43c3a29ecd775fc2a6dda752f3ea3e59c23caf1264044e9ce66a99db20c491b10b3907dcacccd65f46cbd49440204fd424ded5edecb75d0f78db11fb3f248e227f291a0fefadb9951981f51909f2428848880354eb587f51a244fdc7e56b18315ecf9f7ccf84d09eca13bd8a8838ce76a5a0020d33eb7986102163324c53589e2e8da85281cca1885e2f6c5f34d63e831228e0f401c84ac0ffdc270cf3ba9c12ba2e9651c69c3bf2e641607fc29fe01a1a1c36e47214f0f17405193e5233f726daca34a615a2384d5b5e7143c50f200529df4648ed7515f29bd07633b7e681634ff5511b96d8ae131550f327ead6a73a737d6c72ff1d46e5cb4e6b86a411843eed5a795572df6fe80d77ad740d11f1dcf3ef720d64b9720f95e0ee4c5be02ca19d862a1b13cbe1bb5264a73f67ab8d812bbef3f9eb26e22c59235834f4609d4fbde096207adaafee949587fb914b9e5595545731a4e8b561ab4be5930cf4ea40a9f94ea3f14390c7eb2a1678602e2c6fa1bc4dbcb09bb9e26ede95dd42469fa2c20d8d5e465c9f199fe700489f39d5f7038f2bfd8f3b08514ae4b518bdb19926535aa98b3b4049bfda5364763de2340fb9b4ea5903744794642d320fd16311f38129033665b0248bb572306695036fb5e35bcd67d3a3e34fb912af3c9e9e7d9d62fb50f3ce234cc352b6a6c37df88cbfcf84e338ff740312f05ca4932fe69ff8a01d3ceacee11595fd49cf3fff51c8fcb9a1014bb0ac3dbbdb177792293a50a1edd80f0acca3f36afa59bd6f269819c723a82fd6b299da6dc8e505f6e8d16be4749dda26d89587c7346079efdd1658408851f012a92db2c47338f273aac7d643568ed81fb3adf784bfb901178c9b37ec0c8927965ead182ffdad3582bdae015e40c69a23574daef485a962db5cc70072e6851cd842b530def376689fc4d6696d5d40987e7be20f4ac6cd82311a7fb108c9cb41585fae42ad483a14f8bd988ad5af4e1641751f85ed3f1ebfef343b269558605d27f3a093cb3a402efe80a1ea4619a12c2c857c2065cc9439fd94b3b6fecf8d2db5dd21ae74f29ed2f94497d91213dd3e8b8203e55c12d9aee8a565283d00c305fecf9bc92440630606f47d629e4fd0354eff0e769c1a03ddf91fcff710da28df3fbed0596fbe77ae49cdbf5692f4565f3df97610b8b5512ad3737f8ab18431ee33313536b59ef34ba436ed07fa9528bdb74d74dddeb0e4022aac5d1c1419dc9ab084ce6ebc6921ac49629a500879d31b8b313e90ea77b994c7",
+        "round": 1
+      },
+      "filename": "c77e15b5388c.png",
+      "sha256": "c77e15b5388ca5e32a71d3ef8067c24e5629e6b07f32db8559cc49284229a2a0",
+      "size_bytes": 4234
+    },
+    {
+      "category": "signal-malformed-truncated",
+      "extra": {
+        "case_id": "signal_truncated",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic_dbdde131",
+        "round": 0
+      },
+      "filename": "cbc2617c0f46.png",
+      "sha256": "cbc2617c0f46e1db9c18d659e2353ded1bde81ffc650eade98a4a3fde5937b06",
+      "size_bytes": 362
+    },
+    {
+      "category": "signal-expired",
+      "extra": {
+        "case_id": "signal_expired",
+        "disposition": "expired",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-d513a66d-8997-31cf-41b0-d29f6306592f&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998&exp=1500000000",
+        "round": 1
+      },
+      "filename": "db4d4690b972.png",
+      "sha256": "db4d4690b972e22f5912ad625718927bf596cc7186bbd7cabea8bee1fc4926e1",
+      "size_bytes": 488
+    },
+    {
+      "category": "signal-wrong-account",
+      "extra": {
+        "case_id": "signal_wrong_account",
+        "disposition": "wrong_account",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-39cff82c-5bcb-5e18-ee87-81432bd71cdf&pub_key=synthetic_7f92c143e556641d2d648a22cca8e0d3d443339bd8cff158c4c1ca71f8b0a998",
+        "round": 1
+      },
+      "filename": "e76e78b6a817.png",
+      "sha256": "e76e78b6a8174ae30a867853fa5978e3869c65ebad2cdc4a892b4fa90d4fbc91",
+      "size_bytes": 466
+    },
+    {
+      "category": "matrix-valid",
+      "extra": {
+        "case_id": "matrix_valid",
+        "disposition": "valid",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5",
+        "round": 1
+      },
+      "filename": "edd925cb8c50.png",
+      "sha256": "edd925cb8c5056a6d675dd6e97a43b1b479c0a7e36633d62aac4a848256dcfdf",
+      "size_bytes": 417
+    },
+    {
+      "category": "matrix-oversized",
+      "extra": {
+        "case_id": "matrix_oversized",
+        "disposition": "oversized",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5&padding=7768d00f4507898dcbe86e9c30b993f2a8a8896471ca40f98dcc16a7fb95593f485a27b79dab89e3f12f63c9d1446ade4a52fa5a10e8655f24ddcdfc016b0a60077b943c952199ead4afb65c07746053b1c8113013dec38f4609d384d33933f6686bd951f6fa70023f422387e98e13519bad331045abe82ba53cce8cfd534153dfe5cb04ff3de128a07a3d7fbc4105ff52fa7a817cc72eee2fea3f03cd10296eab17eafbe3370ab9b315f4d38663c6e6a3d13ee4f01df5543cacd78ca9e44d9a6669b45a3bfd9d030c4116859841961be37c791ccda1086e7b669e52553c1d884580ae414a19fb2a7525dc2b76aab96f03be771ac3c890bef196a2350266d36d240ea122158278dcecda0c30212b39929ecc0f574c949b04310c296b6d455786351e292836fab473926afea94bad50a77d8b4afeeb9f35284682200c618f4bc794e2cb0754e554fb17f728b716bcfe11a3885ccb28c7cbbff04e57286455b37da3fff65d071454141585c0926eff57d4585ae27cc4306d435f132f40ddb1d7fcb3d48f729d860030c6adb34d88db8c6df5bf89bc437e536ca15c024fd2287b21cc915fe06961751b70528cbcc60229bb876ec085d329a388ecf7aee0f382c77adb08792ca25fab6856f67786767b4332f01fbaf8f58c741df1bc5e3ea006c3ab85878fab5fd6dbbc8e547387dc644f05df4af981c35168f3ea8bb8b0d3b659bafe2c9e45adc225a7aa98c8ebed550478265c332f10c23842c9779e44501bafe8e45ed9bf72e9bd849004b9f0ff90d970b6ddc75cc782d7898d625493ee8f6a041053984e07240f6ad9fbe1a2418c2f568c037ce716e36fc9a5138f96b1637da0583c701f4b275f2a11b434f7abe60cb481fe9f65bae8524e98be0c50b7a2c6f49ada332145163f631cf81b7206f2e1bdb1812926337c6675d3bed355ca5ebaabdda76c8beec0190490976a08431eb448b77892c62af5f391c21abdd370c191a4a741ce27d9c44a2f1c82cd44f6fc67728da23ddbb6ab095be4e176b42317490a39ef0a6668f40c18519681e02c8b309c7c3af256e0179afc50bbb97818c0874ac42c7d74d9ae4646494d45a235a40add9e846345087770b2f4fb5cff45671d08d76625efae7dc1cac13ee17c1c169ec99e5d914ee2354cdae05e6e28a5323eb2c5cc15a45451d99e95346080eff0f76fede207861541b1419a213d5595eb129abc2d29f438ad66132f9da8b4fff5796030e36dd1ab60698299a03aac056aaff14f4eaed19a06ab2480ac5c539a18d2f7be96953b162e0f46af9a43461ec30912ae139096a6698ae384583036ba8497529ae140f13c12dc5eb9a62e42e3e9ef7748bc5aaef02f3bfe59b43c3a29ecd775fc2a6dda752f3ea3e59c23caf1264044e9ce66a99db20c491b10b3907dcacccd65f46cbd49440204fd424ded5edecb75d0f78db11fb3f248e227f291a0fefadb9951981f51909f2428848880354eb587f51a244fdc7e56b18315ecf9f7ccf84d09eca13bd8a8838ce76a5a0020d33eb7986102163324c53589e2e8da85281cca1885e2f6c5f34d63e831228e0f401c84ac0ffdc270cf3ba9c12ba2e9651c69c3bf2e641607fc29fe01a1a1c36e47214f0f17405193e5233f726daca34a615a2384d5b5e7143c50f200529df4648ed7515f29bd07633b7e681634ff5511b96d8ae131550f327ead6a73a737d6c72ff1d46e5cb4e6b86a411843eed5a795572df6fe80d77ad740d11f1dcf3ef720d64b9720f95e0ee4c5be02ca19d862a1b13cbe1bb5264a73f67ab8d812bbef3f9eb26e22c59235834f4609d4fbde096207adaafee949587fb914b9e5595545731a4e8b561ab4be5930cf4ea40a9f94ea3f14390c7eb2a1678602e2c6fa1bc4dbcb09bb9e26ede95dd42469fa2c20d8d5e465c9f199fe700489f39d5f7038f2bfd8f3b08514ae4b518bdb19926535aa98b3b4049bfda5364763de2340fb9b4ea5903744794642d320fd16311f38129033665b0248bb572306695036fb5e35bcd67d3a3e34fb912af3c9e9e7d9d62fb50f3ce234cc352b6a6c37df88cbfcf84e338ff740312f05ca4932fe69ff8a01d3ceacee11595fd49cf3fff51c8fcb9a1014bb0ac3dbbdb177792293a50a1edd80f0acca3f36afa59bd6f269819c723a82fd6b299da6dc8e505f6e8d16be4749dda26d89587c7346079efdd1658408851f012a92db2c47338f273aac7d643568ed81fb3adf784bfb901178c9b37ec0c8927965ead182ffdad3582bdae015e40c69a23574daef485a962db5cc70072e6851cd842b530def376689fc4d6696d5d40987e7be20f4ac6cd82311a7fb108c9cb41585fae42ad483a14f8bd988ad5af4e1641751f85ed3f1ebfef343b269558605d27f3a093cb3a402efe80a1ea4619a12c2c857c2065cc9439fd94b3b6fecf8d2db5dd21ae74f29ed2f94497d91213dd3e8b8203e55c12d9aee8a565283d00c305fecf9bc92440630606f47d629e4fd0354eff0e769c1a03ddf91fcff710da28df3fbed0596fbe77ae49cdbf5692f4565f3df97610b8b5512ad3737f8ab18431ee33313536b59ef34ba436ed07fa9528bdb74d74dddeb0e4022aac5d1c1419dc9ab084ce6ebc6921ac49629a500879d31b8b313e90ea77b994c7",
+        "round": 1
+      },
+      "filename": "edf2691e1ae4.png",
+      "sha256": "edf2691e1ae498cc9c9dfcfb021d38d8c1e43a594336c535b494f5c37e131612",
+      "size_bytes": 4172
+    },
+    {
+      "category": "signal-malformed-checksum",
+      "extra": {
+        "case_id": "signal_bad_checksum",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-30877432-d102-6706-d7e8-05da846a32c3&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9&csum=DEADBEEF",
+        "round": 0
+      },
+      "filename": "edf9b6e1bb86.png",
+      "sha256": "edf9b6e1bb86fc975f7a411a14cb5a7dc89a2a873ec754dbaa9c7fb68a1a7f38",
+      "size_bytes": 481
+    },
+    {
+      "category": "matrix-expired",
+      "extra": {
+        "case_id": "matrix_expired",
+        "disposition": "expired",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_f3749ea8d26e6dfb1529c40566171e1b68bec307bfe5fbb5&exp=1500000000",
+        "round": 1
+      },
+      "filename": "ee17ae23d755.png",
+      "sha256": "ee17ae23d75534459d77e3481bacb0f9d043c5008f80e8966ff23fba1af30976",
+      "size_bytes": 424
+    },
+    {
+      "category": "signal-idn-host",
+      "extra": {
+        "case_id": "signal_idn",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-30877432-d102-6706-d7e8-05da846a32c3&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9&relay=xn--bcher-kva.example",
+        "round": 0
+      },
+      "filename": "f0f55d3b1bb3.png",
+      "sha256": "f0f55d3b1bb38304d7c7232e1636e88dcac559dc0aac0caf62ff61347bc46d78",
+      "size_bytes": 492
+    },
+    {
+      "category": "signal-valid",
+      "extra": {
+        "case_id": "signal_valid",
+        "disposition": "valid",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-3a6be34d-d221-d4f6-e2bc-c8fdefd544fe&pub_key=synthetic_f03b21df9eacf44eee4a2dc7ca1e8250932616f0350867e2ac1f0ad5d0ac8233",
+        "round": 2
+      },
+      "filename": "f21aa4d0bf5e.png",
+      "sha256": "f21aa4d0bf5ec4a9bb220a56b1392fa2aab22a4054a79c08fa8ab615c41d3403",
+      "size_bytes": 466
+    },
+    {
+      "category": "signal-valid",
+      "extra": {
+        "case_id": "signal_valid",
+        "disposition": "valid",
+        "encoding": "placeholder_png",
+        "raw_payload": "sgnl://linkdevice?uuid=synthetic-30877432-d102-6706-d7e8-05da846a32c3&pub_key=synthetic_c87a171ac826a6fce48478dcb74f21345d2cce8038a39d5e0853964b50af03b9",
+        "round": 0
+      },
+      "filename": "f63730e2a110.png",
+      "sha256": "f63730e2a1101e2eeae0435073744d9f6da280b66dbd726b6e80e72e5195cdc7",
+      "size_bytes": 473
+    },
+    {
+      "category": "matrix-malformed-truncated",
+      "extra": {
+        "case_id": "matrix_truncated",
+        "disposition": "malformed",
+        "encoding": "placeholder_png",
+        "raw_payload": "https://matrix.to/#/?session_token=synthetic_dbdde131",
+        "round": 0
+      },
+      "filename": "f90df25cf3ba.png",
+      "sha256": "f90df25cf3ba4e21214c7757754e95d6d52e890b9cf0804d0843518b831fcc6c",
+      "size_bytes": 372
+    }
+  ],
   "name": "qr-corpus",
   "publication_policy": "sanitized_candidate",
-  "sha256": "2ca67cd62c3aff816a69bb6682c3184e010359c801cb61e6d9ee070da195e56a",
+  "requested_count": 32,
+  "seed": 42,
+  "sha256": "dbddd85fd2897e294add0ac2588e408f57444425d3f893f2c6ed3501eb4ba92d",
   "source_policy": "synthetic"
 }

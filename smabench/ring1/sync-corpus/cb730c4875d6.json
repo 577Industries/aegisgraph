@@ -1,0 +1,18 @@
+{
+  "_synthetic_round": 9,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "configuration": {
+        "link_previews": false,
+        "read_receipts": true,
+        "typing_indicators": true,
+        "unidentified_delivery_indicators": true
+      }
+    }
+  },
+  "device_id": 449367,
+  "kind": "configuration-sync",
+  "source_uuid": "synthetic-7d3a3e34-fb91-2af3-c9e9-e7d9d62fb50f",
+  "timestamp_ms": 1500000000000
+}

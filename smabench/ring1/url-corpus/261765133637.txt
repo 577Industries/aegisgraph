@@ -1,0 +1,1 @@
+data://us%65r:p%61ss@0300.0000.0002.0001:443//etc//passwd#sec%2Fone

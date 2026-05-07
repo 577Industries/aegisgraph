@@ -1,0 +1,1 @@
+file://trusted.example\@[fe80::1%25eth0]:99999?a=1&amp;b=2#/room:example.org

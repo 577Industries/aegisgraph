@@ -1,0 +1,1 @@
+http://trusted.example\@.preview.example:65535/?q=hello%20world

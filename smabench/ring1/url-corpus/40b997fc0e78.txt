@@ -1,0 +1,1 @@
+http://example/../admin?q=hello%20world#sec%2Fone

@@ -1,0 +1,1 @@
+javascript://@[2001:db8::1]:99999/%2e%2e/admin?a=b=c#/room:example.org

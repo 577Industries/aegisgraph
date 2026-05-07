@@ -1,0 +1,1 @@
+http://user@[fe80::1%25eth0]:99999/article;jsessionid=abc#/room:example.org

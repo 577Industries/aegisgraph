@@ -1,0 +1,1 @@
+x-app://user:pass@.preview.example//etc//passwd?q=hello%20world#top

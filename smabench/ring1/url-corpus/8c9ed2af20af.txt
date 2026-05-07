@@ -1,0 +1,1 @@
+da ta://user:pass@[fe80::1%25eth0]:99999//etc//passwd?a=b=c#sec%2Fone

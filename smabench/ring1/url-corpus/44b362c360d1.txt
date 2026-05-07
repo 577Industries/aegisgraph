@@ -1,0 +1,1 @@
+javascript://trusted.example\@127.0.0.1:0//etc//passwd#sec%2Fone

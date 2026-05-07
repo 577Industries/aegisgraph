@@ -1,0 +1,1 @@
+javascript://user@example:443/article/?a=b=c#top

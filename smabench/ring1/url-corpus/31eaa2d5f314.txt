@@ -1,0 +1,1 @@
+http://user:pass@0300.0000.0002.0001:99999/../admin?q=one#/room:example.org

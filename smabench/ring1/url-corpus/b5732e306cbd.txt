@@ -1,0 +1,2 @@
+x-app://user@evil.exa
+mple@127.0.0.1:99999/article;jsessionid=abc?a=b=c

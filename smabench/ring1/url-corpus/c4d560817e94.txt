@@ -1,0 +1,1 @@
+file://trusted.example\@0300.0000.0002.0001:0/article/page?q=one

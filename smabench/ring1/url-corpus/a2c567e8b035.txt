@@ -1,0 +1,1 @@
+file://trusted.example\@.preview.example:65535/../admin?q=one#sec%2Fone

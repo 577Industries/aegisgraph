@@ -1,0 +1,2 @@
+x-app://0xC0000201:0/../admin?q=he
+llo%2520world

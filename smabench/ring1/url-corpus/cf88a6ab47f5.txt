@@ -1,0 +1,1 @@
+x-app://us%65r:p%61ss@[::ffff:127.0.0.1]:80//etc//passwd?q=one#top

@@ -1,0 +1,1 @@
+https://trusted.example\@[fe80::1%25eth0]:443/../admin#/room:example.org

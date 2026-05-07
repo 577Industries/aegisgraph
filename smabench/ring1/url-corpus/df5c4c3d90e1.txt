@@ -1,0 +1,1 @@
+data://user:pass@[2001:db8::1]:443/%252e%252e/admin?q=hello%2520world#top

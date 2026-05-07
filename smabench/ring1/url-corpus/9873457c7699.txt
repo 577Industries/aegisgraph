@@ -1,0 +1,1 @@
+http://@xn--bcher-kva.example:443/../admin?a=b=c#sec%2Fone

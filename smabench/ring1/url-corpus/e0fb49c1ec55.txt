@@ -1,0 +1,1 @@
+javascript://user@192.0.2.1/?a=b=c#sec%2Fone

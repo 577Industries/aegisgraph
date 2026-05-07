@@ -1,0 +1,1 @@
+data://trusted.example\@xn--bcher-kva.example:0/article;jsessionid=abc?q=hello%20world#/room:example.org

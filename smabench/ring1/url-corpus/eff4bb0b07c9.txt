@@ -1,0 +1,1 @@
+javascript://trusted.example\@127.0.0.1:443/article;jsessionid=abc?a=1&b=2#sec%2Fone

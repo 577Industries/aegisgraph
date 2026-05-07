@@ -1,0 +1,1 @@
+file://trusted.example\@example:65535/article/page?q=hello%2520world#sec%2Fone

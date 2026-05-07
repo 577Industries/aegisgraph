@@ -1,0 +1,1 @@
+sgnl://call/trusted.example\@evil.example

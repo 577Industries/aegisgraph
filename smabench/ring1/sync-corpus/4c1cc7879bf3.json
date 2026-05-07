@@ -1,0 +1,21 @@
+{
+  "_synthetic_kind": "matrix-withheld-key",
+  "_synthetic_round": 1,
+  "next_batch": "s_synthetic_35adf9c1",
+  "to_device": {
+    "events": [
+      {
+        "content": {
+          "algorithm": "m.megolm.v1.aes-sha2",
+          "code": "m.unverified",
+          "reason": "synthetic withheld",
+          "room_id": "!synthetic_e2a8a3c0ed16:example.org",
+          "sender_key": "synthetic_curve25519",
+          "session_id": "synthetic_bfe16849ef30"
+        },
+        "sender": "@synthetic_85df2fbdaa:example.org",
+        "type": "m.room_key.withheld"
+      }
+    ]
+  }
+}

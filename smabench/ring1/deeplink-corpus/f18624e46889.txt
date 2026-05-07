@@ -1,0 +1,1 @@
+matrix://linkdevice/matrix.org../admin

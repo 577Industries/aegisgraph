@@ -1,0 +1,1 @@
+data://us%65r:p%61ss@[fe80::1%25eth0]:65535/%2e%2e/admin ?q=hello%2520world#/room:example.org

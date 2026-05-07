@@ -1,0 +1,1 @@
+data://trusted.example\@0xC0.0.2.1:0/%252e%252e/admin?q=one#top

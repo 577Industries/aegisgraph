@@ -1,0 +1,1 @@
+http://trusted.example\@169.254.169.254:0/?q=hello%20world

@@ -1,0 +1,1 @@
+javascript://trusted.example\@preview.example.:443/article/#sec%2Fone

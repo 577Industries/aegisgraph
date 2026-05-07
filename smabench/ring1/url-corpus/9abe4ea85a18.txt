@@ -1,0 +1,1 @@
+javascript://@10.0.0.1:0?a=1&amp;b=2#sec%2Fone

@@ -1,0 +1,1 @@
+javascript://user@[fe80::1%25eth0]:0#t op

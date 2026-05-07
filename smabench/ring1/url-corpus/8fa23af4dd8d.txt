@@ -1,0 +1,2 @@
+file
+://user:pass@[::ffff:127.0.0.1]:99999/?q=one

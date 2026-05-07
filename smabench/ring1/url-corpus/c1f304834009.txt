@@ -1,0 +1,1 @@
+http://user:pass@[fe80::1%25eth0]:0/../admin?q=hello%2520world#sec%2Fone

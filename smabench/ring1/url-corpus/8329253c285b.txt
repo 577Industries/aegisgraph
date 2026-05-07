@@ -1,0 +1,1 @@
+data://trusted.example\@[2001:db8::1]:99999/article/#/room:example.org

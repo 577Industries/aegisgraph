@@ -1,0 +1,1 @@
+javascript://trusted.example\@0xC0000201:80/%252e%252e/admin?q=hello%2520world#/room:example.org

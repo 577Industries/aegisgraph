@@ -1,0 +1,1 @@
+javascript://user@[2001:db8::1]:65535?q=hello%20world#/room:example.org

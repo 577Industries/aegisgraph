@@ -1,0 +1,1 @@
+file://user@evil.example@xn--bcher-kva.example:99999/article/?a=1&b=2#se	c%2Fone

@@ -1,0 +1,1 @@
+file://user:pass@example/article/page?q=hello%20world#sec%2Fone

@@ -1,0 +1,1 @@
+javascript://user@evil.example@[fe80::1%25eth0]:99999/article;jsessionid=abc?q=hello%20world

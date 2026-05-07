@@ -1,0 +1,1 @@
+javascript://trusted.example\@preview..example:443/%252e%252e/admin?a=1&b=2#sec%2Fone

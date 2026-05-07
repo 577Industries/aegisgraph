@@ -1,0 +1,1 @@
+javascript://user@evil.example@example:0//etc//passwd?q=hello%20world#sec%2Fone

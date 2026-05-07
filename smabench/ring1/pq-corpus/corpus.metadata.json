@@ -1,7 +1,623 @@
 {
-  "item_count": 3,
+  "generator": {
+    "cases": [
+      "pqxdh-initial",
+      "pqxdh-rotation",
+      "pqxdh-migration",
+      "megolm-withheld",
+      "megolm-replayed",
+      "megolm-rotation"
+    ],
+    "module": "smabench.ring1.pq_corpus",
+    "policy": "synthetic_only_no_real_cryptography"
+  },
+  "item_count": 60,
+  "items": [
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 6
+      },
+      "filename": "03dc03b9645c.json",
+      "sha256": "03dc03b9645c4717aa747d66c4cfa63264f6c404a33df6ac230186392eafb6f6",
+      "size_bytes": 378
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 8
+      },
+      "filename": "046d65c5d46f.json",
+      "sha256": "046d65c5d46f2ea338be9e64f8156ee076122603a8d92916b00872a60a59ad27",
+      "size_bytes": 1000
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 3
+      },
+      "filename": "04f4cdcc82f5.json",
+      "sha256": "04f4cdcc82f56652fb0a415d6e741f22fd228bfb3a6bb2df8505bb62171090af",
+      "size_bytes": 380
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 9
+      },
+      "filename": "05d69a1f91b4.json",
+      "sha256": "05d69a1f91b41806314b47b69b59bd203253fa2fdb961d1afdd9a71b503eac3e",
+      "size_bytes": 379
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 9
+      },
+      "filename": "06840676a726.json",
+      "sha256": "06840676a726385fd82df831e104249e01bb67769f0b6b3a336a8554922b6e74",
+      "size_bytes": 1000
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 6
+      },
+      "filename": "08906a891de1.json",
+      "sha256": "08906a891de152f71549082a6994bcb11f25b7d78c665eb550608e72757538f0",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 0
+      },
+      "filename": "0a85da981257.json",
+      "sha256": "0a85da9812570c70ae49b602966602e311d420e11049b0866d91bc4b44f696c2",
+      "size_bytes": 728
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 8
+      },
+      "filename": "0ae9e8de8782.json",
+      "sha256": "0ae9e8de878275b21f9145d1c79e76701032fd225a47f3fcb4007e779753f29b",
+      "size_bytes": 324
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 1
+      },
+      "filename": "0caca138649a.json",
+      "sha256": "0caca138649a076001e7c84261202d5f6c0bc4ab8932197b681ad3b000eda2a7",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 3
+      },
+      "filename": "150dcf47b70f.json",
+      "sha256": "150dcf47b70f66549f07171ff3115e5d514d8a6c4cdb7311bfffa6f53f5a5738",
+      "size_bytes": 615
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 4
+      },
+      "filename": "23868fd99877.json",
+      "sha256": "23868fd99877f1128186fdc8b21eb58290edf1414d50a897d94ccf24dd63a875",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 3
+      },
+      "filename": "24879babd8c0.json",
+      "sha256": "24879babd8c03d4cb577ced829273fc7f7b3f320db9229851b49fe7e05432bab",
+      "size_bytes": 484
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 6
+      },
+      "filename": "2afc64c0eaf6.json",
+      "sha256": "2afc64c0eaf649a2e22804e801f0830559d35cf17da217d87a2f85e350680e2d",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 0
+      },
+      "filename": "2b7d715368e7.json",
+      "sha256": "2b7d715368e78dbb5a9d8b48a35e4933d7244de3a47aae826abd42f220564755",
+      "size_bytes": 614
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 2
+      },
+      "filename": "2b7efa34f121.json",
+      "sha256": "2b7efa34f121f0fac88c496fa91ad7f83d4fe48460470d410de32a4c15f0e3d2",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 6
+      },
+      "filename": "383b263c1993.json",
+      "sha256": "383b263c19938eed592b8f3d9540edc269ac57937b0e86094d9d7c1fc4dbfeeb",
+      "size_bytes": 729
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 1
+      },
+      "filename": "3a813faf0b85.json",
+      "sha256": "3a813faf0b850949b03d46a5d95b89ad3b2d59c06bad6fb0dea7f29b47e404f6",
+      "size_bytes": 324
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 5
+      },
+      "filename": "3af50cda6049.json",
+      "sha256": "3af50cda604959f8b5dac35ccd0b8552985aaa6c8c5d797fd87db7526e707410",
+      "size_bytes": 324
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 3
+      },
+      "filename": "3f24d8ac4f17.json",
+      "sha256": "3f24d8ac4f170d31fcfd779d2917780485e39ed68df96e79746ee4395f3f65c8",
+      "size_bytes": 1000
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 8
+      },
+      "filename": "43a4ba509d21.json",
+      "sha256": "43a4ba509d21991686fd8915e30d3096bb547a19f288e879416cb4e8550d27d9",
+      "size_bytes": 378
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 7
+      },
+      "filename": "48f56c1681dd.json",
+      "sha256": "48f56c1681dd9f96f8457f9ac8852f93c0dadf51c18218425652d08b43add168",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 5
+      },
+      "filename": "496dd5469b02.json",
+      "sha256": "496dd5469b02daea3bd247ee9ae79c9be72e09b445712169ac7d1d3d288ed8d7",
+      "size_bytes": 729
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 1
+      },
+      "filename": "49e3b40d2a46.json",
+      "sha256": "49e3b40d2a468a707b50552f099978ea7933ff9a5f21d96fb271e85016a819b2",
+      "size_bytes": 614
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 2
+      },
+      "filename": "4b5c3ed5d6f6.json",
+      "sha256": "4b5c3ed5d6f65ea6a7967238986d39db2ee32964d3384c74574dd17299425bf6",
+      "size_bytes": 484
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 4
+      },
+      "filename": "4c57bd3d98fa.json",
+      "sha256": "4c57bd3d98fab15d22cc30877b939f1909c1d46a711c28b4cdbc72cb41f01d82",
+      "size_bytes": 729
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 7
+      },
+      "filename": "5211e2fa22b3.json",
+      "sha256": "5211e2fa22b37477fe30b1859bc9dc572520eb0443acabfacd1700e505d22d5f",
+      "size_bytes": 729
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 1
+      },
+      "filename": "5227c5a43ca7.json",
+      "sha256": "5227c5a43ca720b23d0ae6b0ee968ec1fa2da07694241726959e37fe4aa53c5c",
+      "size_bytes": 380
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 9
+      },
+      "filename": "5282536a12a5.json",
+      "sha256": "5282536a12a55330986ea5b2a2cdfab3fe85608b1b2f34f7bb0edbce1e33e62a",
+      "size_bytes": 612
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 7
+      },
+      "filename": "540de303f8ba.json",
+      "sha256": "540de303f8ba1b2e8272d520ad27c21d36d60a4bed7db4153f7aa22ba89ca7a8",
+      "size_bytes": 380
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 5
+      },
+      "filename": "5a5441a89712.json",
+      "sha256": "5a5441a897126ad2c79601bcb6296e6c65f042b702c5de50f9a36204ec4a5709",
+      "size_bytes": 484
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 1
+      },
+      "filename": "5d71ce073cb5.json",
+      "sha256": "5d71ce073cb5265049c01a2b003364b3eee58a645233a400cf9995c41436cfd5",
+      "size_bytes": 484
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 0
+      },
+      "filename": "5e542ceb0197.json",
+      "sha256": "5e542ceb0197e25be0005eee5db8013e833e952efeba88f7553af1b80258672b",
+      "size_bytes": 379
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 7
+      },
+      "filename": "63624d74cae3.json",
+      "sha256": "63624d74cae39b5bf63dc490b0f8f8ecdd35b31532635c1836a9db51ae082ec4",
+      "size_bytes": 613
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 0
+      },
+      "filename": "647b27550adf.json",
+      "sha256": "647b27550adfee021650ace3c044ae9933071e317d1b69fcb88037b0d7e6934f",
+      "size_bytes": 324
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 3
+      },
+      "filename": "69295fae7394.json",
+      "sha256": "69295fae7394d0392d31c3a5f1bd902d0e61725b500c6945d3e43fca6f0a335e",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 2
+      },
+      "filename": "6a0c29771e46.json",
+      "sha256": "6a0c29771e4629c59c88d8b0dc1a7efe18c7059f3b54f7d57a99c3121eaeac69",
+      "size_bytes": 726
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 9
+      },
+      "filename": "6b728ed30daf.json",
+      "sha256": "6b728ed30daf402a1b7c33a9fbe6612398f8894c6b4eff83abbff484e9c84b91",
+      "size_bytes": 484
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 4
+      },
+      "filename": "722401a575b9.json",
+      "sha256": "722401a575b9a1d2bf193be823f99b3bf8b168ce0ea9a4386e611cb0eaf7e1ab",
+      "size_bytes": 614
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 3
+      },
+      "filename": "723108baaebe.json",
+      "sha256": "723108baaebe605e6c21ba37d5f6c27a5f6d9d823fafb3a495741673668765f0",
+      "size_bytes": 729
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 2
+      },
+      "filename": "7bbe23d76d55.json",
+      "sha256": "7bbe23d76d55c3801cb462c4aa4da7ced21c22959407112039be2e5d58d2fe5a",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 9
+      },
+      "filename": "826b33a316cf.json",
+      "sha256": "826b33a316cffd88f7257088752c07322412748f03590f950edb7c6c196f5204",
+      "size_bytes": 729
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 4
+      },
+      "filename": "837ee3b3f4d0.json",
+      "sha256": "837ee3b3f4d07baa730c32e6aca84904211cbb140c76adf1b699207faf39e44f",
+      "size_bytes": 378
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 5
+      },
+      "filename": "84371999c87a.json",
+      "sha256": "84371999c87a3feae6513b510c8db70cd40ed9c933071274a2263b5ca2d8cd90",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 4
+      },
+      "filename": "8b0c6d7d1f9e.json",
+      "sha256": "8b0c6d7d1f9e7c4614a110df123a29de77b89bc55d67e3987ca98e2de340624d",
+      "size_bytes": 484
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 9
+      },
+      "filename": "b1435cfb1d61.json",
+      "sha256": "b1435cfb1d6199dfeb3c992b67689be10fb431ae5cc6b51f74f8efe05f8dc6b7",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 7
+      },
+      "filename": "b7d3fc48686b.json",
+      "sha256": "b7d3fc48686b3651178bb76f2b698cd3f93f13228a9220434c1f18d8ef9fed85",
+      "size_bytes": 483
+    },
+    {
+      "category": "megolm-rotation",
+      "extra": {
+        "case": "megolm-rotation",
+        "round": 7
+      },
+      "filename": "c660a19d4eb2.json",
+      "sha256": "c660a19d4eb23425b01bc1df74b586414d03fbd88079d8df4e4486537f614559",
+      "size_bytes": 324
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 1
+      },
+      "filename": "c66de76c3a17.json",
+      "sha256": "c66de76c3a17b3f4abefb6d56afa35a5773681adc8ec8084e13169935a0bd8ab",
+      "size_bytes": 729
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 8
+      },
+      "filename": "c6ad51ea63ae.json",
+      "sha256": "c6ad51ea63ae7d39183d54a915faa67069d4b9f7588cd1b3cb6924e9e7856306",
+      "size_bytes": 484
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 6
+      },
+      "filename": "ce6d8dda0bc3.json",
+      "sha256": "ce6d8dda0bc33aadc3459033cd38870ce83368178cc5b2caa8c3a2f7ebb53c7f",
+      "size_bytes": 614
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 5
+      },
+      "filename": "cec8e4c9885d.json",
+      "sha256": "cec8e4c9885dcbc6b036dae6407652258ba6f454e3617ee02de52f91274854db",
+      "size_bytes": 614
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 0
+      },
+      "filename": "d10b05e3a6ce.json",
+      "sha256": "d10b05e3a6ce457809aed87b3a0aecef9b018ef454d8abf1633c5a36b2b99c71",
+      "size_bytes": 1000
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 0
+      },
+      "filename": "e1c42a74748e.json",
+      "sha256": "e1c42a74748e6938d76c52d999652e33e68bf68766533d257a95078fea6c7190",
+      "size_bytes": 484
+    },
+    {
+      "category": "pqxdh-migration",
+      "extra": {
+        "case": "pqxdh-migration",
+        "round": 6
+      },
+      "filename": "e373d21e4afe.json",
+      "sha256": "e373d21e4afef2accdfb1da0c3338e2a23feeb3def6ebafadc42b0b121240345",
+      "size_bytes": 484
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 2
+      },
+      "filename": "ea376a2902e7.json",
+      "sha256": "ea376a2902e7cc4c7d3732db031a2d0f1f19badfbc2e40b61353c9d2a17dd3fa",
+      "size_bytes": 374
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 8
+      },
+      "filename": "f02ac5e5ae89.json",
+      "sha256": "f02ac5e5ae8941897129bbe1c3f5a0637b17adcf7e93d52117c1087e21d784f0",
+      "size_bytes": 614
+    },
+    {
+      "category": "megolm-withheld",
+      "extra": {
+        "case": "megolm-withheld",
+        "round": 5
+      },
+      "filename": "f2e5f445d234.json",
+      "sha256": "f2e5f445d234219b9345c92c31d5acef7d8a0ee04a8d2854b2b49ff472662040",
+      "size_bytes": 379
+    },
+    {
+      "category": "pqxdh-initial",
+      "extra": {
+        "case": "pqxdh-initial",
+        "round": 8
+      },
+      "filename": "f4d42c0f8d11.json",
+      "sha256": "f4d42c0f8d113d5bbec7ad41dabb8f36a0fa606cd25daa51207d5826d4e927b9",
+      "size_bytes": 729
+    },
+    {
+      "category": "pqxdh-rotation",
+      "extra": {
+        "case": "pqxdh-rotation",
+        "round": 2
+      },
+      "filename": "f54f68c4ac40.json",
+      "sha256": "f54f68c4ac4023dc092569c7da15913fa799038fd4fb7a64e90fc734ebfcd14a",
+      "size_bytes": 614
+    },
+    {
+      "category": "megolm-replayed",
+      "extra": {
+        "case": "megolm-replayed",
+        "round": 4
+      },
+      "filename": "f683a0eadb6d.json",
+      "sha256": "f683a0eadb6dd53b8ac6e0de847c9e0e8eb5d143739baa2b23232ea8d7b0ad15",
+      "size_bytes": 1000
+    }
+  ],
   "name": "pq-corpus",
   "publication_policy": "sanitized_candidate",
-  "sha256": "7a08bac7ca8f95e4ee7bfd82b73b1abefabe7b004b86f26fa07fef639f8c8f65",
+  "requested_count": 60,
+  "seed": 42,
+  "sha256": "e3a6c003ece2f46f85fce2ea05555d7a871f540b41cb57572b3569b6fa0786a8",
   "source_policy": "synthetic"
 }

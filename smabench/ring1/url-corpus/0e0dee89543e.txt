@@ -1,0 +1,1 @@
+data://user@example:0/?a=1&b=2#sec%2Fone

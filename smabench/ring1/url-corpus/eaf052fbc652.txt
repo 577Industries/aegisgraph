@@ -1,0 +1,1 @@
+file://trusted.example\@xn--bcher-kva.example?q=hello%20world#/room:example.org

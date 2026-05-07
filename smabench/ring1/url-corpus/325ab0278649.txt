@@ -1,0 +1,1 @@
+file://trusted.example\@xn--80ak6aa92e.example:65535/../admin?a=1&b=2

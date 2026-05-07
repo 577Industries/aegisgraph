@@ -1,0 +1,1 @@
+data://xn--bcher-kva.example:443//etc//passwd?q=hello%20world#sec%2Fone

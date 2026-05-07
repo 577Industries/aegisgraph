@@ -1,0 +1,1 @@
+javascript://3221225985:65535/?q=hello%20world

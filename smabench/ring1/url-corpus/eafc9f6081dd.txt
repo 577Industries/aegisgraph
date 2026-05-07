@@ -1,0 +1,1 @@
+x-app://@example//etc//passwd?a=1&amp;b=2

@@ -1,0 +1,1 @@
+http://trusted.example\@[::ffff:127.0.0.1]/article/?q=hello%20world#sec%2Fone

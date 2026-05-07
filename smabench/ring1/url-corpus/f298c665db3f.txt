@@ -1,0 +1,1 @@
+data://trusted.example\@192.0.2.1:65535/article/?a=1&b=2#/room:example.org

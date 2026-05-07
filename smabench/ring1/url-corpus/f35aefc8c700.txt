@@ -1,0 +1,1 @@
+x-app://trusted.example\@[2001:db8::1]/../admin?q=hello%2520world#/room:example.org

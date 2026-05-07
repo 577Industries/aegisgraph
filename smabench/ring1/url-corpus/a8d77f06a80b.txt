@@ -1,0 +1,1 @@
+javascript://user:pass@0xC0.0.2.1/article/?a=1&amp;b=2

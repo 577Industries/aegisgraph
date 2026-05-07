@@ -1,0 +1,1 @@
+https://trusted.example\@preview..example:80//etc//passwd?q=hello%20world#s ec%2Fone

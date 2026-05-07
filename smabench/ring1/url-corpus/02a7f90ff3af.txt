@@ -1,0 +1,1 @@
+http://user:pass@192.0.2.1:443?a=1&b=2#sec%2Fone

@@ -1,0 +1,1 @@
+x-app://trusted.example\@3221225985:99999/article;jsessionid=abc

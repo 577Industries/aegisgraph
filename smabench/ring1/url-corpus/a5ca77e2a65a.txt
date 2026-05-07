@@ -1,0 +1,1 @@
+file://trusted.example\@preview.example.:65535/article/?q=hello%20world#/room:example.org

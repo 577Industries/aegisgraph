@@ -1,0 +1,1 @@
+javascript://user:pass@127.0.0.1:65535//etc//passwd?q=hello%2520world#/room:example.org

@@ -1,7 +1,2233 @@
 {
-  "item_count": 3,
+  "generator": {
+    "matrix_cases": [
+      "empty-sync",
+      "replayed-event",
+      "key-rotation",
+      "withheld-key",
+      "presence-update",
+      "ephemeral-typing",
+      "redaction",
+      "membership-change"
+    ],
+    "module": "smabench.ring1.sync_corpus",
+    "signal_cases": [
+      "empty",
+      "rekey",
+      "pre-key-shim",
+      "device-link-confirm",
+      "verified-state-update",
+      "sticker-pack-sync",
+      "configuration-sync"
+    ]
+  },
+  "item_count": 200,
+  "items": [
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "00c3c8937d0e.json",
+      "sha256": "00c3c8937d0e75efffd043c76e74ce609c92f26812c4972838ba007299543df5",
+      "size_bytes": 445
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "05d5bcd8999e.json",
+      "sha256": "05d5bcd8999e636037aaebbfa16d05c030a842f37678e4fec7128f52ba6099f9",
+      "size_bytes": 274
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "07004fe01dc9.json",
+      "sha256": "07004fe01dc915aec13859014e6a308c0093d30e7169a55a1e8fc866b3739581",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "077513dbd770.json",
+      "sha256": "077513dbd7700753ccedb8c87190e9bc7680e1ffc80faba7618d47e5f30b1d1e",
+      "size_bytes": 455
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "07d7b7b8c9cc.json",
+      "sha256": "07d7b7b8c9cc6f054599b4cdf3bad49c646cb27242dddd449b74d0cf75365626",
+      "size_bytes": 1398
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "08276519d439.json",
+      "sha256": "08276519d439b5fc0a1b40fafa38f68bca1d06dca7c7ba864d77b1d7a2195afd",
+      "size_bytes": 370
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "08d2fbc17ea7.json",
+      "sha256": "08d2fbc17ea746c74e26d0673d7e07758cb0de797f28470e65a1b117a4d8d89c",
+      "size_bytes": 448
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "0951f350ab9b.json",
+      "sha256": "0951f350ab9bc9b0f5ac04cbb313509803636b59b36f41ba50392511eaedde31",
+      "size_bytes": 734
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "0a4beda03987.json",
+      "sha256": "0a4beda0398793296811ff9dd1d8101b2b7fb38232c0ea62ec2f7e8922bee845",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "0b8770011397.json",
+      "sha256": "0b8770011397330a40b84da3d4c50eaa7e374d21dd05544d24f26d354fcad734",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "0d5a036d3444.json",
+      "sha256": "0d5a036d3444153e64209018ce0dfb238675c19278d02f37b06ae7506b9922e5",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "0dc4e4e4bafe.json",
+      "sha256": "0dc4e4e4bafe2d353319ae3976bc9278bf0e7b9ccadca661ad615b64e517a35a",
+      "size_bytes": 1397
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "0f2dd5e91b04.json",
+      "sha256": "0f2dd5e91b04355f4ebfcd8f3f80404804efbec406308f55330a0caa798c15e2",
+      "size_bytes": 577
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "0f8058c2c88a.json",
+      "sha256": "0f8058c2c88a76df0ba3d210f523be995410aaf7ed435029b5a1ca1ee10a8854",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "1239ba7478a6.json",
+      "sha256": "1239ba7478a66a122a1de3f5c11a406bcf424e21df5363ccca818a649a696bba",
+      "size_bytes": 1397
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "134e9a7693c4.json",
+      "sha256": "134e9a7693c4756e719244a70d7caf73987de8aa93ec9de405838bbe171d6f8a",
+      "size_bytes": 274
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "14094849e4e3.json",
+      "sha256": "14094849e4e3651b005657cd7423f4c3ad4bf0cd8448816f1c4d88e43a7f27b5",
+      "size_bytes": 369
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "1431ea04df75.json",
+      "sha256": "1431ea04df75fcbd77ee11c7b867990be6ee3f00f265396bc05e0219edb73dbe",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "159fe8cf97ce.json",
+      "sha256": "159fe8cf97ce555b6295869aafd7432fc15aeba68cdf7a004b806d1695bcf067",
+      "size_bytes": 734
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "1772614893dc.json",
+      "sha256": "1772614893dcfd4a335aa472bb67ebda322718d755698bfaca3a1d31310f1058",
+      "size_bytes": 392
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "1bfac683bf3b.json",
+      "sha256": "1bfac683bf3b0697fccfb5751b952b5347c25adb568ea4961b83bba3bf39f49d",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "1c9da33dd9e1.json",
+      "sha256": "1c9da33dd9e151c3fef48437b178c201b6e4f0b428d0bbff4b6dc872464e8b8c",
+      "size_bytes": 455
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "1f6c5d56f61a.json",
+      "sha256": "1f6c5d56f61a1f5b0bace2318dfff9cc72583a06bccfd52466cd707b59a591ec",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "231a7f82cb08.json",
+      "sha256": "231a7f82cb087be407a30e0b63a7dd7e7203c8616988057be572abf3c0db8a88",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "24c696a8ee48.json",
+      "sha256": "24c696a8ee48294cc065ed63888e2945bec04992ef305f62e0195bd60b25e3ff",
+      "size_bytes": 1397
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "2747a3ac4a2b.json",
+      "sha256": "2747a3ac4a2b49fe62611ea56502b913d63331d1dec14a51de6faf0de9e31bec",
+      "size_bytes": 1398
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "29b61ce2d8ae.json",
+      "sha256": "29b61ce2d8aea6f589ae6aceeb616cd9e860f23a35ceac7fea5d8424b35a290b",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "2a614018f33b.json",
+      "sha256": "2a614018f33b46927d8bd766e555459c753045da14ac37b20b90dfc90dc151d7",
+      "size_bytes": 577
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 13
+      },
+      "filename": "2ac64f47cfed.json",
+      "sha256": "2ac64f47cfedaabd26803e927ba74d1b0389d919314bf764c5d12cc322103b1e",
+      "size_bytes": 1398
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "2ad3ac4100d7.json",
+      "sha256": "2ad3ac4100d72e621df724f47d8bf6db0bb69c9795a8b9469dc2bf199c46a9bc",
+      "size_bytes": 438
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "2b0e426c7fa9.json",
+      "sha256": "2b0e426c7fa904adb16b7a8ba5c5b9e131acb2b4bd548b484dc0fc0769791309",
+      "size_bytes": 456
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "2c3381b36353.json",
+      "sha256": "2c3381b363539242ff0f6054c98632e569585b31fffe52e7f140ab48f46a8ed1",
+      "size_bytes": 274
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "2c39c1639f54.json",
+      "sha256": "2c39c1639f54d63bd62c28ab59453e6cd91d288dd37df40867b45806036a91a9",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "2e44ef2c7402.json",
+      "sha256": "2e44ef2c7402079ac16755a43703460c47d87f86f182f4361f0405506a66f0c6",
+      "size_bytes": 577
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "2e6481295216.json",
+      "sha256": "2e6481295216f54754fccadb7abc48e74cd36773776785b35370658a0c85ed27",
+      "size_bytes": 370
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "34ff3b67b360.json",
+      "sha256": "34ff3b67b360f772f8782d6640fa179176460f1eec27cf34f2fff90ed6c46417",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "36b89521ee6a.json",
+      "sha256": "36b89521ee6a8c06495f74b676e9d98dfdb834849129de4178f9001c3471be27",
+      "size_bytes": 578
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "36ea355dcfd3.json",
+      "sha256": "36ea355dcfd3d6ec6306c78a04693e97a186960eb65505e54ec211a5dc6850f1",
+      "size_bytes": 447
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "3868075cefc8.json",
+      "sha256": "3868075cefc8a0ee4c538ed51f0d9863494c84b3c88f8bf7a36c2ddb1cc4356b",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "393d562f0dba.json",
+      "sha256": "393d562f0dba2b09dec8302d9e150dd0698241c21ad7b2f36d4b24bde1e452e4",
+      "size_bytes": 1019
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "3a90e1e2fb26.json",
+      "sha256": "3a90e1e2fb2656a8e3d9851a0b8e00f6a105e55e87c71c06c12481f4538be08e",
+      "size_bytes": 453
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "3b5a4e594cb6.json",
+      "sha256": "3b5a4e594cb62db9391f3065a7f237585f18314d776d15648a5b8357232ceeea",
+      "size_bytes": 368
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "3b904e9700ff.json",
+      "sha256": "3b904e9700ff0c02c270e63be81e86b44bdb9ae11177813b05ed889a9ff3bd04",
+      "size_bytes": 1019
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "3c903d3d45cb.json",
+      "sha256": "3c903d3d45cb2f53c4163e3b8cddf1bcd97ea1f7ad1c97419eaf1f041abd3bc5",
+      "size_bytes": 454
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "3da44a454d72.json",
+      "sha256": "3da44a454d72bbb3f7cb25ebf805b36af2259ac4e6e39c9ca33b4e588c710d12",
+      "size_bytes": 369
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "409f2511c815.json",
+      "sha256": "409f2511c815764bfe2c7f47dd96149a13c394ecdff48618725c6e9dd70bc370",
+      "size_bytes": 396
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "41f90f48e1bd.json",
+      "sha256": "41f90f48e1bdcbcf20e2c36f786be2f50e46306dae16706c9bb26001f6b8b578",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 13
+      },
+      "filename": "4573d3e8c922.json",
+      "sha256": "4573d3e8c92297c85bd559b53fbbc48f70352602728617f7d5cf4a6abf984e64",
+      "size_bytes": 393
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "470f5ee51681.json",
+      "sha256": "470f5ee51681175d3b2e8df65f7186b63836dc6942665b683035475205dc72a6",
+      "size_bytes": 371
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "496178ef9a35.json",
+      "sha256": "496178ef9a3508d8dfb5a2a9d090c569e83271efbbdd49d99c62912618bdad0e",
+      "size_bytes": 398
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "4ad94759b63b.json",
+      "sha256": "4ad94759b63b388ee7d618403b3e6a0a6ebe6cf299059c38e0903ac6c60e137e",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "4c1cc7879bf3.json",
+      "sha256": "4c1cc7879bf34456cb5f25e61a9f07ffc143884ea9127b75f87046a0e0d934d3",
+      "size_bytes": 577
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "4c34bcb737f4.json",
+      "sha256": "4c34bcb737f4ebabfe8413725a58f36556c3ff636f89dd8211cd84962ed10386",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "4c8ed73db584.json",
+      "sha256": "4c8ed73db58440db80faaf6c0df9113eccb4583c33202ce1767cce88f99f6649",
+      "size_bytes": 734
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "4cb2d6232b74.json",
+      "sha256": "4cb2d6232b74fa9b661f35a33f233dc73fcc3fb88ca77939765dadca27b3e08d",
+      "size_bytes": 446
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "4fec74ce0a8d.json",
+      "sha256": "4fec74ce0a8df57d4ade359f4097a195e7c80aa689f626e9628f9f95e81630cb",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "51dbc08c258b.json",
+      "sha256": "51dbc08c258b69bc2df1f0d5faadcb0144776cfbd7cdd86db61603a4815473e5",
+      "size_bytes": 483
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "52a47332c34a.json",
+      "sha256": "52a47332c34a42edb80b1831b12f24624406ba2cf192b641c1aa0a4fe37a1e1f",
+      "size_bytes": 453
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "53348f234e77.json",
+      "sha256": "53348f234e77d9884e600c12ce141a1cc28275955f2ebfdf8a9322336bfd1447",
+      "size_bytes": 1398
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "54f4e7d306bb.json",
+      "sha256": "54f4e7d306bb734bbbb3fd2436d7fe15d527fa7ca8a30fc7c4615f90e62bcfa9",
+      "size_bytes": 1019
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "5656da1ec8ff.json",
+      "sha256": "5656da1ec8ff5bf9043e6ccec79c9d2522820ba743f7b414f4d96e0d2836438e",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "57ff25edab71.json",
+      "sha256": "57ff25edab711bcf5b39c0d158c915705cd47f31873d0e70df151ff90282b50e",
+      "size_bytes": 734
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "5973ae3ce414.json",
+      "sha256": "5973ae3ce414d4854c6d285c10f08e53cefce14adfb5ac22f4471bf9f2f77a71",
+      "size_bytes": 446
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "59ee6f9f09fa.json",
+      "sha256": "59ee6f9f09fa11f5cdba1fa2b8a8d7f8bfde58d8a4239dcf7784734bc9474b1a",
+      "size_bytes": 452
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "5a8ee86dd018.json",
+      "sha256": "5a8ee86dd0186b81b17aacd32ae71e7adf7a5808852cdae7628d68afe701fde6",
+      "size_bytes": 438
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "5beeb83dd23b.json",
+      "sha256": "5beeb83dd23bd2c364b6a279a9fc9ad391762fadbda355c4b052c201585bcb96",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "5d29343b9bd8.json",
+      "sha256": "5d29343b9bd88c1161a4821e805e9057abd871626c36f3c1238540ac924a864d",
+      "size_bytes": 438
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "5ddd96793274.json",
+      "sha256": "5ddd96793274722341b18bff6c795140085c0eabed99b1610f2b0333e7fda769",
+      "size_bytes": 452
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "5f39446e9c80.json",
+      "sha256": "5f39446e9c80579a381a798aaaa21784d2a16e119df488e6f275fb473e760d1e",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "5f4f22040280.json",
+      "sha256": "5f4f2204028095c98a6a1a47fcce7dafdb289d82343b6e531de1ad7919517b9b",
+      "size_bytes": 1397
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "633d96a57feb.json",
+      "sha256": "633d96a57feb08afdb67480816791cefe428b603b750a981303b715fed1a467a",
+      "size_bytes": 369
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "634228af1969.json",
+      "sha256": "634228af1969877eed0201abe026356b393c636d7ba495f2b7e43a88f57b46ee",
+      "size_bytes": 1397
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "63578d28056f.json",
+      "sha256": "63578d28056f88f71d515686b28164c8745349639352a8ff466cfda803e9fda2",
+      "size_bytes": 273
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "63d1e449d133.json",
+      "sha256": "63d1e449d133ae38ee450aab279b947ff631ab03ba098f94c8dbfb5a8e2b9a20",
+      "size_bytes": 458
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "67ae7b66ffab.json",
+      "sha256": "67ae7b66ffabb7789ce66d44be8f45c6d11f994306877c76313fbcfe5c5f6bcf",
+      "size_bytes": 453
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "68edb76cc392.json",
+      "sha256": "68edb76cc3926f231e99d0b67aaf797c263046bc09de3ad50458ebc092197178",
+      "size_bytes": 314
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "6c3aed27f56f.json",
+      "sha256": "6c3aed27f56fe1ce64bf42725a474e1a81d90f8b1d56af5475ccbddbc1d0612d",
+      "size_bytes": 459
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "6df1bbd302a0.json",
+      "sha256": "6df1bbd302a06e9d3694f181ad1ab072affd5960396ac361bf38518886d63277",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "6ffb9407d0c0.json",
+      "sha256": "6ffb9407d0c042727427f5878d214a2137b1de887428526565b49b946ffa3b11",
+      "size_bytes": 483
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "6ffe5ac49326.json",
+      "sha256": "6ffe5ac493263ddd947eedc727dd685dd4d4c62a9d5c08543a977a62679e069b",
+      "size_bytes": 457
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "70b029f109ac.json",
+      "sha256": "70b029f109ac23d49db40c42a3fd69573bf28dbadc2f07ccae8dcf61ef8174c1",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "722f90ddb794.json",
+      "sha256": "722f90ddb794fc387c4b605baf841bcf5724bfd9ce36cc10554b0df8a5420604",
+      "size_bytes": 456
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "739ebb1521a5.json",
+      "sha256": "739ebb1521a54944231319849a72e9aaa7020998957c5830408881bee5da141f",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "73e960e64c15.json",
+      "sha256": "73e960e64c15bd166473352f1f192dae4b6277de48cd7b42eeffe89ead9dad8f",
+      "size_bytes": 273
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "7419a861d6ea.json",
+      "sha256": "7419a861d6eab7da86b2b9579c4c49f4e43b1ca17968a5537530b07a98b6f03d",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "74ed69a38613.json",
+      "sha256": "74ed69a3861364d5ed504d7781b928d1a682e1ee91a1b26d3063aea6f43360fb",
+      "size_bytes": 1397
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "7520554979e1.json",
+      "sha256": "7520554979e187b30643aa4f59c84e0c922055ac642757b23acb9b03f0ae03e6",
+      "size_bytes": 392
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "757d5c9c6931.json",
+      "sha256": "757d5c9c69311e90608af93187a886eb885eeb82a8d480429047cc6cfcf27e1a",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 13
+      },
+      "filename": "75be7e9a70eb.json",
+      "sha256": "75be7e9a70eb5bfda585268c7d1e8964b77a158ed56e459e5f24318f18847ff0",
+      "size_bytes": 315
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "777fb564a807.json",
+      "sha256": "777fb564a807a60dae3c9ec43db53aa2e28c0607b30200c51ae79ed52dce18d3",
+      "size_bytes": 369
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "786d85801934.json",
+      "sha256": "786d85801934cf1f04ceefad22c4f219fe693085bf73e8ab644e1f5e27801608",
+      "size_bytes": 446
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "787c2aaa5104.json",
+      "sha256": "787c2aaa51046f73fd05de8be0ce71f1ae4f945a9d33a7bba1da099e7aaf739e",
+      "size_bytes": 392
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "78ae403ceea5.json",
+      "sha256": "78ae403ceea5080fbb358ddcee4ac258fae49ff432eff191ba88559d70ba0dce",
+      "size_bytes": 457
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "78b82da69b11.json",
+      "sha256": "78b82da69b11be76d3de0e8fc0c117b4beac6aa061575397c237987be1398bf3",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "7a07a6b245cb.json",
+      "sha256": "7a07a6b245cb7f6665d4a3f2c2ec50fb07a9a4364cebb83438e25cc19ae457db",
+      "size_bytes": 578
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "82bde9d8a195.json",
+      "sha256": "82bde9d8a195d723e460e21ed2bee198a7b1cae04d4b1a0e9e65e4aa90063342",
+      "size_bytes": 484
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "82e7b073d5be.json",
+      "sha256": "82e7b073d5be5bbf1ce88a40ced21147230e1e29e8edb9a800d461dc54d6b3ab",
+      "size_bytes": 452
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 13
+      },
+      "filename": "83b7e0257235.json",
+      "sha256": "83b7e0257235e024bb12b02a5b5d7e4dccf0e6d44e838d19a1ea012457e58010",
+      "size_bytes": 1020
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "8425ed66fda0.json",
+      "sha256": "8425ed66fda0e7edf1a5e7f3592d9a7174789e71167eac77d87a85a0c9a350e1",
+      "size_bytes": 392
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "84dcf57e4ffc.json",
+      "sha256": "84dcf57e4ffcdb9a18db42144fbd36c60504fd5e4cf8bc6028b149b038413e37",
+      "size_bytes": 484
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "858e5b1b3ca8.json",
+      "sha256": "858e5b1b3ca8c2d593429004093635a3c1f4a4ae164c75e1eea2a688164e2836",
+      "size_bytes": 438
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "85e4a2b854b8.json",
+      "sha256": "85e4a2b854b86eac3eae04235b9cc02c0cbd8221d72ad43c15a94091375c7417",
+      "size_bytes": 396
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "8706064c10bc.json",
+      "sha256": "8706064c10bc12c67b7af305415ad5da7fa9114d31144a6106e1be2ceb84ac99",
+      "size_bytes": 484
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "872f6d0ca532.json",
+      "sha256": "872f6d0ca532f652b8c63823a3c56e444edf6bb197710bbc2a1ea5cbfb9fc7cc",
+      "size_bytes": 397
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "89875a4f2ed9.json",
+      "sha256": "89875a4f2ed9b66e0dba9769b242d981f75c1056d3bf87054cb108262afa1707",
+      "size_bytes": 369
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "8a0b238b08e5.json",
+      "sha256": "8a0b238b08e5effa63f73057f80e600e1a18f366f903fd9a152daab38d6d8e8e",
+      "size_bytes": 577
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "8ad3653705e7.json",
+      "sha256": "8ad3653705e75ab8e2201adcc4cc14944b4124333e4b6ad5315c2eaf27df2c93",
+      "size_bytes": 1020
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "8b63632ea8c9.json",
+      "sha256": "8b63632ea8c9eb9cd1f89b0c5e0ec1947036e1412e4fe72bd41c6746441d7f09",
+      "size_bytes": 369
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "8d9b521e89d8.json",
+      "sha256": "8d9b521e89d80f1bcc37091eeb3b3b34d125b70856278722e14fb916282a1f7f",
+      "size_bytes": 483
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "8dc74972caea.json",
+      "sha256": "8dc74972caea9c3f875de61ba22e58f7ab3830ef8d76af46c1dc0ea00d82aae2",
+      "size_bytes": 396
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "8dfdeeb41783.json",
+      "sha256": "8dfdeeb4178390b55a1e66841aef44ea1f890f17c9a5348e294f0cfec3c1be03",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "8e61a845acf7.json",
+      "sha256": "8e61a845acf7507643d16bfa7bccafea657f088fae3d5732fe53843c62133aba",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "8f1348e2dc76.json",
+      "sha256": "8f1348e2dc76285ddab884054fb2208cf371a6572860a5b3e771dc0d4f02d3f1",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "8ff33cad6303.json",
+      "sha256": "8ff33cad6303f917747fe683e423ee6fdc61b1c09eb4348169601d7a71e1ad6e",
+      "size_bytes": 439
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "91027b7f8c70.json",
+      "sha256": "91027b7f8c7070cbc07f1ccbcb42d5a48450f612c8b14d3e5e194939a20965dc",
+      "size_bytes": 453
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "94c8e9834b69.json",
+      "sha256": "94c8e9834b69f50bb2cd1dea231d979a743bb9a7a4e3fbc27ade7bc1bcf226f8",
+      "size_bytes": 453
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "99704a14c827.json",
+      "sha256": "99704a14c8277a8624d9f35481e154b1d51a7dada0e6802ce26888d6fa83b964",
+      "size_bytes": 273
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "9b3838d40bda.json",
+      "sha256": "9b3838d40bda76e2fbc486d4de57a9a3bb784e7f7ed276560e40a35e6677c3f8",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "9c3a362c2e58.json",
+      "sha256": "9c3a362c2e5877ad9522fe977c052e0257e68727fb378bc5cb81abf99eb2eda9",
+      "size_bytes": 1397
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "9cbe7543e14e.json",
+      "sha256": "9cbe7543e14e6b4b98d88e7a1a4eceec89446131b254d0e664b16328069178f3",
+      "size_bytes": 370
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "9e62133bc319.json",
+      "sha256": "9e62133bc319b15a7fa534c77b21aedcc35625ac3f1857be4120c5561007b425",
+      "size_bytes": 1397
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "a0200a70b2cb.json",
+      "sha256": "a0200a70b2cb773fefd1ed9ab70a8168fb8cdad5cab765307c629fb3cda09425",
+      "size_bytes": 734
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "a4c3de95fd2b.json",
+      "sha256": "a4c3de95fd2bc5fd2c42f1ffc8a1b304a5da877bc85a347a59fc53e630dc9535",
+      "size_bytes": 453
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "a5547d783658.json",
+      "sha256": "a5547d783658c2e700318fe63a798d293db73cf89db6cd406fc5680d3144d9a6",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "a68d37b3e241.json",
+      "sha256": "a68d37b3e2412c58e0b6812c29d661840f17fa9aa54f5321a247201b4d966edc",
+      "size_bytes": 1397
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "a6d991da6ae8.json",
+      "sha256": "a6d991da6ae8dc5b048eb443a1937fed66c67a95570b605b9783fa1704db3f59",
+      "size_bytes": 273
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "a90bd79a0e6d.json",
+      "sha256": "a90bd79a0e6d538f2cf28d480fd34c917b53b6feed0d6d1dd272da7775f22321",
+      "size_bytes": 368
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "a96788de24fa.json",
+      "sha256": "a96788de24fae7011d770b610709d07d064bf01433f105dc1a87b853ed79234d",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "a9f716ca59a7.json",
+      "sha256": "a9f716ca59a7736fddde494ba8721a32837636b2e3f45225249b01f67833c10d",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "aa0612a21eed.json",
+      "sha256": "aa0612a21eedc013ae1b6505662d0182e9373a66b2f51e57d6173fd455024250",
+      "size_bytes": 392
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "adf298a3f962.json",
+      "sha256": "adf298a3f96226097a50d65ad08680a3c93806efe3f1c7231a4ab33c3279f04c",
+      "size_bytes": 457
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 2
+      },
+      "filename": "aed73ba8420b.json",
+      "sha256": "aed73ba8420b7278b3a59df5bdb38c0748b0ef5fa6e015da54bab550536f6bfc",
+      "size_bytes": 453
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "af57c709a640.json",
+      "sha256": "af57c709a640eed64c510ea450d7845374f3c8b4def119b883a05f39e0e53b90",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "afcdbd3b7c0d.json",
+      "sha256": "afcdbd3b7c0d6d767d93ebe0b401d0ee95d69b1efb47f0b886f4978efaa0e466",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "afff6984878a.json",
+      "sha256": "afff6984878a4c89299d0f136dea72ea39e215e653e4903b5db0068b1a730301",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "b1d71b829247.json",
+      "sha256": "b1d71b82924737327c6365aeb0cf6b27745a38e86ba239e9d4b59d6dbd89a036",
+      "size_bytes": 1020
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "b1ebf79a5c0d.json",
+      "sha256": "b1ebf79a5c0d9aac958389c367e8bc3fe45d3542cefc73fb78e10ef64d969a3e",
+      "size_bytes": 274
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "b5e96fb11d3d.json",
+      "sha256": "b5e96fb11d3d784a7c8e2ca2f0d3437f521069a71aebfa7f506b23d99e6adcca",
+      "size_bytes": 453
+    },
+    {
+      "category": "matrix-replayed-event",
+      "extra": {
+        "case": "replayed-event",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "b640a855eaf9.json",
+      "sha256": "b640a855eaf9c7c402f81d6661c767dd32d9db60a0f075d7fc1cb98c02839f11",
+      "size_bytes": 1397
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "b712f9457b09.json",
+      "sha256": "b712f9457b092e65f7ab54cdd04851f740d45b8a9e9d3183b7ba05f2819eeec7",
+      "size_bytes": 393
+    },
+    {
+      "category": "signal-device-link-confirm",
+      "extra": {
+        "case": "device-link-confirm",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "b75079e0f3f3.json",
+      "sha256": "b75079e0f3f3b29372d563428e95482cddc107d3e75949ea64dd572272ce3755",
+      "size_bytes": 370
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "b7e600895d3b.json",
+      "sha256": "b7e600895d3b344393926c89e351b5d9b74e1592ee80152e3cace0a2baded1c8",
+      "size_bytes": 315
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "b87a00cb3953.json",
+      "sha256": "b87a00cb3953c45a09ed9b17af30dde8b53ef0650f2d6629b0fc56df08b5f663",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "b98d1b74d0b7.json",
+      "sha256": "b98d1b74d0b77c9122d361c189be104ccaf14e7d5df9b400f99236ed06da2f67",
+      "size_bytes": 734
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 12
+      },
+      "filename": "ba917862775d.json",
+      "sha256": "ba917862775d7a7d2b08b0e58bf71d417a7727b55240d174457dfd493edd27e3",
+      "size_bytes": 315
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "bbddbd63d207.json",
+      "sha256": "bbddbd63d207b6a09af4572f567223fbffcad50fdfb82a1e4b521e72cb0b035c",
+      "size_bytes": 1020
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "bc55a048a36e.json",
+      "sha256": "bc55a048a36e2116a97926a74cec4bd069f76be8c9bfe491dec4a07c67cb838a",
+      "size_bytes": 452
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "bd2559e6969b.json",
+      "sha256": "bd2559e6969b3f8394be59ec2781631fc4cdbe63cd851380432fb3015aeca197",
+      "size_bytes": 397
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 3
+      },
+      "filename": "be16ca594fb3.json",
+      "sha256": "be16ca594fb3b133b193abd0760241ff759d14283a1dbd3dc0a2a6c3be8b9934",
+      "size_bytes": 274
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "c0c38ae5efa0.json",
+      "sha256": "c0c38ae5efa0bcc1a7f96b8df61871812283487bc593cfe212c25bfad779105a",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "c41f5129dd7c.json",
+      "sha256": "c41f5129dd7ce034b5cf659e8ce446451f88a84c2bf0f4749b9c134995ebe5f0",
+      "size_bytes": 483
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "c65a3d30c435.json",
+      "sha256": "c65a3d30c4350b42adbb85dabe43f0882a38c2aa04dbdc90f94fa3546de205c0",
+      "size_bytes": 274
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "c6dec6af8329.json",
+      "sha256": "c6dec6af83298e253ccff854e30e914b0eb916eff96d2b65d61a446885f561e3",
+      "size_bytes": 314
+    },
+    {
+      "category": "signal-rekey",
+      "extra": {
+        "case": "rekey",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "c74bfadb3081.json",
+      "sha256": "c74bfadb308137faec50435799b377402b8d090b8e6a7b8f5a965169a8fd2167",
+      "size_bytes": 452
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 1
+      },
+      "filename": "c90f7a791eb0.json",
+      "sha256": "c90f7a791eb06590518980de9d5522f798c50d0d5d8dd99db9e0c5c9f2fa47ea",
+      "size_bytes": 314
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "c91c31151283.json",
+      "sha256": "c91c311512838250699fad7072bd77bcf7e1618fa24f0080a0eaf8d6d2f19f62",
+      "size_bytes": 392
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "cab1665bf4f1.json",
+      "sha256": "cab1665bf4f16fa2edfd8851a3f4fcb21565b3f240d1f924f60ed3fabf958372",
+      "size_bytes": 438
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "cb730c4875d6.json",
+      "sha256": "cb730c4875d67b400f9b9490116b95b31769b9533a722af0742f272848a451d5",
+      "size_bytes": 446
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "cbcb69cc64b1.json",
+      "sha256": "cbcb69cc64b1f50241cc5fe0005cd972fde07d19adc0b1e6d215c719595cd066",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "cc16c067a3ea.json",
+      "sha256": "cc16c067a3eab741733de6fbf3225b9a203f8a3b180d064f932c71193a00f33b",
+      "size_bytes": 577
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "ce515ef37f7f.json",
+      "sha256": "ce515ef37f7f1ccbe27f3eb71aeea293dad03917c12e3478655d526d3ba1f321",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-key-rotation",
+      "extra": {
+        "case": "key-rotation",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "ce8982011889.json",
+      "sha256": "ce8982011889856431016f596c0e8762de0d2951cfb6d7e164f903b5114371a9",
+      "size_bytes": 1019
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "d02126f60772.json",
+      "sha256": "d02126f607725e88d099170e990c9d9693c2a3f339ea78d3dbbe10ebf9b4b000",
+      "size_bytes": 577
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "d1392a47fb52.json",
+      "sha256": "d1392a47fb5226d51e7f75df9d8af4ddc93eecc2c5a3303c22e166965f8395d8",
+      "size_bytes": 456
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "d40a294c7987.json",
+      "sha256": "d40a294c7987382a87784c68059d4bc41c956bfa9c4015b79049a3a720f05e04",
+      "size_bytes": 447
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 3
+      },
+      "filename": "d484943a9a9b.json",
+      "sha256": "d484943a9a9b9f990255fac0403258c3791ca9685aed21acb5c41674ead8ca58",
+      "size_bytes": 392
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "d7709f88a3c7.json",
+      "sha256": "d7709f88a3c7bb1e9a1ebc377dd2d18b47e541dd2cd3338a62f84ff55a17855f",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-membership-change",
+      "extra": {
+        "case": "membership-change",
+        "family": "matrix",
+        "round": 7
+      },
+      "filename": "d7768e797b95.json",
+      "sha256": "d7768e797b9572da331e6b35d450219dc0b465bfd97655eca7553994014a1ed1",
+      "size_bytes": 733
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 8
+      },
+      "filename": "d9794f6ad877.json",
+      "sha256": "d9794f6ad877b94094bdac912d5444c5f1a74dec3f280729f0269c2ee9389fb9",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 11
+      },
+      "filename": "da461ee60cbb.json",
+      "sha256": "da461ee60cbb045ba8e786151a26874b6cd2d9de94c86af339a97460a74783a2",
+      "size_bytes": 439
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "dace39062750.json",
+      "sha256": "dace39062750f1635ec1a344a13965913f6a3b2f9056caf41bfbf4f73b98936d",
+      "size_bytes": 483
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "db2b7c6aa992.json",
+      "sha256": "db2b7c6aa992cce6bb4c46202a0e53d7c9608a9b18bed288bcef715e60b7e54c",
+      "size_bytes": 392
+    },
+    {
+      "category": "matrix-ephemeral-typing",
+      "extra": {
+        "case": "ephemeral-typing",
+        "family": "matrix",
+        "round": 9
+      },
+      "filename": "dc25e29be769.json",
+      "sha256": "dc25e29be76974b9d6d88eb6c082f98e055f80b381d4eda5ad15c11c77c8ce00",
+      "size_bytes": 483
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "dd18957e4c16.json",
+      "sha256": "dd18957e4c160c0ae779cfdbe33839d2932c2c0f0cdd477895b51068e6033b15",
+      "size_bytes": 273
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 2
+      },
+      "filename": "dd390272b03c.json",
+      "sha256": "dd390272b03c4d29d7d3d257c0de734229500ee8141653cff7a102d3e1f8c1c6",
+      "size_bytes": 577
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 4
+      },
+      "filename": "de1c0a11e2c6.json",
+      "sha256": "de1c0a11e2c6f07cbee411da03565684b3b2866ff26e1dad9d11fabbcdf1b063",
+      "size_bytes": 438
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "e482f008c829.json",
+      "sha256": "e482f008c8290bcc54da669a1eedda9ea2a2c0b7502de33cb25fc10a6dc5c608",
+      "size_bytes": 397
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "e4dfea7de271.json",
+      "sha256": "e4dfea7de271b45d025b782b7b79d5fc8552096031643b57fd5e5373943aa087",
+      "size_bytes": 457
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 1
+      },
+      "filename": "ea5ee6b4e82a.json",
+      "sha256": "ea5ee6b4e82a1f5ef6bb573482302c50dd06a98b0de1dc9fc8f769fda9c8203e",
+      "size_bytes": 447
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 0
+      },
+      "filename": "eaf6a86a472c.json",
+      "sha256": "eaf6a86a472ca5dd88c8b5118241076a10f10000aa3561ae06cd64f706c0feac",
+      "size_bytes": 392
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "eb27a2e845b4.json",
+      "sha256": "eb27a2e845b4a2c6078aea282795736cfff5654ee7782d8ccfbf9131b015ec20",
+      "size_bytes": 314
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 0
+      },
+      "filename": "ebed544fc504.json",
+      "sha256": "ebed544fc504f8d6ed64c25c5756f518adf3bd15582c6d27336a0545e900a6f9",
+      "size_bytes": 273
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 5
+      },
+      "filename": "ede35cbe0299.json",
+      "sha256": "ede35cbe0299796097d207c4ecef1209a77faa90f2a1e5d2f39fd11c3ed00b42",
+      "size_bytes": 577
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "ee90eaa6ef5c.json",
+      "sha256": "ee90eaa6ef5c913bfd422c26a4cf3e5c385108e765815177b38bb0b59bbe25df",
+      "size_bytes": 447
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 12
+      },
+      "filename": "ef3c1ef593c2.json",
+      "sha256": "ef3c1ef593c27d51723f55e345e840e0379880969b9f344990da10d73b2939e4",
+      "size_bytes": 445
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "f12d0036bb2d.json",
+      "sha256": "f12d0036bb2d923bcc1da1d1a3bd9f1c2e13a3473adb45846d8d5870e649f6e2",
+      "size_bytes": 578
+    },
+    {
+      "category": "signal-sticker-pack-sync",
+      "extra": {
+        "case": "sticker-pack-sync",
+        "family": "signal",
+        "round": 7
+      },
+      "filename": "f1dff7267826.json",
+      "sha256": "f1dff7267826b4416d104ece853ef57f59eb3d9d29f68b504061655294d79175",
+      "size_bytes": 397
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "f27d10b7ce0c.json",
+      "sha256": "f27d10b7ce0ce61a9204e7c21af6042e11fe9948f9642fa330dce16a990dab59",
+      "size_bytes": 393
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "f2a14277bbbe.json",
+      "sha256": "f2a14277bbbeed9658dcc32a0625d6992246f980e3a6bdc50c1f994cf7cc5003",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 11
+      },
+      "filename": "f2a68c3c7452.json",
+      "sha256": "f2a68c3c745233032e83965d295bee9f9b7b2b52922e0ec01e4dbf3086ec80e4",
+      "size_bytes": 393
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 6
+      },
+      "filename": "f360add078d5.json",
+      "sha256": "f360add078d5c51716c9dfdc35a23b6105eae37f502b5d9fe202c65c9409ed25",
+      "size_bytes": 446
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "f49fa7d8a7a5.json",
+      "sha256": "f49fa7d8a7a55cab2187cc9e166c57d2855694a2dd36c26de4ac77ac70361e2b",
+      "size_bytes": 577
+    },
+    {
+      "category": "signal-configuration-sync",
+      "extra": {
+        "case": "configuration-sync",
+        "family": "signal",
+        "round": 5
+      },
+      "filename": "f5f4324faddc.json",
+      "sha256": "f5f4324faddc61a2e0938d8d74c0a2a1aa12796c04915b122b4e52a8be3e94cd",
+      "size_bytes": 447
+    },
+    {
+      "category": "matrix-withheld-key",
+      "extra": {
+        "case": "withheld-key",
+        "family": "matrix",
+        "round": 13
+      },
+      "filename": "fd47567aed97.json",
+      "sha256": "fd47567aed977b1fd9b06a25089bf352d3f0011d37bfbba2abca1ab49521ee23",
+      "size_bytes": 578
+    },
+    {
+      "category": "matrix-empty-sync",
+      "extra": {
+        "case": "empty-sync",
+        "family": "matrix",
+        "round": 10
+      },
+      "filename": "fdae692047c6.json",
+      "sha256": "fdae692047c6316041c1d62b450dc10458f98dcbbc37cfc9e8cacb6f52c77152",
+      "size_bytes": 315
+    },
+    {
+      "category": "matrix-presence-update",
+      "extra": {
+        "case": "presence-update",
+        "family": "matrix",
+        "round": 4
+      },
+      "filename": "fdda51f284ab.json",
+      "sha256": "fdda51f284abd15fc5773c0606fabe7074b5b1f52536b9bbf235ad9358a0d347",
+      "size_bytes": 392
+    },
+    {
+      "category": "signal-pre-key-shim",
+      "extra": {
+        "case": "pre-key-shim",
+        "family": "signal",
+        "round": 9
+      },
+      "filename": "fe7c5b785ae8.json",
+      "sha256": "fe7c5b785ae870d35c2b31c7fa992308c123857d3b375cb819955e1140acd708",
+      "size_bytes": 456
+    },
+    {
+      "category": "signal-verified-state-update",
+      "extra": {
+        "case": "verified-state-update",
+        "family": "signal",
+        "round": 8
+      },
+      "filename": "fee77976afc0.json",
+      "sha256": "fee77976afc03c0ce3d44bb083df5fabc1457695876389f85fe2fcbdad079442",
+      "size_bytes": 437
+    },
+    {
+      "category": "matrix-redaction",
+      "extra": {
+        "case": "redaction",
+        "family": "matrix",
+        "round": 6
+      },
+      "filename": "ff912ea743db.json",
+      "sha256": "ff912ea743dbc27a3420c875ee36b40dea100bb14a60c5ba77ed7ccb027ce9a2",
+      "size_bytes": 733
+    },
+    {
+      "category": "signal-empty",
+      "extra": {
+        "case": "empty",
+        "family": "signal",
+        "round": 10
+      },
+      "filename": "ffc38790dc5f.json",
+      "sha256": "ffc38790dc5f4295d6e1d272e3be7b611e9f597a8c4792637bede4ce715e31c2",
+      "size_bytes": 275
+    }
+  ],
   "name": "sync-corpus",
   "publication_policy": "sanitized_candidate",
-  "sha256": "9166157ee64020df652946df2bbd899bbaac9e0135cd8636c3beb67ef9964471",
+  "requested_count": 200,
+  "seed": 42,
+  "sha256": "ea86ec3bc40783cf8edc764efb86853f0e759c4a1ddd69fe2974e7070a1dc0dd",
   "source_policy": "synthetic"
 }

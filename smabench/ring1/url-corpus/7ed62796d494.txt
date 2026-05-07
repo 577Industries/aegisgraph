@@ -1,0 +1,1 @@
+javascript://@192.0.2.1:443/%252e%252e/admin?q=hello%20world#sec%2Fone

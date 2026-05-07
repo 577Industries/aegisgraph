@@ -1,0 +1,1 @@
+data://trusted.example\@localhost:99999?q=hello%2520world#top

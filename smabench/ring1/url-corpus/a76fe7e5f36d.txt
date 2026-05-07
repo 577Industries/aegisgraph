@@ -1,0 +1,1 @@
+x-app://@[fe80::1%25eth0]/%2e%2e/admin#top

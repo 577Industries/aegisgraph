@@ -1,0 +1,2 @@
+x-app://user@evil.e
+xample@0xC0000201:99999/../admin?a=1&amp;b=2#sec%2Fone

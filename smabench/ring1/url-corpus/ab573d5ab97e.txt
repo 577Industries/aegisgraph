@@ -1,0 +1,1 @@
+x-app://trusted.example\@localhost:0/%2e%2e/admin?a=1&amp;b=2

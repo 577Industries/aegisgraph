@@ -1,0 +1,1 @@
+javascript://trusted.example\@0xC0000201/../admin?a=1&b=2#sec%2Fone

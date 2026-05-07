@@ -1,0 +1,1 @@
+javascript://user@evil.example@preview.example./?a=1&b=2#top

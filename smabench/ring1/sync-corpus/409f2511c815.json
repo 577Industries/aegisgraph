@@ -1,0 +1,18 @@
+{
+  "_synthetic_round": 1,
+  "_synthetic_signal_envelope": true,
+  "body": {
+    "sync_message": {
+      "sticker_pack_operation": [
+        {
+          "pack_id": "45128edfed863bd3",
+          "type": "INSTALL"
+        }
+      ]
+    }
+  },
+  "device_id": 594012,
+  "kind": "sticker-pack-sync",
+  "source_uuid": "synthetic-f917c106-9648-9a30-fd54-c7b2c1d0e2ad",
+  "timestamp_ms": 1500000000000
+}

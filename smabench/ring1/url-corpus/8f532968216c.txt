@@ -1,0 +1,1 @@
+x-app://@0xC0000201:99999/%2e%2e/admin?q=one#/room:example.org

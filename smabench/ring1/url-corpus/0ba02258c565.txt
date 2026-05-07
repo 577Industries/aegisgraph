@@ -1,0 +1,1 @@
+javascript://user@0xC0000201:99999/article/?a=1&b=2#/room:example.org

@@ -1,0 +1,2 @@
+x-app://user@127.0.0.1//etc//pass
+wd?q=hello%20world#sec%2Fone

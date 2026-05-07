@@ -1,0 +1,1 @@
+data://trusted.example\@192.0.2.1:80/article/page?q=hello%2520world#/room:example.org

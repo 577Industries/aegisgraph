@@ -1,0 +1,2 @@
+http://trusted.example\@preview
+..example:0/?q=hello%2520world#top

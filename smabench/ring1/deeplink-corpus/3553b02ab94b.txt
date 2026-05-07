@@ -1,0 +1,1 @@
+sgnl://send/xn--bcher-kva.example../admin

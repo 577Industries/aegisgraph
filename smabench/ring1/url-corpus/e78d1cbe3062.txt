@@ -1,0 +1,1 @@
+http://trusted.example\@localhost/article/page?a=b=c#sec%2Fone

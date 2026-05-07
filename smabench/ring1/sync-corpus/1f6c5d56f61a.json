@@ -1,0 +1,27 @@
+{
+  "_synthetic_kind": "matrix-membership-change",
+  "_synthetic_round": 8,
+  "next_batch": "s_synthetic_a6dda752",
+  "rooms": {
+    "join": {
+      "!synthetic_f3ea3e59c23c:example.org": {
+        "timeline": {
+          "events": [
+            {
+              "content": {
+                "membership": "join"
+              },
+              "event_id": "$synthetic_af1264044e9ce66a:example.org",
+              "origin_server_ts": 1500000020,
+              "sender": "@synthetic_99db20c491:example.org",
+              "state_key": "@synthetic_b10b3907dc:example.org",
+              "type": "m.room.member"
+            }
+          ],
+          "limited": false,
+          "prev_batch": "synthetic_prev"
+        }
+      }
+    }
+  }
+}

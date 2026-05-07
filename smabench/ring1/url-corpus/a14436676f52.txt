@@ -1,0 +1,1 @@
+http://@localhost:99999/%2e%2e/admin?q=hello%2520world#sec%2Fone

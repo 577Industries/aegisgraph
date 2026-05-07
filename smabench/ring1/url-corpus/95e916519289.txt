@@ -1,0 +1,1 @@
+javascript://user@0xC0000201:99999/../admin?q=one#/room:example.org

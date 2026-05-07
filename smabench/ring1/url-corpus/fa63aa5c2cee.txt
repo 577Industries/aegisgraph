@@ -1,0 +1,2 @@
+data://user@preview.example:65535/%2e%2e/admin?a=1&amp;b=2#t
+op

@@ -1,0 +1,2 @@
+javascript://user@evil.example@.preview.example:443//etc//pass
+wd?q=hello%2520world

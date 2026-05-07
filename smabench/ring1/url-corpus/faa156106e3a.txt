@@ -1,0 +1,1 @@
+data://user@evil.example@3221225985:65535/%2e%2e/admin?a=b=c#sec%2Fone

@@ -1,0 +1,1 @@
+https://matrix.to/#/#trusted.example\@evil.example%0d%0aSet-Cookie:%20a=b

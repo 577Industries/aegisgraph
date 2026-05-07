@@ -1,0 +1,1 @@
+javascript://user@example/?q=one#top

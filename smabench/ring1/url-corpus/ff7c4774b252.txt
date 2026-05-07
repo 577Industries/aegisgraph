@@ -1,0 +1,1 @@
+https://trusted.example\@127.0.0.1:99999/%2e%2e/admin?a=1&b=2#sec%2Fone

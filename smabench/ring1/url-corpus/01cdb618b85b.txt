@@ -1,0 +1,2 @@
+https://trusted.example\@[fe80::1%25
+eth0]:80/article;jsessionid=abc?q=one#/room:example.org

@@ -1,0 +1,1 @@
+javascript://[fe80::1%25eth0]:99999?a=1&b=2#top

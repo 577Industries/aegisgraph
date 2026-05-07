@@ -1,0 +1,2 @@
+javascript://xn--
+80ak6aa92e.example:65535//etc//passwd?q=hello%2520world#sec%2Fone

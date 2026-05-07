@@ -1,0 +1,2 @@
+data://trusted.example\@preview..example/article;
+jsessionid=abc?q=hello%2520world#sec%2Fone

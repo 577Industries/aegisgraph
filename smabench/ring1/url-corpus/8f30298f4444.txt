@@ -1,0 +1,1 @@
+javascript://trusted.example\@example//etc//passwd?q=one#/room:example.org

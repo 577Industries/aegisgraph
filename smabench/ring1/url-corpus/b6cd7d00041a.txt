@@ -1,0 +1,1 @@
+file://trusted.example\@3221225985:443/%2e%2e/admin?a=b=c#/room:example.org

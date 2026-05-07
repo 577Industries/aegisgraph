@@ -1,0 +1,1 @@
+file://trusted.example\@xn--bcher-kva.example:80/article;jsessionid=abc?a=b=c

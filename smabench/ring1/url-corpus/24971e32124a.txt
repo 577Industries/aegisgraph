@@ -1,0 +1,1 @@
+data://example:443/../admin?a=1&b=2

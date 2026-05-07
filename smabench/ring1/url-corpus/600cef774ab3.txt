@@ -1,0 +1,1 @@
+data://user@evil.example@xn--80ak6aa92e.example:65535//etc//passwd?a=b=c#top

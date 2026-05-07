@@ -1,0 +1,1 @@
+https://trusted.example\@3221225985:65535/%2e%2e/admin#/room:example.org

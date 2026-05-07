@@ -1,0 +1,1 @@
+javascript://user@evil.example@127.0.0.1:80/%2e%2e/admin?q=hello%2520world#sec%2Fone

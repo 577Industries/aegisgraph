@@ -1,0 +1,1 @@
+data://trusted.example\@xn--bcher-kva.example:99999/%2e%2e/admin#/room:example.org

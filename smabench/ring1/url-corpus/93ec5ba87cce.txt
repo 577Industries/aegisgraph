@@ -1,0 +1,1 @@
+http://user@evil.example@xn--80ak6aa92e.example:65535/%2e%2e/admin?q=hello%20world

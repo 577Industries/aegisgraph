@@ -1,0 +1,1 @@
+javascript://trusted.example\@3221225985:65535/article/page?q=hello%2520world#top

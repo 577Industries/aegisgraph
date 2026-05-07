@@ -1,0 +1,1 @@
+javascript://user:pass@3221225985:0/../admin?a=b=c#top

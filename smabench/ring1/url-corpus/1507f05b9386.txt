@@ -1,0 +1,2 @@
+javascript://user@preview..example/../admin?q=hello%20world#sec%2Fon
+e

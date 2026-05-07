@@ -1,0 +1,1 @@
+javascript://10.0.0.1:99999/article/#top

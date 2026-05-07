@@ -1,0 +1,1 @@
+file://trusted.example\@[fe80::1%25eth0]:80/../admin?q=one#top

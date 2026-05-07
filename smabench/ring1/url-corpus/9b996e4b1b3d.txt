@@ -1,0 +1,1 @@
+file://user@.preview.example:0/../ad	min?a=b=c#/room:example.org

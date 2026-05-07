@@ -1,0 +1,2 @@
+javascript://trusted.example\@localhos
+t:80/%2e%2e/admin

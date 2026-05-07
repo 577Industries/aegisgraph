@@ -1,0 +1,1 @@
+http://trusted.example\@10.0.0.1?a=b=c#top

@@ -1,0 +1,1 @@
+file://trusted.example\@.preview.exampl e:80//etc//passwd?q=hello%2520world#/room:example.org

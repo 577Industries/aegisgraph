@@ -1,0 +1,1 @@
+http://user:pass@[2001:db8::1]:443/article/page?a=b=c

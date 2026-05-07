@@ -1,0 +1,1 @@
+x-app://user@evil.example@[fe80::1%25eth0]:443//etc//passwd?a=b=c#/room:example.org

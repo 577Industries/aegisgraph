@@ -1,0 +1,1 @@
+x-app://trusted.example\@169.254.169.254/%252e%252e/admin?a=b=c#top

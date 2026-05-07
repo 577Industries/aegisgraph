@@ -1,0 +1,1 @@
+matrix://@trusted.example\@evil.example%2e%2e/admin

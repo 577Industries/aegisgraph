@@ -1,0 +1,1 @@
+x-app://trusted.example\@192.0.2.1:65535//etc//passwd?a=1&b=2#sec%2Fone

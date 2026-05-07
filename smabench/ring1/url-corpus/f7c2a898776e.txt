@@ -1,0 +1,1 @@
+http://user:pass@example:0/article/?q=hello%2520world#/room:example.org

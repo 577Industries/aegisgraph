@@ -1,0 +1,1 @@
+file://user:pass@169.254.169.254:99999/article/?q=one#sec%2Fone

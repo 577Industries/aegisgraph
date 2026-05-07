@@ -1,0 +1,1 @@
+https://user:pass@xn--80ak6aa92e.example:65535/article;jsessionid=abc?a=1&b=2#top

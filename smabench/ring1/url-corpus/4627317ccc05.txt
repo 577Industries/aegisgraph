@@ -1,0 +1,1 @@
+file://user@evil.example@0xC0000201:443/%252e%252e/admin#sec%2Fone

@@ -1,0 +1,1 @@
+data://@example:443//etc//passwd?a=1&amp;b=2

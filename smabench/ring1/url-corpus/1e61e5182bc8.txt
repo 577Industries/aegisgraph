@@ -1,0 +1,1 @@
+file://trusted.example\@localhost:443/%2e%2e/admin?a=1&b=2#/room:example.org

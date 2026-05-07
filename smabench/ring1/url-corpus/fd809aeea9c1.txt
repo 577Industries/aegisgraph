@@ -1,0 +1,1 @@
+x-app://user@0xC0.0.2.1:99999//etc//passwd?a=b=c#top

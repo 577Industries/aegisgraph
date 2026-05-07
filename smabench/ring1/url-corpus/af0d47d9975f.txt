@@ -1,0 +1,1 @@
+data://trusted.example\@localhost:99999/article;jsessionid=abc?q=hello%2520world#sec%2Fone

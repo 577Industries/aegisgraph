@@ -1,0 +1,1 @@
+file://us%65r:p%61ss@[::ffff:127.0.0.1]/../admin?a=b=c#sec%2Fone

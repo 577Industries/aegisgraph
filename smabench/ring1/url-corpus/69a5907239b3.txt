@@ -1,0 +1,1 @@
+javascript://us%65r:p%61ss@[fe80::1%25eth0]:80/article;jsessionid=abc?a=1&amp;b=2#sec%2Fone

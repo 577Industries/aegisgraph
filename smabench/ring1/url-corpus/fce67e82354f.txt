@@ -1,0 +1,1 @@
+javascript://0300.0000.0002.0001:99999/article/page?q=hello%2520world#/room:example.org

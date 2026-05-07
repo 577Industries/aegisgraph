@@ -1,0 +1,1 @@
+file://@192.0.2.1/article/page#/room:example.org

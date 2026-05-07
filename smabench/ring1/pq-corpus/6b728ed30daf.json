@@ -1,0 +1,17 @@
+{
+  "_synthetic_kind": "pqxdh-migration",
+  "_synthetic_round": 9,
+  "downgrade_resistant": true,
+  "legacy_envelope": {
+    "counter": 64,
+    "ratchet_key": "synthetic_NOT_REAL_curve25519",
+    "type": "X3DH"
+  },
+  "migration_marker": "x3dh_to_pqxdh_v1",
+  "session_uuid": "synthetic-f9f0ba3d-90f8-71f5-c471-360ead4d6df1",
+  "upgraded_envelope": {
+    "kyber_ciphertext": "synthetic_NOT_REAL_kyber_ct",
+    "ratchet_key": "synthetic_NOT_REAL_curve25519",
+    "type": "PQXDH"
+  }
+}

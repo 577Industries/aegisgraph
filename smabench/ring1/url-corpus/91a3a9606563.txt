@@ -1,0 +1,1 @@
+http://user:pass@169.254.169.254:99999/article/page?a=b=c#sec%2Fone

@@ -1,0 +1,1 @@
+http://trusted.example\@127.0.0.1/../admin?q=hello%2520world#/room:example.org

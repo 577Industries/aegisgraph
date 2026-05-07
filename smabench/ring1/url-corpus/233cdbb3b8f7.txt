@@ -1,0 +1,2 @@
+data://us%65r:p%61ss
+@[::ffff:127.0.0.1]:80/article/?q=hello%2520world

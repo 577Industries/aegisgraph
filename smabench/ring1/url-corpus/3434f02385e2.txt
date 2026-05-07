@@ -1,0 +1,1 @@
+http://user@evil.example@example/../admin?a=b=c#sec%2Fone

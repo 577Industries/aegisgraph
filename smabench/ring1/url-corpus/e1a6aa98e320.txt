@@ -1,0 +1,1 @@
+x-app://user@localhost/?q=hello%20world#/room:example.org

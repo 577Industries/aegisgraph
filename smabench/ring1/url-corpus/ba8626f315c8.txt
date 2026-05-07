@@ -1,0 +1,2 @@
+javascript://user:pass@localhos
+t:0/?q=one#top

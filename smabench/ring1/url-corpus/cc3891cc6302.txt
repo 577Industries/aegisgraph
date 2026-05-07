@@ -1,0 +1,2 @@
+javascript://169.254.169.254:0//etc//passwd?q=hello%2
+0world#top

@@ -1,0 +1,1 @@
+file://user:pass@xn--bcher-kva.example/../admin#/room:example.org

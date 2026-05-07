@@ -1,0 +1,1 @@
+http://trusted.example\@example:65535#/room:example.org

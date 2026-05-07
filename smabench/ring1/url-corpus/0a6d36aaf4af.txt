@@ -1,0 +1,1 @@
+http://@example:80?a=1&amp	;b=2#sec%2Fone

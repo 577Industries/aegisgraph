@@ -1,0 +1,1 @@
+file://user@evil.example@[::ffff:127.0.0.1]:443/../admin?q=hello%2520world#top

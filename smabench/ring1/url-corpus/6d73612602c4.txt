@@ -1,0 +1,1 @@
+http://trusted.example\@xn--bcher-kva.example:80/../admin

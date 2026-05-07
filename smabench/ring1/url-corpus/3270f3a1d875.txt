@@ -1,0 +1,1 @@
+http://user:pass@preview..example/?a=b=c

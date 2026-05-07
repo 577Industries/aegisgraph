@@ -1,0 +1,1 @@
+x-app://example/article;jsessionid=abc?a=b=c

@@ -1,0 +1,1 @@
+data://user@evil.example@localhost//etc//passwd?a=1&b=2

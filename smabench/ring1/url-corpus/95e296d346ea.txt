@@ -1,0 +1,1 @@
+http://user@evil.example@0300.0000.0002.0001:80/%252e%252e/admin#/room:example.org

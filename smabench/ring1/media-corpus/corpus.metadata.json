@@ -1,0 +1,295 @@
+{
+  "generator": {
+    "encoder": "pil",
+    "formats": [
+      "png",
+      "jpeg",
+      "gif",
+      "webp"
+    ],
+    "module": "smabench.ring1.media_corpus",
+    "pil_available": true,
+    "purpose": "Valid baseline samples to confirm reprochain harnesses do not false-positive on legal input. Crash-inducing bytes belong under reprochain/corpora-private only."
+  },
+  "item_count": 16,
+  "items": [
+    {
+      "category": "valid-webp",
+      "extra": {
+        "color_rgb": [
+          116,
+          148,
+          40
+        ],
+        "encoding": "pil",
+        "format": "webp",
+        "purpose": "harness-false-positive-baseline",
+        "round": 3
+      },
+      "filename": "0b86037aea3b.webp",
+      "sha256": "0b86037aea3bd4a068280d126777046baabc5c9c027976307f74c84ead4004c2",
+      "size_bytes": 32
+    },
+    {
+      "category": "valid-png",
+      "extra": {
+        "color_rgb": [
+          57,
+          12,
+          140
+        ],
+        "encoding": "pil",
+        "format": "png",
+        "purpose": "harness-false-positive-baseline",
+        "round": 0
+      },
+      "filename": "188dff5dc63d.png",
+      "sha256": "188dff5dc63d5bb8ab6f4cfd682635d8afbeb99d2ca94402c52a0b2aeffe2d87",
+      "size_bytes": 100
+    },
+    {
+      "category": "valid-gif",
+      "extra": {
+        "color_rgb": [
+          229,
+          142,
+          3
+        ],
+        "encoding": "pil",
+        "format": "gif",
+        "purpose": "harness-false-positive-baseline",
+        "round": 1
+      },
+      "filename": "1c06fc5a230c.gif",
+      "sha256": "1c06fc5a230c7cc5c1112540efa21a8e3e5ff37661ec973445753963cdb4dad8",
+      "size_bytes": 92
+    },
+    {
+      "category": "valid-gif",
+      "extra": {
+        "color_rgb": [
+          194,
+          49,
+          183
+        ],
+        "encoding": "pil",
+        "format": "gif",
+        "purpose": "harness-false-positive-baseline",
+        "round": 2
+      },
+      "filename": "1ddb78584019.gif",
+      "sha256": "1ddb78584019e53dd7a30de5eebdf625110a01fb74934fdcd2309599ff905c36",
+      "size_bytes": 92
+    },
+    {
+      "category": "valid-png",
+      "extra": {
+        "color_rgb": [
+          111,
+          119,
+          13
+        ],
+        "encoding": "pil",
+        "format": "png",
+        "purpose": "harness-false-positive-baseline",
+        "round": 1
+      },
+      "filename": "2150866d8c30.png",
+      "sha256": "2150866d8c30b58b4a9131ca5f279595e41923da26d9787299e0ef9962e6a71b",
+      "size_bytes": 100
+    },
+    {
+      "category": "valid-jpeg",
+      "extra": {
+        "color_rgb": [
+          101,
+          214,
+          112
+        ],
+        "encoding": "pil",
+        "format": "jpeg",
+        "purpose": "harness-false-positive-baseline",
+        "round": 1
+      },
+      "filename": "44d2fb2a899a.jpg",
+      "sha256": "44d2fb2a899ad8054040451f3da6227056213d8aa55021349eec8db0f32924fe",
+      "size_bytes": 293
+    },
+    {
+      "category": "valid-webp",
+      "extra": {
+        "color_rgb": [
+          176,
+          135,
+          22
+        ],
+        "encoding": "pil",
+        "format": "webp",
+        "purpose": "harness-false-positive-baseline",
+        "round": 2
+      },
+      "filename": "4c585bf4c431.webp",
+      "sha256": "4c585bf4c431fc6752d1a256a997875093f2aa272888dcf167da9fd84b76364f",
+      "size_bytes": 32
+    },
+    {
+      "category": "valid-jpeg",
+      "extra": {
+        "color_rgb": [
+          125,
+          114,
+          71
+        ],
+        "encoding": "pil",
+        "format": "jpeg",
+        "purpose": "harness-false-positive-baseline",
+        "round": 0
+      },
+      "filename": "5eae07ebc7d4.jpg",
+      "sha256": "5eae07ebc7d4e8bbd3bb27ebc870f5074538dd4858113baa4927900e914a7788",
+      "size_bytes": 293
+    },
+    {
+      "category": "valid-gif",
+      "extra": {
+        "color_rgb": [
+          98,
+          35,
+          23
+        ],
+        "encoding": "pil",
+        "format": "gif",
+        "purpose": "harness-false-positive-baseline",
+        "round": 3
+      },
+      "filename": "6b9f66d0793c.gif",
+      "sha256": "6b9f66d0793c5f16cc82cdd459c15b74ed05f8704680d187e91ae0ce692193bf",
+      "size_bytes": 92
+    },
+    {
+      "category": "valid-webp",
+      "extra": {
+        "color_rgb": [
+          81,
+          216,
+          174
+        ],
+        "encoding": "pil",
+        "format": "webp",
+        "purpose": "harness-false-positive-baseline",
+        "round": 1
+      },
+      "filename": "8e827008ac3a.webp",
+      "sha256": "8e827008ac3a140ff435d3c818d9191d0edd54adfae2d9b502ce3f8dca061059",
+      "size_bytes": 32
+    },
+    {
+      "category": "valid-jpeg",
+      "extra": {
+        "color_rgb": [
+          172,
+          52,
+          47
+        ],
+        "encoding": "pil",
+        "format": "jpeg",
+        "purpose": "harness-false-positive-baseline",
+        "round": 2
+      },
+      "filename": "96cf44112865.jpg",
+      "sha256": "96cf44112865e55cb85fb5909697b7f6cadaf868b3b0cee58d1e105a0bf33c0f",
+      "size_bytes": 293
+    },
+    {
+      "category": "valid-jpeg",
+      "extra": {
+        "color_rgb": [
+          40,
+          150,
+          185
+        ],
+        "encoding": "pil",
+        "format": "jpeg",
+        "purpose": "harness-false-positive-baseline",
+        "round": 3
+      },
+      "filename": "9a270fdcd9d9.jpg",
+      "sha256": "9a270fdcd9d981123fb9af7f07fe9519763dde28fe298d5096679a38ca5c2e5d",
+      "size_bytes": 293
+    },
+    {
+      "category": "valid-png",
+      "extra": {
+        "color_rgb": [
+          235,
+          63,
+          193
+        ],
+        "encoding": "pil",
+        "format": "png",
+        "purpose": "harness-false-positive-baseline",
+        "round": 3
+      },
+      "filename": "ca895254a4af.png",
+      "sha256": "ca895254a4af71cfee639643c85243cd6180c10c85f922d172c628c0fb30f9d1",
+      "size_bytes": 100
+    },
+    {
+      "category": "valid-webp",
+      "extra": {
+        "color_rgb": [
+          16,
+          15,
+          47
+        ],
+        "encoding": "pil",
+        "format": "webp",
+        "purpose": "harness-false-positive-baseline",
+        "round": 0
+      },
+      "filename": "d0666e0faf61.webp",
+      "sha256": "d0666e0faf61f5fa0ce1ac94176e9309eae4d1218cc6c58ff0c40a6375201c00",
+      "size_bytes": 32
+    },
+    {
+      "category": "valid-gif",
+      "extra": {
+        "color_rgb": [
+          52,
+          44,
+          216
+        ],
+        "encoding": "pil",
+        "format": "gif",
+        "purpose": "harness-false-positive-baseline",
+        "round": 0
+      },
+      "filename": "ebbe2645edb0.gif",
+      "sha256": "ebbe2645edb04596a408ce3c5f87dfe0c6b28585e4426888df86e57649d101d4",
+      "size_bytes": 92
+    },
+    {
+      "category": "valid-png",
+      "extra": {
+        "color_rgb": [
+          142,
+          79,
+          110
+        ],
+        "encoding": "pil",
+        "format": "png",
+        "purpose": "harness-false-positive-baseline",
+        "round": 2
+      },
+      "filename": "eda040f354b5.png",
+      "sha256": "eda040f354b56c5854a48b9a3a2235ca84e9a76125b29e1a9770e89f30bcc7e3",
+      "size_bytes": 100
+    }
+  ],
+  "name": "media-corpus",
+  "publication_policy": "sanitized_candidate",
+  "requested_count": 16,
+  "seed": 42,
+  "sha256": "3b7968dd4c5391c0132d15a366692cf4a4b67d3c0472688d5caecbfe511238f6",
+  "source_policy": "synthetic"
+}

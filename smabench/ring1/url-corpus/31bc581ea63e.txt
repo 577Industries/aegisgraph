@@ -1,0 +1,1 @@
+javascript://user:pass@localhost:443/article/page?q=hello%2520world#/room:example.org

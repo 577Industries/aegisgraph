@@ -1,0 +1,1 @@
+x-app://user@0300.0000.0002.0001/%2e%2e/admin?q=hello%20world#sec%2Fone

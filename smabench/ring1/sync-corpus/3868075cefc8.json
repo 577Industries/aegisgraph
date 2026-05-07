@@ -1,0 +1,27 @@
+{
+  "_synthetic_kind": "matrix-redaction",
+  "_synthetic_round": 4,
+  "next_batch": "s_synthetic_0ad8282f",
+  "rooms": {
+    "join": {
+      "!synthetic_eb1f5b583370:example.org": {
+        "timeline": {
+          "events": [
+            {
+              "content": {
+                "reason": "synthetic"
+              },
+              "event_id": "$synthetic_1071fbc451d7a7da:example.org",
+              "origin_server_ts": 1500000010,
+              "redacts": "$synthetic_19530405fb85b483:example.org",
+              "sender": "@synthetic_82b31571c2:example.org",
+              "type": "m.room.redaction"
+            }
+          ],
+          "limited": false,
+          "prev_batch": "synthetic_prev"
+        }
+      }
+    }
+  }
+}

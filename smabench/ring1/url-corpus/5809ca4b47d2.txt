@@ -1,0 +1,1 @@
+x-app://user@[::ffff:127.0.0.1]:80/article;jsessionid=abc?a=b=c#sec%2Fone

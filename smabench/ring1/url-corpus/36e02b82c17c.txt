@@ -1,0 +1,1 @@
+file://trusted.example\@localhost:65535/%252e%252e/admin?q=one#top

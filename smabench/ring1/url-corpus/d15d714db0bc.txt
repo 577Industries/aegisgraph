@@ -1,0 +1,1 @@
+data://user:pass@[fe80::1%25eth0]/article;jsessionid=abc?q=one#/room:example.org

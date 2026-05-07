@@ -1,0 +1,1 @@
+javascript://192.0.2.1//etc//passwd?a=1&b=2

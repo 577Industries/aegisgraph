@@ -1,0 +1,1 @@
+data://trusted.example\@0xC0.0.2.1:99999?a=1&b=2#sec%2Fone

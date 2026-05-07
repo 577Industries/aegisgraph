@@ -1,0 +1,1 @@
+data://trusted.example\@xn--bcher-kva.example:0/../admin?q=hello%20world#sec%2Fone

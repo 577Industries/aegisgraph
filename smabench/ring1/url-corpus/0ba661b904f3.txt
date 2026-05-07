@@ -1,0 +1,1 @@
+https://@[fe80::1%25eth0]:65535/%252e%252e/admin?q=hello%20world

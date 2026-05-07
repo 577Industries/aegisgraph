@@ -1,0 +1,1 @@
+x-app://us%65r:p%61ss@preview.example.:65535//etc//passw	d?q=hello%20world#/room:example.org

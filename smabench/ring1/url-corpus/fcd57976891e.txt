@@ -1,0 +1,1 @@
+data://trusted.example\@[fe80::1%25eth0]/../admin#/room:example.org

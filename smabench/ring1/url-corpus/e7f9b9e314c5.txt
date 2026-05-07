@@ -1,0 +1,1 @@
+javascript://@0xC0000201:65535/../admin?q=hello%2520world#sec%2Fone

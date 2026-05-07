@@ -1,0 +1,1 @@
+javascript://localhost:65535/%252e%252e/admin?a=b=c

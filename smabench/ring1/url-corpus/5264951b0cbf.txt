@@ -1,0 +1,1 @@
+https://trusted.example\@preview.example:443//etc//passwd?q=hello%2520world#sec%2Fone

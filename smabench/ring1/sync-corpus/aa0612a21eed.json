@@ -1,0 +1,18 @@
+{
+  "_synthetic_kind": "matrix-presence-update",
+  "_synthetic_round": 1,
+  "next_batch": "s_synthetic_7590d273",
+  "presence": {
+    "events": [
+      {
+        "content": {
+          "currently_active": true,
+          "last_active_ago": 1000,
+          "presence": "online"
+        },
+        "sender": "@synthetic_e34f98dff7:example.org",
+        "type": "m.presence"
+      }
+    ]
+  }
+}

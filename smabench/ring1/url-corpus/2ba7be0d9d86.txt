@@ -1,0 +1,1 @@
+https://user:pass@.preview.example:0/../admin?a=1&b=2#s ec%2Fone

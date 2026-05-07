@@ -1,0 +1,1 @@
+x-app://user@evil.example@[fe80::1%25eth0]?q=hello%20world#/room:example.org

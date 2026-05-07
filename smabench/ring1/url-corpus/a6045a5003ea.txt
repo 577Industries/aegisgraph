@@ -1,0 +1,1 @@
+x-app://trusted.example\@.preview.example:4 43//etc//passwd?a=b=c

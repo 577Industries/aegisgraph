@@ -1,0 +1,1 @@
+javascript://us%65r:p%61ss@0xC0.0.2.1:80/article;jsessionid=abc?q=hello%20world#/room:example.org

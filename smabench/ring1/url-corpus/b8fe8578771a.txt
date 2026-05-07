@@ -1,0 +1,1 @@
+javascript://user@xn--bcher-kva.example//etc//passwd#/room:example.org

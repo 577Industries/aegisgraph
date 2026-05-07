@@ -1,0 +1,1 @@
+signal://group/trusted.example@evil.example../admin
