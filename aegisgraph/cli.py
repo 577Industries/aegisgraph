@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -13,10 +14,30 @@ def _root() -> Path:
     return repo_root()
 
 
-def cmd_tooling(_args: argparse.Namespace) -> int:
+def _strict_requested(args: argparse.Namespace) -> bool:
+    if getattr(args, "strict", False):
+        return True
+    return os.environ.get("AEGISGRAPH_STRICT_TOOLING") == "1"
+
+
+def cmd_tooling(args: argparse.Namespace) -> int:
     report = tooling.write_tooling_report(_root())
     available = sum(1 for tool in report["tools"].values() if tool.get("available"))
     print(f"tooling report written: {available}/{len(report['tools'])} tools available")
+
+    if _strict_requested(args):
+        strict = report.get("strict_evaluation", {})
+        if strict.get("ok"):
+            print("strict tooling gate: PASS")
+            return 0
+        print("strict tooling gate: FAIL")
+        for line in tooling.strict_summary_lines(report):
+            print(line)
+        print(
+            "hint: rebuild the devcontainer (devcontainer/Dockerfile pins versions) "
+            "or unset AEGISGRAPH_STRICT_TOOLING / drop --strict to ignore."
+        )
+        return 1
     return 0
 
 
@@ -105,6 +126,14 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     tooling_parser = subparsers.add_parser("tooling")
+    tooling_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help=(
+            "fail with exit 1 if any tool in REQUIRED_TOOLS is missing or below "
+            "min_version. Equivalent to setting AEGISGRAPH_STRICT_TOOLING=1."
+        ),
+    )
     tooling_parser.set_defaults(func=cmd_tooling)
 
     validate_parser = subparsers.add_parser("validate")
