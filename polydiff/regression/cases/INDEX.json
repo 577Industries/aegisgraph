@@ -1,0 +1,418 @@
+{
+  "cases": [
+    {
+      "bug_class": "userinfo-host-confusion",
+      "case_id": "REG-URL-OkHttp-userinfo-1",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["userinfo_present", "host_lowercased"],
+      "primary_security_tags": ["userinfo-host-confusion", "origin-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Validator-vs-fetcher userinfo-host confusion (Snyk 2022 canonical case)."
+    },
+    {
+      "bug_class": "userinfo-host-confusion",
+      "case_id": "REG-URL-OkHttp-userinfo-2",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["userinfo_present"],
+      "primary_security_tags": ["userinfo-host-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://bishopfox.com/blog/url-parsing-attacks",
+      "summary": "Empty userinfo: java.net.URI vs okhttp.HttpUrl (Bishop Fox 2022)."
+    },
+    {
+      "bug_class": "userinfo-host-confusion",
+      "case_id": "REG-URL-Userinfo-Empty-Auth",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["password_present", "userinfo_raw"],
+      "primary_security_tags": ["userinfo-host-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1",
+      "summary": "Empty password segment; RFC 3986 ambiguity on user:@host."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-Snyk-2022-host-1",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased"],
+      "primary_security_tags": ["origin-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Fragment-as-userinfo: parser disagreement on whether '#@' splits host."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-Snyk-2022-host-2",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "port_value"],
+      "primary_security_tags": ["origin-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Port-then-userinfo: host=example.com vs evil.example."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-Snyk-2022-host-3",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "parsed"],
+      "primary_security_tags": ["origin-confusion", "gating-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Triple-slash empty authority - parsers pick different hosts."
+    },
+    {
+      "bug_class": "host-baseline",
+      "case_id": "REG-URL-Snyk-2022-host-4",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased"],
+      "primary_security_tags": [],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Subdomain-suffix confusion (NOT real disagreement; baseline normalcy check)."
+    },
+    {
+      "bug_class": "path-confusion",
+      "case_id": "REG-URL-Snyk-2022-host-5",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "backslash_treated_as_slash"],
+      "primary_security_tags": ["origin-confusion", "path-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Double-backslash: WHATWG converts to slash, RFC 3986 keeps."
+    },
+    {
+      "bug_class": "port-confusion",
+      "case_id": "REG-URL-Snyk-2022-host-6",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["port_value", "parsed"],
+      "primary_security_tags": ["port-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Port=0: some parsers reject, others accept."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-Snyk-2022-host-7",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "parsed"],
+      "primary_security_tags": ["origin-confusion", "gating-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+      "summary": "Double-dot in host (zero-length label): okhttp accepts, java.net.URI rejects."
+    },
+    {
+      "bug_class": "host-baseline",
+      "case_id": "REG-URL-Snyk-2022-host-8",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "trailing_slash_normalized"],
+      "primary_security_tags": ["origin-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#host-parsing",
+      "summary": "Trailing-dot host: WHATWG normalizes; legacy parsers keep the dot."
+    },
+    {
+      "bug_class": "scheme-confusion",
+      "case_id": "REG-URL-Node-WHATWG-legacy",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["scheme_authority_separator_strict", "host_lowercased", "path"],
+      "primary_security_tags": ["scheme-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://nodejs.org/api/url.html#legacy-url-api",
+      "summary": "Bare scheme path (no //) - WHATWG/urllib disagree on whether 'foo' is host or path."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-IPv4-leading-zeroes",
+      "historical_cve_or_disclosure_reference": "CVE-2021-29921",
+      "primary_axes": ["host", "host_is_loopback", "host_is_private_or_link_local", "leading_zeroes_in_octets_stripped"],
+      "primary_security_tags": ["ssrf-loopback-bypass", "ssrf-private-network"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+      "summary": "Octal-vs-decimal IPv4: 0177=127 in WHATWG, but 0177 stays string in RFC 3986."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-IPv4-Decimal",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host", "host_is_loopback", "parsed"],
+      "primary_security_tags": ["ssrf-loopback-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+      "summary": "Single 32-bit decimal IPv4: 2130706433 = 127.0.0.1; some parsers accept, others reject."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-IPv4-Hex",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_is_loopback", "parsed"],
+      "primary_security_tags": ["ssrf-loopback-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+      "summary": "Hex IPv4 octet: 0x7f=127; WHATWG accepts, RFC 3986 rejects."
+    },
+    {
+      "bug_class": "idn-spoof",
+      "case_id": "REG-URL-IDN-Spoof-Cyrillic",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_has_idn", "host_punycode", "host_decoded"],
+      "primary_security_tags": ["idn-spoof"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/idn.md",
+      "summary": "Cyrillic lookalike encoded as punycode; some parsers decode, others don't."
+    },
+    {
+      "bug_class": "idn-spoof",
+      "case_id": "REG-URL-IDN-Mixed-Script",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_has_idn", "host_punycode"],
+      "primary_security_tags": ["idn-spoof"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/idn.md",
+      "summary": "Mixed-script IDN: visual lookalike with Cyrillic character."
+    },
+    {
+      "bug_class": "path-confusion",
+      "case_id": "REG-URL-Backslash-IE-legacy",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "backslash_treated_as_slash"],
+      "primary_security_tags": ["origin-confusion", "path-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+      "summary": "IE-style backslash in authority; WHATWG converts to /, others keep as host char."
+    },
+    {
+      "bug_class": "link-preview-bypass",
+      "case_id": "REG-URL-LinkPreview-Tab",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "tab_or_newline_stripped"],
+      "primary_security_tags": ["origin-confusion", "link-preview-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+      "summary": "Tab inside host: WHATWG strips before parsing, RFC keeps it."
+    },
+    {
+      "bug_class": "link-preview-bypass",
+      "case_id": "REG-URL-LinkPreview-Newline",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "tab_or_newline_stripped", "parsed"],
+      "primary_security_tags": ["origin-confusion", "link-preview-bypass", "gating-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+      "summary": "Newline inside host: WHATWG strips, RFC parsers may reject or keep."
+    },
+    {
+      "bug_class": "link-preview-bypass",
+      "case_id": "REG-URL-LinkPreview-CR",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_lowercased", "tab_or_newline_stripped"],
+      "primary_security_tags": ["link-preview-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+      "summary": "Carriage return inside host: same class as tab/newline."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-Percent-In-Host",
+      "historical_cve_or_disclosure_reference": "CVE-2022-37434",
+      "primary_axes": ["host_lowercased", "percent_decoding_applied_in_host"],
+      "primary_security_tags": ["host-injection"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2",
+      "summary": "Percent-encoded dot in host: some parsers decode, others don't."
+    },
+    {
+      "bug_class": "ssrf-ipv6-mapped",
+      "case_id": "REG-URL-IPv6-Mapped-Loopback",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host", "host_is_loopback", "host_is_private_or_link_local"],
+      "primary_security_tags": ["ssrf-loopback-bypass", "ssrf-ipv6-mapped"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc4291#section-2.5.5.2",
+      "summary": "IPv4-mapped IPv6 loopback (RFC 4291). Many parsers don't classify as loopback."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-IPv6-Compressed",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host", "host_is_loopback"],
+      "primary_security_tags": ["ssrf-loopback-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc4291",
+      "summary": "IPv6 loopback short form: should be classified as loopback by all."
+    },
+    {
+      "bug_class": "userinfo-host-confusion",
+      "case_id": "REG-URL-libcurl-CURLU-userinfo",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["username", "userinfo_raw"],
+      "primary_security_tags": ["userinfo-host-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://curl.se/libcurl/c/curl_url_set.html",
+      "summary": "libcurl curl_url_set vs java.net.URI: userinfo encoding differences."
+    },
+    {
+      "bug_class": "path-traversal",
+      "case_id": "REG-URL-Path-Dotdot-Resolution",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["path_normalized", "path_traversal_resolved"],
+      "primary_security_tags": ["path-traversal", "path-normalization-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4",
+      "summary": "Path '..' segments: okhttp/rust_url normalize; java.net.URI keeps raw."
+    },
+    {
+      "bug_class": "path-traversal",
+      "case_id": "REG-URL-Path-Encoded-Dotdot",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["path_normalized", "path_traversal_resolved", "percent_decoding_applied_in_path"],
+      "primary_security_tags": ["path-traversal", "path-normalization-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://owasp.org/www-community/attacks/Path_Traversal",
+      "summary": "Percent-encoded '..' in path: some parsers decode-then-resolve, others don't."
+    },
+    {
+      "bug_class": "header-injection",
+      "case_id": "REG-URL-CRLF-Injection",
+      "historical_cve_or_disclosure_reference": "CVE-2019-9740",
+      "primary_axes": ["path_normalized", "tab_or_newline_stripped", "control_chars_in_host_rejected"],
+      "primary_security_tags": ["header-injection", "link-preview-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://owasp.org/www-community/attacks/CRLF_Injection",
+      "summary": "CRLF in path: WHATWG strips, RFC 3986 may keep or reject. Header-injection class."
+    },
+    {
+      "bug_class": "scheme-confusion",
+      "case_id": "REG-URL-Scheme-Mixed-Case",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["scheme", "scheme_lowercased"],
+      "primary_security_tags": ["scheme-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.1",
+      "summary": "Uppercase scheme: should normalize to lowercase per RFC 3986."
+    },
+    {
+      "bug_class": "scheme-confusion",
+      "case_id": "REG-URL-Scheme-Whitespace",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["parsed", "scheme"],
+      "primary_security_tags": ["gating-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+      "summary": "Leading whitespace: WHATWG strips, RFC parsers may reject."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-Localhost-Hostname",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host", "host_is_loopback"],
+      "primary_security_tags": ["ssrf-loopback-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc6761#section-6.3",
+      "summary": "'localhost' hostname (not IP): okhttp/rust_url classify as loopback; urllib does not."
+    },
+    {
+      "bug_class": "ssrf-private-network",
+      "case_id": "REG-URL-127-Variant",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["host_is_loopback", "host_is_private_or_link_local", "parsed"],
+      "primary_security_tags": ["ssrf-loopback-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+      "summary": "Two-octet IPv4 shorthand 127.1 = 127.0.0.1. WHATWG accepts; RFC 3986 rejects."
+    },
+    {
+      "bug_class": "userinfo-host-confusion",
+      "case_id": "REG-URL-Userinfo-At-In-User",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["username", "userinfo_raw", "host_lowercased"],
+      "primary_security_tags": ["userinfo-host-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1",
+      "summary": "Encoded @ in username: should be parsed as part of userinfo, not a host delimiter."
+    },
+    {
+      "bug_class": "port-confusion",
+      "case_id": "REG-URL-Port-Empty",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["port_value", "port_present"],
+      "primary_security_tags": ["port-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.3",
+      "summary": "Empty port (':' followed by nothing): RFC 3986 ambiguity."
+    },
+    {
+      "bug_class": "port-confusion",
+      "case_id": "REG-URL-Port-Out-of-Range",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": ["port_value", "parsed"],
+      "primary_security_tags": ["port-confusion"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.3",
+      "summary": "Out-of-range port: java.net.URI raises, others may accept."
+    },
+    {
+      "bug_class": "header-injection",
+      "case_id": "REG-URL-CVE-2020-7793-jsoup-style",
+      "historical_cve_or_disclosure_reference": "CVE-2020-7793",
+      "primary_axes": ["query_raw", "control_chars_in_host_rejected"],
+      "primary_security_tags": ["header-injection"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://nvd.nist.gov/vuln/detail/CVE-2020-7793",
+      "summary": "Embedded NUL byte in query - historic jsoup-style sanitization gap (parser class)."
+    },
+    {
+      "bug_class": "host-injection",
+      "case_id": "REG-URL-CVE-2021-23336-Python-urllib-semicolon",
+      "historical_cve_or_disclosure_reference": "CVE-2021-23336",
+      "primary_axes": ["query_raw"],
+      "primary_security_tags": ["parser-behavior-difference"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23336",
+      "summary": "Semicolon-separated query (CVE-2021-23336): urllib pre-3.10 split on ;."
+    },
+    {
+      "bug_class": "link-preview-bypass",
+      "case_id": "REG-URL-CVE-2022-0391-Python-urllib-newline",
+      "historical_cve_or_disclosure_reference": "CVE-2022-0391",
+      "primary_axes": ["host_lowercased", "tab_or_newline_stripped"],
+      "primary_security_tags": ["link-preview-bypass"],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0391",
+      "summary": "Newline-in-host CVE-2022-0391: urllib.parse pre-3.11 dropped following components."
+    },
+    {
+      "bug_class": "baseline",
+      "case_id": "REG-URL-Baseline-Simple",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": [],
+      "primary_security_tags": [],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986",
+      "summary": "Baseline: trivial URL all parsers should agree on. (Sanity check.)"
+    },
+    {
+      "bug_class": "baseline",
+      "case_id": "REG-URL-Baseline-Path",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": [],
+      "primary_security_tags": [],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986",
+      "summary": "Baseline: standard query string. Sanity check."
+    },
+    {
+      "bug_class": "baseline",
+      "case_id": "REG-URL-Userinfo-Both",
+      "historical_cve_or_disclosure_reference": null,
+      "primary_axes": [],
+      "primary_security_tags": [],
+      "publication_policy": "synthetic-public-candidate",
+      "reference_url": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1",
+      "summary": "Standard userinfo: all parsers should agree."
+    }
+  ],
+  "cases_count": 41,
+  "generated_by": "polydiff/regression/build_corpus.py",
+  "historical_cve_count": 6,
+  "schema_version": "v1"
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "v1",
+  "generated_at": "2026-05-07T00:00:00Z",
+  "generated_by": "stream/polydiff-core",
+  "description": "Build status of each subprocess parser wrapper in the current dev environment. This file is consumed by aegisgraph/polydiff.py to decide which wrappers to dispatch and which to skip with a `not_built_in_current_env` warning. The Dockerfile + source for every wrapper is present regardless of build status, so a fully-pinned devcontainer can build all of them.",
+  "wrappers": {
+    "python_urllib": {
+      "status": "built",
+      "command": "python3 polydiff/parsers/python_urllib/wrapper.py --input-id <ID>",
+      "stdin": "url",
+      "runtime": "CPython 3.11+ stdlib",
+      "directory": "polydiff/parsers/python_urllib",
+      "smoke_test": "polydiff/parsers/python_urllib/test_basic.sh",
+      "requires": ["python3>=3.11"]
+    },
+    "whatwg_url_py": {
+      "status": "built",
+      "command": "python3 polydiff/parsers/whatwg_url_py/wrapper.py --input-id <ID>",
+      "stdin": "url",
+      "runtime": "CPython 3.11 + whatwg-url package",
+      "directory": "polydiff/parsers/whatwg_url_py",
+      "smoke_test": "polydiff/parsers/whatwg_url_py/test_basic.sh",
+      "requires": ["python3>=3.11", "whatwg-url"]
+    },
+    "jdk_uri": {
+      "status": "not_built_in_current_env",
+      "reason": "javac not on PATH (only JRE installed). Source + Dockerfile present and reproducible in the pinned devcontainer.",
+      "command": "java -cp polydiff/parsers/jdk_uri Wrapper --input-id <ID>",
+      "stdin": "url",
+      "runtime": "OpenJDK 21",
+      "directory": "polydiff/parsers/jdk_uri",
+      "smoke_test": "polydiff/parsers/jdk_uri/test_basic.sh",
+      "requires": ["javac", "java"]
+    },
+    "okhttp_httpurl": {
+      "status": "not_built_in_current_env",
+      "reason": "javac + okhttp.jar + okio.jar not on PATH. Source + Dockerfile present and reproducible in the pinned devcontainer.",
+      "command": "java -cp <classpath> Wrapper --input-id <ID>",
+      "stdin": "url",
+      "runtime": "OpenJDK 21 + okhttp 4.12.0 + okio 3.6.0",
+      "directory": "polydiff/parsers/okhttp_httpurl",
+      "smoke_test": "polydiff/parsers/okhttp_httpurl/test_basic.sh",
+      "requires": ["javac", "java", "OKHTTP_JAR", "OKIO_JAR"]
+    },
+    "rust_url": {
+      "status": "not_built_in_current_env",
+      "reason": "cargo not on PATH. Source + Cargo.toml + Dockerfile present and reproducible in the pinned devcontainer (Rust 1.79).",
+      "command": "polydiff/parsers/rust_url/target/release/wrapper --input-id <ID>",
+      "stdin": "url",
+      "runtime": "Rust 1.79.0",
+      "directory": "polydiff/parsers/rust_url",
+      "smoke_test": "polydiff/parsers/rust_url/test_basic.sh",
+      "requires": ["cargo", "rustc"]
+    },
+    "go_neturl": {
+      "status": "not_built_in_current_env",
+      "reason": "go not on PATH. Source + go.mod + Dockerfile present and reproducible in the pinned devcontainer (Go 1.22.5).",
+      "command": "polydiff/parsers/go_neturl/wrapper --input-id <ID>",
+      "stdin": "url",
+      "runtime": "Go 1.22.5",
+      "directory": "polydiff/parsers/go_neturl",
+      "smoke_test": "polydiff/parsers/go_neturl/test_basic.sh",
+      "requires": ["go"]
+    },
+    "libcurl": {
+      "status": "not_built_in_current_env",
+      "reason": "clang + libcurl-dev not installed. Source + Dockerfile present and reproducible in the pinned devcontainer (Clang 18 + libcurl).",
+      "command": "polydiff/parsers/libcurl/wrapper --input-id <ID>",
+      "stdin": "url",
+      "runtime": "libcurl4 / clang 18",
+      "directory": "polydiff/parsers/libcurl",
+      "smoke_test": "polydiff/parsers/libcurl/test_basic.sh",
+      "requires": ["clang-18", "libcurl-dev"]
+    }
+  }
+}

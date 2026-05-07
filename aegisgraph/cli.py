@@ -80,7 +80,21 @@ def cmd_reprochain(args: argparse.Namespace) -> int:
 def cmd_polydiff(args: argparse.Namespace) -> int:
     if args.polydiff_command == "regression":
         report = polydiff.run_regression(_root())
-        print(f"polydiff regression {report['tier_p1_status']}: {len(report['records'])} evidence records")
+        print(
+            f"polydiff regression {report['tier_p1_status']}: "
+            f"{len(report['records'])} evidence records, "
+            f"{report.get('rediscovered_historical_cves', 0)} historical-CVE rediscoveries"
+        )
+    elif args.polydiff_command == "fuzz":
+        from polydiff.fuzzer.driver import run as fuzz_run
+        budget = float(getattr(args, "budget", "60s").rstrip("s"))
+        summary = fuzz_run(_root(), budget_seconds=budget)
+        print(
+            f"polydiff fuzz: {summary['total_inputs']} inputs, "
+            f"{summary['interesting']} interesting, "
+            f"{len(summary['axes_covered'])} axes covered, "
+            f"{len(summary['crashes'])} crashes"
+        )
     else:  # pragma: no cover
         raise AssertionError(args.polydiff_command)
     return 0
@@ -160,6 +174,13 @@ def build_parser() -> argparse.ArgumentParser:
     polydiff_subparsers = polydiff_parser.add_subparsers(dest="polydiff_command", required=True)
     polydiff_regression = polydiff_subparsers.add_parser("regression")
     polydiff_regression.set_defaults(func=cmd_polydiff)
+    polydiff_fuzz = polydiff_subparsers.add_parser("fuzz")
+    polydiff_fuzz.add_argument(
+        "--budget",
+        default="60s",
+        help="Wall-clock budget (default: 60s). Local-only; not in `make reproduce`.",
+    )
+    polydiff_fuzz.set_defaults(func=cmd_polydiff)
 
     smabench_parser = subparsers.add_parser("smabench")
     smabench_subparsers = smabench_parser.add_subparsers(dest="smabench_command", required=True)

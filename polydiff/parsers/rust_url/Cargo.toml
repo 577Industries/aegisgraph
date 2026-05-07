@@ -1,0 +1,16 @@
+[package]
+name = "polydiff-rust-url-wrapper"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "wrapper"
+path = "wrapper.rs"
+
+[dependencies]
+url = "2.5"
+serde_json = "1.0"
+
+[profile.release]
+strip = true
+lto = "thin"
