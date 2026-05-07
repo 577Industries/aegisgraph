@@ -61,6 +61,16 @@ polydiff-regression:
 polydiff-fuzz:
 	$(AEGISGRAPH) polydiff fuzz --budget 60s
 
+# polydiff-build-corpus: generate per-case directories under
+# polydiff/regression/cases/ from the canonical CASES list in
+# polydiff/regression/build_corpus.py. NOT in `reproduce` because the
+# Python module is the source of truth for the orchestrator; this
+# target only populates the on-disk documentation artifacts (one
+# input/, one description.md/, one expected.json/, one reference.url/
+# per case). Re-run after editing build_corpus.py.
+polydiff-build-corpus:
+	$(PYTHON) polydiff/regression/build_corpus.py
+
 # smabench: deterministic ring1 corpus run. Part of `reproduce`.
 smabench:
 	$(AEGISGRAPH) smabench run
