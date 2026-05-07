@@ -147,6 +147,14 @@
       "status": "claim_without_evidence"
     },
     {
+      "artifact_path": "tooling-versions.json",
+      "dsip_requirement": "",
+      "notes": "artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml",
+      "proposal_claim": "",
+      "spec_section": "10",
+      "status": "evidence_without_claim"
+    },
+    {
       "artifact_path": "reports/traceability_matrix.json",
       "dsip_requirement": "DSIP-EVAL-CRIT-REPRO",
       "notes": "evidence present",
@@ -301,10 +309,10 @@
     {
       "artifact_path": "smabench/results/latest/results.json",
       "dsip_requirement": "",
-      "notes": "missing on disk",
+      "notes": "evidence present",
       "proposal_claim": "AG-CLAIM-NOVEL-SMABENCH-THREE-RING",
       "spec_section": "7",
-      "status": "claim_without_evidence"
+      "status": "ok"
     },
     {
       "artifact_path": "schema/finding.schema.json",
@@ -743,11 +751,11 @@
     }
   ],
   "summary": {
-    "claim_without_evidence": 18,
-    "evidence_without_claim": 4,
-    "ok": 28,
+    "claim_without_evidence": 17,
+    "evidence_without_claim": 5,
+    "ok": 29,
     "planned": 2,
-    "total": 52
+    "total": 53
   },
   "tool_output_type": "traceability_matrix",
   "version": "v1.0"

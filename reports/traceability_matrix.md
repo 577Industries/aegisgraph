@@ -7,11 +7,11 @@ every `make traceability` run.
 
 | Status | Count |
 | --- | ---: |
-| ok | 28 |
-| claim_without_evidence | 18 |
-| evidence_without_claim | 4 |
+| ok | 29 |
+| claim_without_evidence | 17 |
+| evidence_without_claim | 5 |
 | planned | 2 |
-| **total rows** | 52 |
+| **total rows** | 53 |
 
 ## Rows
 
@@ -35,6 +35,7 @@ every `make traceability` run.
 | (unanchored) | — | AG-CLAIM-COMPLIANCE-SAM-GOV | DSIP-SUB-ART-SAM-GOV | planned | owner_section=sbir_application; claim text-anchor only |
 | (unanchored) | — | AG-CLAIM-PACKAGE-SLIDES-15 | DSIP-PAGE-LIMIT-SLIDES | claim_without_evidence | owner_section=technical_volume; claim text-anchor only |
 | (unanchored) | — | AG-CLAIM-PACKAGE-WHITE-PAPER-20PG | DSIP-PAGE-LIMIT-WP | claim_without_evidence | owner_section=technical_volume; claim text-anchor only |
+| 10 | tooling-versions.json | — | — | evidence_without_claim | artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml |
 | 10 | reports/traceability_matrix.json | AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE | DSIP-EVAL-CRIT-REPRO | ok | evidence present |
 | 10 | validation-report.json | AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE | DSIP-EVAL-CRIT-REPRO | ok | evidence present |
 | 4 | reprochain/evidence/build_manifest.json | AG-CLAIM-NOVEL-REPROCHAIN-PRE-DISCLOSURE | — | ok | evidence present |
@@ -54,7 +55,7 @@ every `make traceability` run.
 | 6 | extraction/output/element-x/graph.json | AG-CLAIM-V03-TWO-PUBLIC-TARGETS | — | ok | evidence present |
 | 6 | extraction/output/manifest.json | AG-CLAIM-V03-TWO-PUBLIC-TARGETS | — | ok | evidence present |
 | 6 | extraction/output/signal/graph.json | AG-CLAIM-V03-TWO-PUBLIC-TARGETS | — | ok | evidence present |
-| 7 | smabench/results/latest/results.json | AG-CLAIM-NOVEL-SMABENCH-THREE-RING | — | claim_without_evidence | missing on disk |
+| 7 | smabench/results/latest/results.json | AG-CLAIM-NOVEL-SMABENCH-THREE-RING | — | ok | evidence present |
 | 8 | schema/finding.schema.json | — | — | evidence_without_claim | artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml |
 | 8 | schema/hash-chain.schema.json | — | — | evidence_without_claim | artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml |
 | 8 | schema/recommendation.schema.json | — | — | evidence_without_claim | artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml |
