@@ -1,0 +1,10 @@
+{
+  "directory": "reprochain/corpora-private/handcrafted/",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "policy": "Only sha256 hashes and structural one-liners are committed. Seed input bytes themselves are gitignored.",
+  "safety_posture": "private_by_default",
+  "seeds": [],
+  "tool_output_type": "reprochain_corpus_manifest",
+  "version": "v1.0"
+}

@@ -1,10 +1,12 @@
 {
-  "expected_future_gate": "ASAN crash on vulnerable libwebp and clean run on fixed libwebp in isolated harness only.",
+  "differential": {},
   "generated_at": "2026-05-05T00:00:00Z",
   "generated_by": "aegisgraph-tier3-research",
   "restricted_material_policy": "Crash-inducing corpus files remain under reprochain/corpora-private and are excluded from public sanitized export.",
   "safety_posture": "private_by_default",
-  "status": "not_run_until_commit_pins_confirmed",
+  "seed_count": 0,
+  "status": "not_run",
+  "summary_path": "reprochain/evidence/asan_report_summary.json",
   "tool_output_type": "reprochain_run_status",
   "version": "v1.0"
 }
