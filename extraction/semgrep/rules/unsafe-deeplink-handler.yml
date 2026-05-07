@@ -1,0 +1,35 @@
+rules:
+  - id: aegisgraph.unsafe-deeplink-parse-uri-without-authority-check
+    languages:
+      - java
+      - kotlin
+    severity: WARNING
+    message: |
+      Intent.parseUri / Intent.setData consumed from an externally-supplied
+      String without authority/scheme validation. Deep-linking is a primary
+      RCE pivot when the receiving Activity is exported (see
+      AndroidManifest analyzer). AegisGraph maps this to path_class=deeplink.
+    metadata:
+      category: security
+      cwe: CWE-940
+      aegisgraph_path_class: deeplink
+      aegisgraph_node_type: handler
+    pattern-either:
+      - pattern: Intent.parseUri($S, ...)
+      - pattern: |
+          $I.setData(Uri.parse($S))
+      - pattern: |
+          $I.setData(android.net.Uri.parse($S))
+      - patterns:
+          - pattern: |
+              Intent $I = new Intent();
+              ...
+              $I.setData($U);
+          - pattern-not-inside: |
+              if ($U.getHost() == ...) {
+                ...
+              }
+          - pattern-not-inside: |
+              if ($U.getScheme().equals(...)) {
+                ...
+              }

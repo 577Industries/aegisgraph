@@ -1,0 +1,27 @@
+rules:
+  - id: aegisgraph.permissive-intent-filter-without-scheme-host
+    languages:
+      - generic
+    severity: INFO
+    message: |
+      <intent-filter> declared in AndroidManifest.xml without a <data> tag
+      restricting scheme + host (or with android:scheme="*" / android:host="*").
+      AegisGraph maps this to entry_point nodes with weak external-input
+      gating. The manifest_analyzer.py emits the structured listing; this
+      rule provides a Semgrep-anchored line-anchor for graph nodes.
+    metadata:
+      category: security
+      cwe: CWE-925
+      aegisgraph_path_class: deeplink
+      aegisgraph_node_type: entry_point
+    paths:
+      include:
+        - "**/AndroidManifest.xml"
+    pattern-either:
+      - patterns:
+          - pattern-regex: '<intent-filter[^>]*>[\s\S]*?</intent-filter>'
+          - pattern-not-regex: '<data[^/]*android:scheme="[a-z][a-z0-9+.-]*"'
+      - patterns:
+          - pattern-regex: '<data\s+[^/]*android:scheme="\*"'
+      - patterns:
+          - pattern-regex: '<data\s+[^/]*android:host="\*"'

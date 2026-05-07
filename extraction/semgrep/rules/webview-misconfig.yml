@@ -1,0 +1,39 @@
+rules:
+  - id: aegisgraph.webview-javascript-enabled-with-remote-loader
+    languages:
+      - java
+      - kotlin
+    severity: WARNING
+    message: |
+      WebView with JavaScript enabled is loading an externally controllable
+      URL. Combined with overridden shouldOverrideUrlLoading or no
+      onReceivedSslError handler this is a classic XSS-into-app-WebView
+      vector. AegisGraph maps this to path_class=link_preview when the URL
+      is a message attachment, deeplink otherwise.
+    metadata:
+      category: security
+      cwe: CWE-79
+      aegisgraph_path_class: link_preview
+      aegisgraph_node_type: parser
+    pattern-either:
+      - patterns:
+          - pattern-either:
+              - pattern: $WV.getSettings().setJavaScriptEnabled(true);
+              - pattern: $WV.getSettings().javaScriptEnabled = true
+              - pattern: $WV.settings.javaScriptEnabled = true
+          - pattern-either:
+              - pattern-inside: |
+                  ...
+                  $WV.loadUrl($URL);
+                  ...
+              - pattern-inside: |
+                  ...
+                  $WV.loadData(...)
+                  ...
+              - pattern-inside: |
+                  ...
+                  $WV.loadDataWithBaseURL(...)
+                  ...
+      - patterns:
+          - pattern: |
+              new WebView(...).getSettings().setJavaScriptEnabled(true)

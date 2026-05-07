@@ -1,4 +1,8 @@
 {
+  "coverage_outputs": [
+    "extraction/output/signal/coverage.json",
+    "extraction/output/element-x/coverage.json"
+  ],
   "generated_at": "2026-05-05T00:00:00Z",
   "generated_by": "aegisgraph-tier3-research",
   "outputs": [
@@ -6,7 +10,61 @@
     "extraction/output/element-x/graph.json"
   ],
   "safety_posture": "private_by_default",
-  "status": "phase0_anchor_only",
+  "status": "phase1_real_extraction",
   "tool_output_type": "extraction_manifest",
+  "tool_run_status": {
+    "element-x": {
+      "codeql": {
+        "node_count": 0,
+        "reason": "sarif not found at extraction/output/element-x/raw/codeql-merged.sarif; CodeQL CLI may be unavailable or DB not built",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      },
+      "manifest": {
+        "node_count": 0,
+        "reason": "manifest analysis not found at extraction/output/element-x/manifest-analysis.json; manifest_analyzer requires a cloned target source tree",
+        "status": "skipped_pending_target_source",
+        "tool_output_hash": null
+      },
+      "mobsf": {
+        "node_count": 0,
+        "reason": "mobsf-results.json not found at extraction/output/element-x/mobsf-results.json; run extraction/mobsf/run_mobsf.py first or accept the skipped status",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      },
+      "semgrep": {
+        "node_count": 0,
+        "reason": "semgrep results not found at extraction/output/element-x/raw/semgrep.json",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      }
+    },
+    "signal": {
+      "codeql": {
+        "node_count": 0,
+        "reason": "sarif not found at extraction/output/signal/raw/codeql-merged.sarif; CodeQL CLI may be unavailable or DB not built",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      },
+      "manifest": {
+        "node_count": 0,
+        "reason": "manifest analysis not found at extraction/output/signal/manifest-analysis.json; manifest_analyzer requires a cloned target source tree",
+        "status": "skipped_pending_target_source",
+        "tool_output_hash": null
+      },
+      "mobsf": {
+        "node_count": 0,
+        "reason": "mobsf-results.json not found at extraction/output/signal/mobsf-results.json; run extraction/mobsf/run_mobsf.py first or accept the skipped status",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      },
+      "semgrep": {
+        "node_count": 0,
+        "reason": "semgrep results not found at extraction/output/signal/raw/semgrep.json",
+        "status": "skipped_pending_toolchain",
+        "tool_output_hash": null
+      }
+    }
+  },
   "version": "v1.0"
 }

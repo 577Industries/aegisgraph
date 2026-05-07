@@ -1,0 +1,33 @@
+rules:
+  - id: aegisgraph.tainted-jni-bridge-native-method-with-remote-input
+    languages:
+      - java
+      - kotlin
+    severity: WARNING
+    message: |
+      Native method declaration whose parameter list includes a byte[] /
+      ByteBuffer / Bitmap / String/Uri shape that is the canonical taint
+      sink for JNI. The CodeQL native-method-with-tainted-input.ql query is
+      the reachability oracle; this Semgrep rule surfaces the *declaration*
+      so AegisGraph can emit a native_boundary node even when CodeQL DB
+      build fails. path_class=native_boundary.
+    metadata:
+      category: security
+      cwe: CWE-829
+      aegisgraph_path_class: native_boundary
+      aegisgraph_node_type: native_boundary
+    pattern-either:
+      - pattern: |
+          public native $RT $METHOD(byte[] $BUF, ...);
+      - pattern: |
+          private native $RT $METHOD(byte[] $BUF, ...);
+      - pattern: |
+          static native $RT $METHOD(byte[] $BUF, ...);
+      - pattern: |
+          public native $RT $METHOD(java.nio.ByteBuffer $BUF, ...);
+      - pattern: |
+          public native $RT $METHOD(android.graphics.Bitmap $BMP, ...);
+      - pattern: |
+          external fun $METHOD($BUF: ByteArray, ...): $RT
+      - pattern: |
+          external fun $METHOD($BUF: java.nio.ByteBuffer, ...): $RT
