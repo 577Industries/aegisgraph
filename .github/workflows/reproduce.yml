@@ -1,0 +1,39 @@
+name: tier3-research-reproduce
+
+# End-to-end reproduce gate. Runs `make reproduce` on the pinned
+# devcontainer toolchain. Triggers:
+#   - workflow_dispatch (manual)
+#   - weekly cron (Monday 06:00 UTC)
+#
+# IMPORTANT: this workflow currently runs LOCALLY ONLY until a self-hosted
+# runner with the pinned devcontainer image is provisioned. The job is
+# disabled by default via if: false. The intent is for the integration
+# owner to manually fire `make reproduce` on a maintainer workstation
+# until self-hosted infrastructure is provisioned.
+#
+# Security note: workflow consumes only repo-controlled inputs.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  reproduce:
+    runs-on: self-hosted
+    if: ${{ false }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Strict tooling gate
+        run: make tooling-strict
+      - name: Run reproduce end-to-end
+        run: make reproduce
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: |
+            tooling-versions.json
+            validation-report.json
+            exports/private-submission/manifest.json

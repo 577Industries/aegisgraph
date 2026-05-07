@@ -1,0 +1,38 @@
+name: tier3-research-sanitize
+
+# Sanitize-check workflow - fails closed if any forbidden pattern matches
+# in exports/public-sanitized/. Manual trigger only; this is the human
+# authorization gate, never automated.
+#
+# This job runs `make sanitize-check`, which delegates to
+# validator/sanitize_check.py (owned by the validator-export stream).
+# Until that module lands, sanitize-check returns non-zero with a clear
+# "module not yet wired" diagnostic - which is the intended behavior
+# (fail-closed by default).
+#
+# Security note: workflow consumes only repo-controlled inputs.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sanitize-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]" || python -m pip install -e .
+          python -m pip install pytest jsonschema lxml pyyaml httpx whatwg-url
+      - name: Sanitize-check guard
+        run: |
+          if [ ! -d exports/public-sanitized ]; then
+            echo "exports/public-sanitized/ does not exist; nothing to scan."
+            echo "Run 'aegisgraph export public-sanitized' first if you intended to."
+            exit 0
+          fi
+          make sanitize-check
