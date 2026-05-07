@@ -1,0 +1,38 @@
+# proposal-claims-index.yml
+#
+# Skeleton owned by the integration stream; populated by the
+# validator-export stream from the v0.3 master proposal at
+# /home/twawe/577i-Projects/SBIR Working Folder/ASEMA/03_PROPOSAL/active-package/
+#   01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md
+#
+# Each entry pairs a claim_id (a stable cross-reference token used in
+# evidence_refs[*].claim_id and in the traceability matrix) with the
+# source location in the proposal and the owning section. The validator-export
+# stream's `traceability` command joins this index with /reports/
+# evidence-record outputs to produce reports/traceability_matrix.{json,md}.
+#
+# Schema (additive-only; new fields nullable):
+#
+#   - claim_id:        string, format ^AG-CLAIM-[A-Z0-9-]+$
+#                      stable identifier; once published, never renamed
+#   - source_location: string, doc-relative path + section anchor
+#                      e.g. "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#technical-volume-section-3.2"
+#   - claim_text:      string, verbatim quote from the proposal (keep
+#                      under 500 chars; longer claims should be summarized
+#                      and the full text linked via source_location)
+#   - owner_section:   string, one of:
+#                        technical_volume | management_plan | sbir_application
+#                      | dsip_response | proposal_appendix
+#   - evidence_record: optional string, the AG-EV-* record id that
+#                      currently substantiates this claim (null until a
+#                      record exists)
+#   - status:          enum: drafted | substantiated | retired
+#                      drafted     - claim is in the proposal but no
+#                                    evidence record yet
+#                      substantiated - evidence_record is set and validates
+#                      retired     - claim was removed from the proposal
+#
+# This skeleton ships empty. The validator-export stream populates it as
+# part of its merge.
+
+claims: []

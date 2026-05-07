@@ -1,0 +1,42 @@
+# dsip-requirements.yml
+#
+# Skeleton owned by the integration stream; populated by the validator-export
+# stream from solicitation HR0011SB20254-12 (DSIP Direct-to-Phase-II
+# proposal preparation instructions) so that every solicitation requirement
+# has a traceable response in the proposal package.
+#
+# Each entry captures:
+#
+#   - requirement_id:   stable internal identifier; format ^DSIP-[A-Z0-9-]+$
+#                       e.g. DSIP-PAGE-LIMIT-TECH, DSIP-EVAL-CRIT-3
+#   - source_anchor:    section reference inside HR0011SB20254-12
+#                       e.g. "Section II.A.1 Technical Volume"
+#   - requirement_text: verbatim quote from the solicitation (keep <500
+#                       chars; longer requirements should be summarized
+#                       with the full text linked via source_anchor)
+#   - category:         enum:
+#                         page_limit | format_requirement | evaluation_criterion
+#                       | deliverable | ksa_crosswalk | submission_artifact
+#   - response_location: optional string, doc-relative path inside
+#                        03_PROPOSAL where this requirement is addressed
+#   - status:           enum: open | drafted | satisfied
+#                         open      - validator-export has not yet checked
+#                                     this requirement against the proposal
+#                         drafted   - response_location is set but not
+#                                     yet final
+#                         satisfied - response is final and reviewed
+#
+# Special-case keys (optional, additive):
+#
+#   - ksa_crosswalk:    map of KSA bullet -> proposal section that
+#                       evidences the team's depth in that KSA
+#   - deliverables:     list of contracted deliverables (Phase II
+#                       expects 4 quarterly + a final). Each entry
+#                       carries: deliverable_id, due_quarter, contents.
+#
+# This skeleton ships empty. The validator-export stream populates it as
+# part of its merge.
+
+requirements: []
+ksa_crosswalk: {}
+deliverables: []
