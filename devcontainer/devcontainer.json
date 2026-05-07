@@ -1,20 +1,33 @@
 {
   "name": "aegisgraph-tier3-research",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12",
-  "features": {
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "21"
-    },
-    "ghcr.io/devcontainers/features/go:1": {},
-    "ghcr.io/devcontainers/features/rust:1": {}
+  "build": {
+    "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "python -m pip install -e . pytest jsonschema",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+  "postCreateCommand": "bash devcontainer/post-create.sh",
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "AEGISGRAPH_STRICT_TOOLING": "0"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "redhat.vscode-yaml"
-      ]
+        "ms-python.vscode-pylance",
+        "redhat.vscode-yaml",
+        "github.vscode-codeql",
+        "rust-lang.rust-analyzer",
+        "golang.go"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python3",
+        "python.testing.pytestEnabled": true
+      }
     }
   }
 }
