@@ -56,14 +56,36 @@ def test_public_sanitized_release_authorized_stays_false_with_env_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Setting AEGISGRAPH_RELEASE_AUTHORIZED=1 alone is NOT sufficient.
-    The sanitize_check must also pass — and today its stub returns False
-    because validator/sanitize_check.py has not landed yet."""
+    The validator/sanitize_check must also pass. Pre-poison the export
+    tree so the wired sanitize_check (ADR 0021) trips a forbidden-content
+    rule and the gate stays closed."""
     _seed_repo(tmp_path)
+    public_dir = tmp_path / "exports" / "public-sanitized"
+    public_dir.mkdir(parents=True, exist_ok=True)
+    # Plant a forbidden-content file so rule 1 (BEGIN PRIVATE KEY) trips.
+    (public_dir / "leaked_key.txt").write_text(
+        "-----BEGIN PRIVATE KEY-----\nMIIEvA\n-----END PRIVATE KEY-----\n"
+    )
     monkeypatch.setenv(ENV_RELEASE_AUTHORIZED, "1")
     manifest = export_public_sanitized(tmp_path)
     assert manifest["release_authorized"] is False
     # Note must call out that the env was set but the sanitize check failed.
     assert "validator/sanitize_check.py" in manifest["release_note"]
+
+
+def test_public_sanitized_release_authorized_true_with_clean_export(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """With env=1 AND a sanitize-clean export tree, the gate flips True.
+    Verifies the validator.sanitize_check wiring (ADR 0021) actually
+    enables the human-authorized release path. The minimal sanitized
+    polydiff report written by export_public_sanitized passes all
+    sanitize_check rules in a fresh tmp tree."""
+    _seed_repo(tmp_path)
+    monkeypatch.setenv(ENV_RELEASE_AUTHORIZED, "1")
+    manifest = export_public_sanitized(tmp_path)
+    assert manifest["release_authorized"] is True
+    assert "Both environment authorization and sanitize-check passed" in manifest["release_note"]
 
 
 def test_public_sanitized_dry_run_writes_no_files(tmp_path: Path) -> None:
