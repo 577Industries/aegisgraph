@@ -25,4 +25,6 @@ exports/public-sanitized/*
 !exports/public-sanitized/README.md
 
 smabench/results/latest/
+# Also ignore the symlink form (trailing slash above only matches dirs).
+smabench/results/latest
 reports/generated/
