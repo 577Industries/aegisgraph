@@ -78,7 +78,12 @@ rows=52, ok=28, claim_without_evidence=18, evidence_without_claim=4, planned=2
 The 18 `claim_without_evidence` rows fall into three buckets that are
 EXPECTED until other engineering streams merge:
 
-#### Bucket 1 — DSIP requirements no claim references (12 rows)
+  - 14 rows are DSIP-requirements with no proposal claim referencing them
+    (the proposal-package agent owns adding the back-references)
+  - 4 rows are claims pointing at evidence that is either text-only
+    or hasn't been emitted by its owning engineering stream yet
+
+#### Bucket 1 — DSIP requirements no claim references (14 rows)
 
 These DSIP requirements do not have a corresponding `dsip_requirement:`
 field in any claim because the proposal-package agent owns those
@@ -102,28 +107,33 @@ sections and validator-export does not invent claim text on its behalf:
 These will close as the proposal-package agent adds `dsip_requirement:`
 back-references in the claims index.
 
-#### Bucket 2 — claims pointing at evidence_artifacts that have not yet been emitted by their owning engineering stream (4 rows)
+#### Bucket 2 — claims pointing at evidence_artifacts that have not yet been emitted by their owning engineering stream (1 row)
 
-  - `AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE` references
-    `validation-report.json` and `reports/traceability_matrix.json`,
-    both of which exist after a `make validate && make traceability`
-    run but are gitignored. Reviewers see these as missing on a clean
-    checkout; they materialize after `make reproduce` runs.
+  - `AG-CLAIM-NOVEL-SMABENCH-THREE-RING` references
+    `smabench/results/latest/results.json`, which is gitignored
+    (smabench/results/latest/) and only exists after `make smabench`.
+    On a clean checkout the row shows as `claim_without_evidence`;
+    it flips to `ok` after `make reproduce`.
 
-  - `AG-CLAIM-V03-TWO-PUBLIC-TARGETS`,
-    `AG-CLAIM-V03-SIX-GRAPH-THREADS`, etc. point at extraction graph
-    JSONs that exist after `make extract` (already in `make reproduce`).
+  - Note: `AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE` was previously in
+    this bucket, but this MR commits a `reports/traceability_matrix.json`
+    snapshot AND `validation-report.json` is regenerable via
+    `make validate`. After running both, that claim's row flips to `ok`.
 
-#### Bucket 3 — claims with text-only anchors and no on-disk evidence (2 rows)
+#### Bucket 3 — claims with text-only anchors and no on-disk evidence (3 rows)
 
   - `AG-CLAIM-PACKAGE-WHITE-PAPER-20PG` (page-limit metric, no JSON
     artifact)
   - `AG-CLAIM-PACKAGE-SLIDES-15`        (page-limit metric, no JSON
     artifact)
+  - `AG-CLAIM-METRIC-RECOMMENDATIONS-TWELVE` (12 recommendation
+    records described in master proposal §5.7 but not emitted as
+    JSON evidence files by any engineering stream yet; recommendation-
+    bundling stream will land them)
 
 These are intentionally unevidenced in the validator-export tree —
-they are page-count constraints, not data artifacts. The
-proposal-package agent owns the actual deliverables.
+the page-limit ones are constraints, not data artifacts; the
+recommendation count requires the recommendation-bundling stream.
 
 ### Patch to integration's `_sanitize_check_passes` stub
 
