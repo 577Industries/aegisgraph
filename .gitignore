@@ -17,6 +17,25 @@ validation-report.json
 reprochain/corpora-private/*
 !reprochain/corpora-private/.gitkeep
 !reprochain/corpora-private/README.md
+!reprochain/corpora-private/handcrafted/
+reprochain/corpora-private/handcrafted/*
+!reprochain/corpora-private/handcrafted/README.md
+!reprochain/corpora-private/handcrafted/MANIFEST.json
+
+# Build artifacts from reprochain/build.sh — vulnerable static archive
+# and harness binaries are NEVER committed. Worktrees of the libwebp
+# pinned commits live alongside the upstream submodule and are also
+# transient build artifacts.
+reprochain/vendor/libwebp/build-vuln/
+reprochain/vendor/libwebp/build-fix/
+reprochain/vendor/libwebp/cmake-vuln/
+reprochain/vendor/libwebp/cmake-fix/
+
+# ASan logs may contain stack frames with developer-host paths and (for
+# the vuln binary) bytes adjacent to the crash address. Only the
+# scrubbed asan_report_summary.json is committed; raw asan_*.txt logs
+# stay out of git.
+reprochain/evidence/asan_*.txt
 
 # Generated exports are reproducible outputs, not source of truth.
 exports/private-submission/*
