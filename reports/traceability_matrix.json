@@ -1,0 +1,754 @@
+{
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "validator-export",
+  "rows": [
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-FORMAT-FONT-SIZE",
+      "notes": "DSIP requirement DSIP-FORMAT-FONT-SIZE has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-FORMAT-MARGINS",
+      "notes": "DSIP requirement DSIP-FORMAT-MARGINS has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#12-commercialization-and-transition",
+      "dsip_requirement": "DSIP-EVAL-CRIT-COMMERCIAL",
+      "notes": "DSIP requirement DSIP-EVAL-CRIT-COMMERCIAL has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates",
+      "dsip_requirement": "DSIP-SUB-ART-VOL5-CERTS",
+      "notes": "DSIP requirement DSIP-SUB-ART-VOL5-CERTS has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#15-compliance-and-submission-gates",
+      "dsip_requirement": "DSIP-SUB-ART-VOL7-WEBFORM",
+      "notes": "DSIP requirement DSIP-SUB-ART-VOL7-WEBFORM has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4-phase-i-equivalent-feasibility-and-prior-work",
+      "dsip_requirement": "DSIP-EVAL-CRIT-FEASIBILITY",
+      "notes": "DSIP requirement DSIP-EVAL-CRIT-FEASIBILITY has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#4.4-what-is-novel-about-aegisgraph",
+      "dsip_requirement": "DSIP-EVAL-CRIT-NOVELTY",
+      "notes": "DSIP requirement DSIP-EVAL-CRIT-NOVELTY has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.2-months-1-4",
+      "dsip_requirement": "DSIP-DELIVERABLE-KICKOFF",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-KICKOFF has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.3-months-5-7",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q2",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-Q2 has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.4-months-8-10",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q3",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-Q3 has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.5-months-11-14",
+      "dsip_requirement": "DSIP-DELIVERABLE-FINAL",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-FINAL has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.6-months-15-24-option",
+      "dsip_requirement": "DSIP-DELIVERABLE-OPTION-M19",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-OPTION-M19 has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md#9.6-months-15-24-option",
+      "dsip_requirement": "DSIP-DELIVERABLE-OPTION-M24",
+      "notes": "DSIP requirement DSIP-DELIVERABLE-OPTION-M24 has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "03_PROPOSAL/active-package/01_master_proposal/AegisGraph_ASEMA_DP2_Master_Proposal_v0.3.md",
+      "dsip_requirement": "DSIP-PAGE-LIMIT-TECH",
+      "notes": "DSIP requirement DSIP-PAGE-LIMIT-TECH has no proposal claim referencing it",
+      "proposal_claim": "",
+      "spec_section": "(dsip)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-SUB-ART-DATA-RIGHTS",
+      "notes": "owner_section=sbir_application; claim text-anchor only",
+      "proposal_claim": "AG-CLAIM-COMPLIANCE-DATA-RIGHTS",
+      "spec_section": "(unanchored)",
+      "status": "planned"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-SUB-ART-SAM-GOV",
+      "notes": "owner_section=sbir_application; claim text-anchor only",
+      "proposal_claim": "AG-CLAIM-COMPLIANCE-SAM-GOV",
+      "spec_section": "(unanchored)",
+      "status": "planned"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-PAGE-LIMIT-SLIDES",
+      "notes": "owner_section=technical_volume; claim text-anchor only",
+      "proposal_claim": "AG-CLAIM-PACKAGE-SLIDES-15",
+      "spec_section": "(unanchored)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-PAGE-LIMIT-WP",
+      "notes": "owner_section=technical_volume; claim text-anchor only",
+      "proposal_claim": "AG-CLAIM-PACKAGE-WHITE-PAPER-20PG",
+      "spec_section": "(unanchored)",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "reports/traceability_matrix.json",
+      "dsip_requirement": "DSIP-EVAL-CRIT-REPRO",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE",
+      "spec_section": "10",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "validation-report.json",
+      "dsip_requirement": "DSIP-EVAL-CRIT-REPRO",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-VERIFICATION-PUBLIC-PACKAGE",
+      "spec_section": "10",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "reprochain/evidence/build_manifest.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-REPROCHAIN-PRE-DISCLOSURE",
+      "spec_section": "4",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "reprochain/evidence/mapping.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-REPROCHAIN-PRE-DISCLOSURE",
+      "spec_section": "4",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "reprochain/evidence/run_status.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-REPROCHAIN-PRE-DISCLOSURE",
+      "spec_section": "4",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "reprochain/evidence/build_manifest.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-REPROCHAIN-LIBWEBP-CVE-2023-4863",
+      "spec_section": "4",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "reprochain/evidence/run_status.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-REPROCHAIN-LIBWEBP-CVE-2023-4863",
+      "spec_section": "4",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "polydiff/evidence/regression.evidence.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-POLYDIFF-FACT-VECTOR",
+      "spec_section": "5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "polydiff/regression/report.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-POLYDIFF-FACT-VECTOR",
+      "spec_section": "5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "schema/fact-vector.schema.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-POLYDIFF-FACT-VECTOR",
+      "spec_section": "5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "polydiff/regression/report.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-POLYDIFF-REDISCOVERY-3",
+      "spec_section": "5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/element-x/graph.json",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q1",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-METRIC-GRAPH-THREADS-SIX",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/signal/graph.json",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q1",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-METRIC-GRAPH-THREADS-SIX",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/manifest.json",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q1",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-METRIC-PATH-CLASSES-EIGHT",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/element-x/graph.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-SIX-GRAPH-THREADS",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/signal/graph.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-SIX-GRAPH-THREADS",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/element-x/graph.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-TWO-PUBLIC-TARGETS",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/manifest.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-TWO-PUBLIC-TARGETS",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "extraction/output/signal/graph.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-V03-TWO-PUBLIC-TARGETS",
+      "spec_section": "6",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "smabench/results/latest/results.json",
+      "dsip_requirement": "",
+      "notes": "missing on disk",
+      "proposal_claim": "AG-CLAIM-NOVEL-SMABENCH-THREE-RING",
+      "spec_section": "7",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "schema/finding.schema.json",
+      "dsip_requirement": "",
+      "notes": "artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml",
+      "proposal_claim": "",
+      "spec_section": "8",
+      "status": "evidence_without_claim"
+    },
+    {
+      "artifact_path": "schema/hash-chain.schema.json",
+      "dsip_requirement": "",
+      "notes": "artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml",
+      "proposal_claim": "",
+      "spec_section": "8",
+      "status": "evidence_without_claim"
+    },
+    {
+      "artifact_path": "schema/recommendation.schema.json",
+      "dsip_requirement": "",
+      "notes": "artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml",
+      "proposal_claim": "",
+      "spec_section": "8",
+      "status": "evidence_without_claim"
+    },
+    {
+      "artifact_path": "schema/tool-output.schema.json",
+      "dsip_requirement": "",
+      "notes": "artifact exists on disk but no proposal claim references it; consider adding a claim_id to docs/proposal-claims-index.yml",
+      "proposal_claim": "",
+      "spec_section": "8",
+      "status": "evidence_without_claim"
+    },
+    {
+      "artifact_path": "aegisgraph/safety.py",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-CLAIM-STATE-GOVERNANCE",
+      "spec_section": "8",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "aegisgraph/score.py",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-CLAIM-STATE-GOVERNANCE",
+      "spec_section": "8",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "schema/evidence.schema.json",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-CLAIM-STATE-GOVERNANCE",
+      "spec_section": "8",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "validator/sanitize_check.py",
+      "dsip_requirement": "",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-NOVEL-CLAIM-STATE-GOVERNANCE",
+      "spec_section": "8",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "",
+      "dsip_requirement": "DSIP-DELIVERABLE-Q1",
+      "notes": "owner_section=management_plan; claim text-anchor only",
+      "proposal_claim": "AG-CLAIM-METRIC-RECOMMENDATIONS-TWELVE",
+      "spec_section": "8.2",
+      "status": "claim_without_evidence"
+    },
+    {
+      "artifact_path": "aegisgraph/safety.py",
+      "dsip_requirement": "DSIP-EVAL-CRIT-SAFETY",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-METRIC-SAFETY-SCAN-CLEAN",
+      "spec_section": "8.3",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "validator/sanitize_check.py",
+      "dsip_requirement": "DSIP-EVAL-CRIT-SAFETY",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-METRIC-SAFETY-SCAN-CLEAN",
+      "spec_section": "8.3",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "aegisgraph/export.py",
+      "dsip_requirement": "DSIP-EVAL-CRIT-SAFETY",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-VERIFICATION-EXPORT-HUMAN-GATE",
+      "spec_section": "8.5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "tests/test_export_private_complete.py",
+      "dsip_requirement": "DSIP-EVAL-CRIT-SAFETY",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-VERIFICATION-EXPORT-HUMAN-GATE",
+      "spec_section": "8.5",
+      "status": "ok"
+    },
+    {
+      "artifact_path": "validator/sanitize_check.py",
+      "dsip_requirement": "DSIP-EVAL-CRIT-SAFETY",
+      "notes": "evidence present",
+      "proposal_claim": "AG-CLAIM-VERIFICATION-EXPORT-HUMAN-GATE",
+      "spec_section": "8.5",
+      "status": "ok"
+    }
+  ],
+  "safety_posture": "private_by_default",
+  "spec_sections": [
+    {
+      "level": 2,
+      "section": "0",
+      "title": "How to Use This Document"
+    },
+    {
+      "level": 2,
+      "section": "1",
+      "title": "Strategic Context"
+    },
+    {
+      "level": 3,
+      "section": "1.1",
+      "title": "What we are trying to prove"
+    },
+    {
+      "level": 3,
+      "section": "1.2",
+      "title": "What we are explicitly not doing"
+    },
+    {
+      "level": 3,
+      "section": "1.3",
+      "title": "What \"done\" looks like"
+    },
+    {
+      "level": 3,
+      "section": "1.4",
+      "title": "Stretch goals (only if everything above is real)"
+    },
+    {
+      "level": 2,
+      "section": "2",
+      "title": "The Two Headline Deliverables (decisions and rationale)"
+    },
+    {
+      "level": 3,
+      "section": "2.1",
+      "title": "Why CVE-2023-4863 specifically"
+    },
+    {
+      "level": 3,
+      "section": "2.2",
+      "title": "Why differential URL/OpenGraph parser fuzzing as the novel capability"
+    },
+    {
+      "level": 3,
+      "section": "2.3",
+      "title": "What success means for each"
+    },
+    {
+      "level": 2,
+      "section": "3",
+      "title": "Repository Architecture & Tooling"
+    },
+    {
+      "level": 3,
+      "section": "3.1",
+      "title": "Top-level layout"
+    },
+    {
+      "level": 3,
+      "section": "3.2",
+      "title": "Languages, runtimes, build systems"
+    },
+    {
+      "level": 3,
+      "section": "3.3",
+      "title": "Tooling baseline (the \"CodeQL not on PATH\" embarrassment, fixed)"
+    },
+    {
+      "level": 3,
+      "section": "3.4",
+      "title": "Reproducibility contract"
+    },
+    {
+      "level": 2,
+      "section": "4",
+      "title": "Workstream A \u2014 ReproChain (CVE-2023-4863)"
+    },
+    {
+      "level": 3,
+      "section": "4.1",
+      "title": "Background you'll want to load before working on this"
+    },
+    {
+      "level": 3,
+      "section": "4.2",
+      "title": "Phase A1 \u2014 Vendor the library and stand up a harness"
+    },
+    {
+      "level": 3,
+      "section": "4.3",
+      "title": "Phase A2 \u2014 Reproduce the crash"
+    },
+    {
+      "level": 3,
+      "section": "4.4",
+      "title": "Phase A3 \u2014 Confirm the fix and bound the claims"
+    },
+    {
+      "level": 3,
+      "section": "4.5",
+      "title": "Phase A4 \u2014 Static reachability in Signal Android"
+    },
+    {
+      "level": 3,
+      "section": "4.6",
+      "title": "Phase A5 \u2014 AegisGraph evidence record"
+    },
+    {
+      "level": 3,
+      "section": "4.7",
+      "title": "Phase A6 \u2014 \"Pre-disclosure simulation\""
+    },
+    {
+      "level": 3,
+      "section": "4.8",
+      "title": "ReproChain deliverables summary"
+    },
+    {
+      "level": 2,
+      "section": "5",
+      "title": "Workstream B \u2014 PolyDiff (differential parser fuzzing)"
+    },
+    {
+      "level": 3,
+      "section": "5.1",
+      "title": "What PolyDiff actually does"
+    },
+    {
+      "level": 3,
+      "section": "5.2",
+      "title": "Phase B1 \u2014 Parser inventory and selection"
+    },
+    {
+      "level": 3,
+      "section": "5.3",
+      "title": "Phase B2 \u2014 Wrapper harness design"
+    },
+    {
+      "level": 3,
+      "section": "5.4",
+      "title": "Phase B3 \u2014 Fact-vector schema"
+    },
+    {
+      "level": 3,
+      "section": "5.5",
+      "title": "Phase B4 \u2014 Disagreement detector"
+    },
+    {
+      "level": 3,
+      "section": "5.6",
+      "title": "Phase B5 \u2014 Security-relevance classifier"
+    },
+    {
+      "level": 3,
+      "section": "5.7",
+      "title": "Phase B6 \u2014 Regression set (the credibility anchor)"
+    },
+    {
+      "level": 3,
+      "section": "5.8",
+      "title": "Phase B7 \u2014 Fuzzer driver"
+    },
+    {
+      "level": 3,
+      "section": "5.9",
+      "title": "Phase B8 \u2014 Triage and reporting"
+    },
+    {
+      "level": 3,
+      "section": "5.10",
+      "title": "Phase B9 \u2014 Map disagreements back to SMA codepaths"
+    },
+    {
+      "level": 3,
+      "section": "5.11",
+      "title": "PolyDiff deliverables summary"
+    },
+    {
+      "level": 2,
+      "section": "6",
+      "title": "Workstream C \u2014 Real Automated Extraction"
+    },
+    {
+      "level": 3,
+      "section": "6.1",
+      "title": "Why this exists"
+    },
+    {
+      "level": 3,
+      "section": "6.2",
+      "title": "Phase C1 \u2014 CodeQL queries"
+    },
+    {
+      "level": 3,
+      "section": "6.3",
+      "title": "Phase C2 \u2014 Semgrep ruleset"
+    },
+    {
+      "level": 3,
+      "section": "6.4",
+      "title": "Phase C3 \u2014 MobSF integration (done properly)"
+    },
+    {
+      "level": 3,
+      "section": "6.5",
+      "title": "Phase C4 \u2014 Manifest analyzer"
+    },
+    {
+      "level": 3,
+      "section": "6.6",
+      "title": "Phase C5 \u2014 Graph assembler"
+    },
+    {
+      "level": 2,
+      "section": "7",
+      "title": "Workstream D \u2014 SMABench Made Real"
+    },
+    {
+      "level": 3,
+      "section": "7.1",
+      "title": "Ring 1 \u2014 Synthetic harnesses with actual code"
+    },
+    {
+      "level": 3,
+      "section": "7.2",
+      "title": "Ring 2 \u2014 Wired to extraction"
+    },
+    {
+      "level": 3,
+      "section": "7.3",
+      "title": "Ring 3 \u2014 Placeholder, future"
+    },
+    {
+      "level": 3,
+      "section": "7.4",
+      "title": "Bench runner"
+    },
+    {
+      "level": 2,
+      "section": "8",
+      "title": "Cross-cutting \u2014 Evidence Schema, Audit, and Safety"
+    },
+    {
+      "level": 3,
+      "section": "8.1",
+      "title": "Evidence schema (`schema/evidence.schema.json`)"
+    },
+    {
+      "level": 3,
+      "section": "8.2",
+      "title": "Recommendation contract"
+    },
+    {
+      "level": 3,
+      "section": "8.3",
+      "title": "Safety scanner"
+    },
+    {
+      "level": 3,
+      "section": "8.4",
+      "title": "Audit trail"
+    },
+    {
+      "level": 3,
+      "section": "8.5",
+      "title": "Disclosure policy (because PolyDiff might find live bugs)"
+    },
+    {
+      "level": 2,
+      "section": "9",
+      "title": "Phase Plan and Milestones"
+    },
+    {
+      "level": 3,
+      "section": "9.1",
+      "title": "Phase ordering"
+    },
+    {
+      "level": 3,
+      "section": "9.2",
+      "title": "Definition-of-done gates per phase"
+    },
+    {
+      "level": 3,
+      "section": "9.3",
+      "title": "Demo points (for internal review and eventual proposal use)"
+    },
+    {
+      "level": 2,
+      "section": "10",
+      "title": "Risks, Open Questions, and Decisions Only the Human Can Make"
+    },
+    {
+      "level": 3,
+      "section": "10.1",
+      "title": "Risks"
+    },
+    {
+      "level": 3,
+      "section": "10.2",
+      "title": "Open questions that block work"
+    },
+    {
+      "level": 3,
+      "section": "10.3",
+      "title": "Decisions only you can make"
+    },
+    {
+      "level": 3,
+      "section": "10.4",
+      "title": "What this spec does not address (and why)"
+    },
+    {
+      "level": 2,
+      "section": "11",
+      "title": "Appendix \u2014 File-by-file checklist for Phase 0"
+    }
+  ],
+  "summary": {
+    "claim_without_evidence": 18,
+    "evidence_without_claim": 4,
+    "ok": 28,
+    "planned": 2,
+    "total": 52
+  },
+  "tool_output_type": "traceability_matrix",
+  "version": "v1.0"
+}
