@@ -1,0 +1,144 @@
+# PolyDiff security-relevance rules. Maps Disagreement → tag list.
+#
+# Each rule has:
+#   id          — stable identifier referenced from regression expected.json
+#   axis        — the disagreement axis the rule fires on
+#   when        — optional value-set constraint:
+#                   "any-mismatch"     : default; any value mismatch fires
+#                   "boolean-disagree" : both true and false present
+#                   "null-vs-value"    : at least one null and one non-null
+#   tags        — list of security_tag strings to attach
+#   description — human-readable rationale
+#
+# Rules are evaluated in order; multiple rules can fire for the same
+# disagreement.
+
+rules:
+  - id: SR-HOST-MISMATCH
+    axis: host_lowercased
+    when: any-mismatch
+    tags: [origin-confusion]
+    description: >
+      Two parsers extract different lowercased hosts from the same
+      input. Classic origin-confusion footgun (validator parses one
+      host, fetcher parses another).
+
+  - id: SR-HOST-MISMATCH-RAW
+    axis: host
+    when: any-mismatch
+    tags: [origin-confusion]
+    description: Same as SR-HOST-MISMATCH, computed against host_raw too.
+
+  - id: SR-LOOPBACK-DISAGREE
+    axis: host_is_loopback
+    when: boolean-disagree
+    tags: [ssrf-loopback-bypass]
+    description: One parser thinks the host is loopback; another doesn't.
+
+  - id: SR-PRIVATE-DISAGREE
+    axis: host_is_private_or_link_local
+    when: boolean-disagree
+    tags: [ssrf-private-network]
+    description: RFC 1918 / link-local mismatch — SSRF-class.
+
+  - id: SR-IDN-DISAGREE
+    axis: host_has_idn
+    when: boolean-disagree
+    tags: [idn-spoof]
+    description: Mixed IDN handling.
+
+  - id: SR-PUNYCODE-DISAGREE
+    axis: host_punycode
+    when: any-mismatch
+    tags: [idn-spoof]
+    description: Mixed punycode encoding result.
+
+  - id: SR-USERINFO-DISAGREE
+    axis: userinfo_present
+    when: boolean-disagree
+    tags: [userinfo-host-confusion]
+    description: One parser sees user:pass@; another folds it into the host.
+
+  - id: SR-USERINFO-RAW-DISAGREE
+    axis: userinfo_raw
+    when: any-mismatch
+    tags: [userinfo-host-confusion]
+    description: Same disagreement axis, raw form.
+
+  - id: SR-PATH-TRAVERSAL
+    axis: path_traversal_resolved
+    when: boolean-disagree
+    tags: [path-traversal]
+    description: One parser resolves '..'; another doesn't.
+
+  - id: SR-PATH-NORMALIZE-DISAGREE
+    axis: path_normalized
+    when: any-mismatch
+    tags: [path-normalization-confusion]
+    description: Different normalized paths from the same input.
+
+  - id: SR-PERCENT-DECODE-HOST
+    axis: percent_decoding_applied_in_host
+    when: boolean-disagree
+    tags: [host-injection]
+    description: One parser percent-decodes the host pre-parse; another doesn't.
+
+  - id: SR-PERCENT-DECODE-PATH
+    axis: percent_decoding_applied_in_path
+    when: boolean-disagree
+    tags: [path-decode-confusion]
+    description: Per-parser path decoding mismatch.
+
+  - id: SR-CONTROL-CHAR
+    axis: control_chars_in_host_rejected
+    when: boolean-disagree
+    tags: [header-injection]
+    description: One parser rejects control chars in the host; another silently strips/keeps.
+
+  - id: SR-BACKSLASH
+    axis: backslash_treated_as_slash
+    when: boolean-disagree
+    tags: [path-confusion]
+    description: Classic IE-vs-everyone-else.
+
+  - id: SR-TAB-NEWLINE
+    axis: tab_or_newline_stripped
+    when: boolean-disagree
+    tags: [link-preview-bypass]
+    description: WHATWG strips tabs/newlines; older parsers don't.
+
+  - id: SR-LEADING-ZERO-OCTET
+    axis: leading_zeroes_in_octets_stripped
+    when: boolean-disagree
+    tags: [ssrf-private-network]
+    description: 0177.0.0.1 — octal vs decimal IPv4 parsing.
+
+  - id: SR-PARSED-DIFFERS
+    axis: parsed
+    when: boolean-disagree
+    tags: [gating-bypass]
+    description: One parser accepts; another rejects.
+
+  - id: SR-SCHEME-AUTHORITY
+    axis: scheme_authority_separator_strict
+    when: boolean-disagree
+    tags: [scheme-confusion]
+    description: bare-scheme vs scheme-authority handling (e.g. https:foo vs https://foo).
+
+  - id: SR-SCHEME-DISAGREE
+    axis: scheme_lowercased
+    when: any-mismatch
+    tags: [scheme-confusion]
+    description: Different schemes extracted (rare; includes empty-string vs http).
+
+  - id: SR-PORT-DISAGREE
+    axis: port_value
+    when: any-mismatch
+    tags: [port-confusion]
+    description: Different ports extracted from the same input.
+
+  - id: SR-IPV6-MAPPED-LOOPBACK
+    axis: host_is_private_or_link_local
+    when: any-mismatch
+    tags: [ssrf-ipv6-mapped]
+    description: Subset of SR-PRIVATE-DISAGREE specific to ::ffff:127/8 mapped loopback.

@@ -1,0 +1,24 @@
+{
+  "expected_disagreements": [
+    {
+      "axis": "userinfo_present",
+      "parser_groups": [
+        {"verdict": true, "parsers": ["python_urllib", "whatwg_url_py", "jdk_uri", "okhttp_httpurl", "rust_url", "go_neturl", "libcurl"]}
+      ],
+      "tag": "userinfo-host-confusion",
+      "rule_id": "SR-USERINFO-DISAGREE"
+    },
+    {
+      "axis": "host_lowercased",
+      "parser_groups": [
+        {"verdict": "evil.example", "parsers": ["python_urllib", "whatwg_url_py", "rust_url", "go_neturl"]}
+      ],
+      "tag": "origin-confusion",
+      "rule_id": "SR-HOST-MISMATCH"
+    }
+  ],
+  "primary_axes": ["userinfo_present", "host_lowercased"],
+  "primary_security_tags": ["userinfo-host-confusion", "origin-confusion"],
+  "historical_cve_or_disclosure_reference": null,
+  "publication_policy": "synthetic-public-candidate"
+}
