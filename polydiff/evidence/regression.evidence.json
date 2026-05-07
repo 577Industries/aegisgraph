@@ -4,7 +4,7 @@
       "claim_state": "reviewed",
       "edges": [
         {
-          "from": "entry.synthetic-url",
+          "from": "entry.case-REG-URL-Userinfo-Empty-Auth",
           "relationship": "parsed_by_profiles",
           "to": "parser.fact-vector"
         }
@@ -12,8 +12,8 @@
       "evidence_refs": [
         {
           "command": "make polydiff-regression",
-          "id": "REF-POLYDIFF-REG-URL-001",
-          "output_hash": "64abf1e6e8ec097b62aab46e396b117bdd6716cf8ff8196a8b1c8f7debafd38e",
+          "id": "REF-POLYDIFF-REG-URL-USERINFO-EMPTY-AUTH",
+          "output_hash": "5917cffcb9deebb5688ed232015acf06fb8851c2748c53267df886fcbd0684b6",
           "tool": "aegisgraph-polydiff",
           "version": "phase0"
         }
@@ -21,24 +21,24 @@
       "hash_chain": {
         "canonicalization": "json-v1-sorted-no-hash-chain",
         "previous_hash": null,
-        "record_hash": "7fd2c740823d7a5594c8dc75084c88654367e8c88272cafbba67ead9f37e7b0e"
+        "record_hash": "9c086d89b1ca0a3928677b2e01da396d605248c1b971e77cac7e1736cca72fbf"
       },
-      "id": "AG-EV-POLYDIFF-REG-001",
-      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "id": "AG-EV-POLYDIFF-REG-URL-USERINFO-EMPTY-AUTH",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
       "nodes": [
         {
-          "evidence_source": "synthetic regression corpus",
-          "id": "entry.synthetic-url",
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1",
+          "id": "entry.case-REG-URL-Userinfo-Empty-Auth",
           "label": "userinfo-host-confusion",
           "node_type": "entry_point",
-          "source_anchor": "polydiff/regression/REG-URL-001"
+          "source_anchor": "polydiff/regression/cases/REG-URL-Userinfo-Empty-Auth"
         },
         {
-          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
           "id": "parser.fact-vector",
-          "label": "Disagreement axes: host, host_is_private_or_link_local",
+          "label": "Disagreement axes: password_present, userinfo_raw",
           "node_type": "fact_vector",
-          "source_anchor": "schema/fact-vector.schema.json"
+          "source_anchor": "polydiff/factvec/schema_v2.json"
         }
       ],
       "path_class": "link_preview",
@@ -46,7 +46,7 @@
         "generated_at": "2026-05-05T00:00:00Z",
         "generated_by": "aegisgraph-tier3-research",
         "private_by_default": true,
-        "source": "phase0 PolyDiff regression scaffold"
+        "source": "PolyDiff regression case REG-URL-Userinfo-Empty-Auth; parsers: python_urllib,whatwg_url_py"
       },
       "recommendation_refs": [],
       "safety_flags": [],
@@ -64,15 +64,15 @@
         "total": 5.9
       },
       "target": {
-        "commit": "phase0",
-        "name": "Synthetic URL parser regression corpus",
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
         "repo_url": "local://polydiff/regression",
         "source_policy": "synthetic"
       },
       "validation_task": {
         "command": "make polydiff-regression",
-        "expected_output": "deterministic disagreement record for public historical bug class",
-        "id": "VAL-POLYDIFF-REG-001",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-USERINFO-EMPTY-AUTH",
         "status": "passing"
       },
       "version": "v1.0"
@@ -81,7 +81,7 @@
       "claim_state": "reviewed",
       "edges": [
         {
-          "from": "entry.synthetic-url",
+          "from": "entry.case-REG-URL-Snyk-2022-host-1",
           "relationship": "parsed_by_profiles",
           "to": "parser.fact-vector"
         }
@@ -89,33 +89,33 @@
       "evidence_refs": [
         {
           "command": "make polydiff-regression",
-          "id": "REF-POLYDIFF-REG-URL-002",
-          "output_hash": "f608661948943504f14fa084092552cca732fa496ebd54024f1a308617250bca",
+          "id": "REF-POLYDIFF-REG-URL-SNYK-2022-HOST-1",
+          "output_hash": "95732927f70b0d9af18e8002de81121c598bd63c0a3df8c8a7bef7097b51cd22",
           "tool": "aegisgraph-polydiff",
           "version": "phase0"
         }
       ],
       "hash_chain": {
         "canonicalization": "json-v1-sorted-no-hash-chain",
-        "previous_hash": "7fd2c740823d7a5594c8dc75084c88654367e8c88272cafbba67ead9f37e7b0e",
-        "record_hash": "fdc0a9b24865866d1e2cdccf51b346b1c25301f030eb33d2f42a9082af9ad1b0"
+        "previous_hash": "9c086d89b1ca0a3928677b2e01da396d605248c1b971e77cac7e1736cca72fbf",
+        "record_hash": "ec2dfa87603fe2fa0c34b8b0715ecbfd782b9ea84be0d9fbdc0dd7005e717ede"
       },
-      "id": "AG-EV-POLYDIFF-REG-002",
-      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "id": "AG-EV-POLYDIFF-REG-URL-SNYK-2022-HOST-1",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
       "nodes": [
         {
-          "evidence_source": "synthetic regression corpus",
-          "id": "entry.synthetic-url",
-          "label": "backslash-authority-confusion",
+          "evidence_source": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+          "id": "entry.case-REG-URL-Snyk-2022-host-1",
+          "label": "host-injection",
           "node_type": "entry_point",
-          "source_anchor": "polydiff/regression/REG-URL-002"
+          "source_anchor": "polydiff/regression/cases/REG-URL-Snyk-2022-host-1"
         },
         {
-          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
           "id": "parser.fact-vector",
-          "label": "Disagreement axes: host, host_is_private_or_link_local, path, userinfo_present",
+          "label": "Disagreement axes: path_normalized",
           "node_type": "fact_vector",
-          "source_anchor": "schema/fact-vector.schema.json"
+          "source_anchor": "polydiff/factvec/schema_v2.json"
         }
       ],
       "path_class": "link_preview",
@@ -123,7 +123,7 @@
         "generated_at": "2026-05-05T00:00:00Z",
         "generated_by": "aegisgraph-tier3-research",
         "private_by_default": true,
-        "source": "phase0 PolyDiff regression scaffold"
+        "source": "PolyDiff regression case REG-URL-Snyk-2022-host-1; parsers: python_urllib,whatwg_url_py"
       },
       "recommendation_refs": [],
       "safety_flags": [],
@@ -141,15 +141,15 @@
         "total": 5.9
       },
       "target": {
-        "commit": "phase0",
-        "name": "Synthetic URL parser regression corpus",
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
         "repo_url": "local://polydiff/regression",
         "source_policy": "synthetic"
       },
       "validation_task": {
         "command": "make polydiff-regression",
-        "expected_output": "deterministic disagreement record for public historical bug class",
-        "id": "VAL-POLYDIFF-REG-002",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-SNYK-2022-HOST-1",
         "status": "passing"
       },
       "version": "v1.0"
@@ -158,7 +158,7 @@
       "claim_state": "reviewed",
       "edges": [
         {
-          "from": "entry.synthetic-url",
+          "from": "entry.case-REG-URL-Snyk-2022-host-3",
           "relationship": "parsed_by_profiles",
           "to": "parser.fact-vector"
         }
@@ -166,33 +166,33 @@
       "evidence_refs": [
         {
           "command": "make polydiff-regression",
-          "id": "REF-POLYDIFF-REG-URL-003",
-          "output_hash": "0bf5d4966c0922fc5fac781eb87eb042a1c4aecbb21ef416cd468282405c902d",
+          "id": "REF-POLYDIFF-REG-URL-SNYK-2022-HOST-3",
+          "output_hash": "a21b2bfe5f3b37c29ba83a5e34480e4fca614c1c71119044d8629245fb16da84",
           "tool": "aegisgraph-polydiff",
           "version": "phase0"
         }
       ],
       "hash_chain": {
         "canonicalization": "json-v1-sorted-no-hash-chain",
-        "previous_hash": "fdc0a9b24865866d1e2cdccf51b346b1c25301f030eb33d2f42a9082af9ad1b0",
-        "record_hash": "41f44115c9f7c76b90a0d3f8eac7c52dd43600e0585091d1f193a3b6f882addd"
+        "previous_hash": "ec2dfa87603fe2fa0c34b8b0715ecbfd782b9ea84be0d9fbdc0dd7005e717ede",
+        "record_hash": "efb5e83e74d641fe6297baf1c76855b5fedd58218c2d71b503fb8b3015504529"
       },
-      "id": "AG-EV-POLYDIFF-REG-003",
-      "limitations": "This is a regression-style synthetic disagreement case, not a claim of a live vulnerability in a maintained library or service. It is safe to publish only as a bounded parser-behavior test case after sanitized export review.",
+      "id": "AG-EV-POLYDIFF-REG-URL-SNYK-2022-HOST-3",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: Snyk-2022-URL-Confusion.",
       "nodes": [
         {
-          "evidence_source": "synthetic regression corpus",
-          "id": "entry.synthetic-url",
-          "label": "percent-encoded-path-boundary",
+          "evidence_source": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+          "id": "entry.case-REG-URL-Snyk-2022-host-3",
+          "label": "host-injection",
           "node_type": "entry_point",
-          "source_anchor": "polydiff/regression/REG-URL-003"
+          "source_anchor": "polydiff/regression/cases/REG-URL-Snyk-2022-host-3"
         },
         {
-          "evidence_source": "PolyDiff phase0 deterministic parser profiles",
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
           "id": "parser.fact-vector",
-          "label": "Disagreement axes: path",
+          "label": "Disagreement axes: path, path_normalized",
           "node_type": "fact_vector",
-          "source_anchor": "schema/fact-vector.schema.json"
+          "source_anchor": "polydiff/factvec/schema_v2.json"
         }
       ],
       "path_class": "link_preview",
@@ -200,7 +200,7 @@
         "generated_at": "2026-05-05T00:00:00Z",
         "generated_by": "aegisgraph-tier3-research",
         "private_by_default": true,
-        "source": "phase0 PolyDiff regression scaffold"
+        "source": "PolyDiff regression case REG-URL-Snyk-2022-host-3; parsers: python_urllib,whatwg_url_py"
       },
       "recommendation_refs": [],
       "safety_flags": [],
@@ -218,15 +218,1247 @@
         "total": 5.9
       },
       "target": {
-        "commit": "phase0",
-        "name": "Synthetic URL parser regression corpus",
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
         "repo_url": "local://polydiff/regression",
         "source_policy": "synthetic"
       },
       "validation_task": {
         "command": "make polydiff-regression",
-        "expected_output": "deterministic disagreement record for public historical bug class",
-        "id": "VAL-POLYDIFF-REG-003",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-SNYK-2022-HOST-3",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Snyk-2022-host-5",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-SNYK-2022-HOST-5",
+          "output_hash": "56321c4fe53c69a090690c0fd19f3468f20acd432bc4dae0b3ca781771886fa9",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "efb5e83e74d641fe6297baf1c76855b5fedd58218c2d71b503fb8b3015504529",
+        "record_hash": "cfb971871ec5049133669bafacd7d2c163404d6ed88c7264c3faf11b628e32d1"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-SNYK-2022-HOST-5",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: Snyk-2022-URL-Confusion.",
+      "nodes": [
+        {
+          "evidence_source": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+          "id": "entry.case-REG-URL-Snyk-2022-host-5",
+          "label": "path-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Snyk-2022-host-5"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: backslash_treated_as_slash, host, host_decoded, host_lowercased, path, path_normalized, userinfo_present",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Snyk-2022-host-5; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-SNYK-2022-HOST-5",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Snyk-2022-host-6",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-SNYK-2022-HOST-6",
+          "output_hash": "fac6ba1ed5872ccb51756e2f5c8938257d117b7f9e9ad6bac1c6777fda94cab7",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "cfb971871ec5049133669bafacd7d2c163404d6ed88c7264c3faf11b628e32d1",
+        "record_hash": "9c5331a9768953fa525a4490f4e47bb0c4f246d8ff370677f13783dfd55cb7a8"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-SNYK-2022-HOST-6",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://snyk.io/blog/url-confusion-vulnerabilities/",
+          "id": "entry.case-REG-URL-Snyk-2022-host-6",
+          "label": "port-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Snyk-2022-host-6"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Snyk-2022-host-6; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-SNYK-2022-HOST-6",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Node-WHATWG-legacy",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-NODE-WHATWG-LEGACY",
+          "output_hash": "6a395a38089808ce31fc7cfc115f733cc4b755392dd189bf7c57e7f71273280d",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "9c5331a9768953fa525a4490f4e47bb0c4f246d8ff370677f13783dfd55cb7a8",
+        "record_hash": "5ca4f4295849558351e80efa1d7cc53cba0f7714d7d09c9581c3aac6292ad96b"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-NODE-WHATWG-LEGACY",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://nodejs.org/api/url.html#legacy-url-api",
+          "id": "entry.case-REG-URL-Node-WHATWG-legacy",
+          "label": "scheme-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Node-WHATWG-legacy"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: path, path_normalized",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Node-WHATWG-legacy; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-NODE-WHATWG-LEGACY",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IPv4-leading-zeroes",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IPV4-LEADING-ZEROES",
+          "output_hash": "03df94bfea20bbaaafad42ac44d5cc3761a96f0b11e57cd3983da7ac4d6ea225",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "5ca4f4295849558351e80efa1d7cc53cba0f7714d7d09c9581c3aac6292ad96b",
+        "record_hash": "e394488effb372c2e33962e1ef095a046dacf09d60f3b0c07c14acc78ecc5873"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IPV4-LEADING-ZEROES",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2021-29921.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+          "id": "entry.case-REG-URL-IPv4-leading-zeroes",
+          "label": "ssrf-private-network",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IPv4-leading-zeroes"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_is_ip_literal, host_is_ipv4, host_is_loopback, host_is_private_or_link_local, host_lowercased, leading_zeroes_in_octets_stripped",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IPv4-leading-zeroes; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IPV4-LEADING-ZEROES",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IPv4-Decimal",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IPV4-DECIMAL",
+          "output_hash": "0eba409e038e7fe5926bb9975348768d478394c27893db1d85680e729e351d22",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "e394488effb372c2e33962e1ef095a046dacf09d60f3b0c07c14acc78ecc5873",
+        "record_hash": "2a0665ab00a3a836b3c1e136da846dc460336cf0fb86baa8ef7a9e157d7b2759"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IPV4-DECIMAL",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2021-29921.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+          "id": "entry.case-REG-URL-IPv4-Decimal",
+          "label": "ssrf-private-network",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IPv4-Decimal"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_is_ip_literal, host_is_ipv4, host_is_loopback, host_is_private_or_link_local, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IPv4-Decimal; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IPV4-DECIMAL",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IPv4-Hex",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IPV4-HEX",
+          "output_hash": "1685353c1b434e85d000b5f29062b16db94a423215425b5e8779b7302a57019d",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "2a0665ab00a3a836b3c1e136da846dc460336cf0fb86baa8ef7a9e157d7b2759",
+        "record_hash": "b00dfdaec100e88ee1d061872ca581318d8ee684ef7a3c9e9d83d1f3b5033833"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IPV4-HEX",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2021-29921.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+          "id": "entry.case-REG-URL-IPv4-Hex",
+          "label": "ssrf-private-network",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IPv4-Hex"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_is_ip_literal, host_is_ipv4, host_is_loopback, host_is_private_or_link_local, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IPv4-Hex; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IPV4-HEX",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IDN-Mixed-Script",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IDN-MIXED-SCRIPT",
+          "output_hash": "89e659f2f3bd359727a1ae47ed7fce19d58aa9b04ac9610bbb047078c67cd481",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "b00dfdaec100e88ee1d061872ca581318d8ee684ef7a3c9e9d83d1f3b5033833",
+        "record_hash": "e45431b7bef304a21ef99c29da6d2e718b6092b441d124ce71bdb36e18968a56"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IDN-MIXED-SCRIPT",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/idn.md",
+          "id": "entry.case-REG-URL-IDN-Mixed-Script",
+          "label": "idn-spoof",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IDN-Mixed-Script"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IDN-Mixed-Script; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IDN-MIXED-SCRIPT",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Backslash-IE-legacy",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-BACKSLASH-IE-LEGACY",
+          "output_hash": "06b2c32a71f1e08782236347ce57694cdd7b438c8bdf6b0b1ba0e06844f864e5",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "e45431b7bef304a21ef99c29da6d2e718b6092b441d124ce71bdb36e18968a56",
+        "record_hash": "bb08144cec832e2942be7b9244863caec88197a785a8af03f9d1d29191a2dfdf"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-BACKSLASH-IE-LEGACY",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: Snyk-2022-URL-Confusion.",
+      "nodes": [
+        {
+          "evidence_source": "https://url.spec.whatwg.org/#concept-basic-url-parser",
+          "id": "entry.case-REG-URL-Backslash-IE-legacy",
+          "label": "path-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Backslash-IE-legacy"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: backslash_treated_as_slash, host, host_decoded, host_lowercased, path, path_normalized, userinfo_present",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Backslash-IE-legacy; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-BACKSLASH-IE-LEGACY",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Percent-In-Host",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-PERCENT-IN-HOST",
+          "output_hash": "bebb4a097cc7efcc28af34a8f6700f37d17878cbdae10502d3682b0d96616674",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "bb08144cec832e2942be7b9244863caec88197a785a8af03f9d1d29191a2dfdf",
+        "record_hash": "5c7007faaaa8d1367c5c51a24ee4952dc4162e13a2f05343bc379bbe3b231b03"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-PERCENT-IN-HOST",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2022-37434.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2",
+          "id": "entry.case-REG-URL-Percent-In-Host",
+          "label": "host-injection",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Percent-In-Host"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_lowercased, percent_decoding_applied_in_host",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Percent-In-Host; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-PERCENT-IN-HOST",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IPv6-Mapped-Loopback",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IPV6-MAPPED-LOOPBACK",
+          "output_hash": "828a596766b548d0dc20a50a0ec2c2754b054bb4798e178ae38d74ee3c750e47",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "5c7007faaaa8d1367c5c51a24ee4952dc4162e13a2f05343bc379bbe3b231b03",
+        "record_hash": "996168de6eb30faa8f89b6f5614797a89c94675845c8a61dc49faca4fdc5d81f"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IPV6-MAPPED-LOOPBACK",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc4291#section-2.5.5.2",
+          "id": "entry.case-REG-URL-IPv6-Mapped-Loopback",
+          "label": "ssrf-ipv6-mapped",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IPv6-Mapped-Loopback"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IPv6-Mapped-Loopback; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IPV6-MAPPED-LOOPBACK",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-IPv6-Compressed",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-IPV6-COMPRESSED",
+          "output_hash": "980f1927b0870d1128f0a0c02d48109bbe97cf58511d4627abd7f840c7f3c8d3",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "996168de6eb30faa8f89b6f5614797a89c94675845c8a61dc49faca4fdc5d81f",
+        "record_hash": "f5e910a2821f46bf4c40ef90830f6bbdc3175974841f76353e72c66dfdffaf95"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-IPV6-COMPRESSED",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc4291",
+          "id": "entry.case-REG-URL-IPv6-Compressed",
+          "label": "ssrf-private-network",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-IPv6-Compressed"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-IPv6-Compressed; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-IPV6-COMPRESSED",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Path-Dotdot-Resolution",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-PATH-DOTDOT-RESOLUTION",
+          "output_hash": "416f6f1303c24d5b34f14ed7e09607796f32d28dcfa7ed1493f7edc218fedd8c",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "f5e910a2821f46bf4c40ef90830f6bbdc3175974841f76353e72c66dfdffaf95",
+        "record_hash": "bc841e96ae40e97f62ba94fd450ff9251e3485c7a9353ab1e3f427b6c767756c"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-PATH-DOTDOT-RESOLUTION",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4",
+          "id": "entry.case-REG-URL-Path-Dotdot-Resolution",
+          "label": "path-traversal",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Path-Dotdot-Resolution"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: path, path_normalized, path_traversal_resolved",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Path-Dotdot-Resolution; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-PATH-DOTDOT-RESOLUTION",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Path-Encoded-Dotdot",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-PATH-ENCODED-DOTDOT",
+          "output_hash": "599fe84e9e8165bfc33b17c6fcf592bc8a557f20018bbf5294880f67beee2261",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "bc841e96ae40e97f62ba94fd450ff9251e3485c7a9353ab1e3f427b6c767756c",
+        "record_hash": "cd0423a9af8973330e835c640e3a93931f0df3e717a90f6259a571fdd3100566"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-PATH-ENCODED-DOTDOT",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: OWASP-Path-Traversal-Class.",
+      "nodes": [
+        {
+          "evidence_source": "https://owasp.org/www-community/attacks/Path_Traversal",
+          "id": "entry.case-REG-URL-Path-Encoded-Dotdot",
+          "label": "path-traversal",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Path-Encoded-Dotdot"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: path, path_normalized",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Path-Encoded-Dotdot; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-PATH-ENCODED-DOTDOT",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-CRLF-Injection",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-CRLF-INJECTION",
+          "output_hash": "27b79a471520983a2f3c06feb4c24db284cc3595e4f19a761fb2ca19e3e92562",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "cd0423a9af8973330e835c640e3a93931f0df3e717a90f6259a571fdd3100566",
+        "record_hash": "142bc6dac082993d85861b77a52a9ffc4454c31ebb1a791e3b0766941ba9557a"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-CRLF-INJECTION",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2019-9740.",
+      "nodes": [
+        {
+          "evidence_source": "https://owasp.org/www-community/attacks/CRLF_Injection",
+          "id": "entry.case-REG-URL-CRLF-Injection",
+          "label": "header-injection",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-CRLF-Injection"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: path, path_normalized",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-CRLF-Injection; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-CRLF-INJECTION",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-127-Variant",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-127-VARIANT",
+          "output_hash": "0ecacb6f1e50592ecb0d388de8b80ada0f6c1af4a721114340b1e15a7ec3c5d8",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "142bc6dac082993d85861b77a52a9ffc4454c31ebb1a791e3b0766941ba9557a",
+        "record_hash": "32e6463bdbb25c40bf01c4e8c3fd7111ba68b25f08a928f9db6b85eb849c95f3"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-127-VARIANT",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service. Historical reference: CVE-2021-29921.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc6943#section-3.1.1",
+          "id": "entry.case-REG-URL-127-Variant",
+          "label": "ssrf-private-network",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-127-Variant"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: host, host_decoded, host_is_ip_literal, host_is_ipv4, host_is_loopback, host_is_private_or_link_local, host_lowercased",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-127-Variant; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-127-VARIANT",
+        "status": "passing"
+      },
+      "version": "v1.0"
+    },
+    {
+      "claim_state": "reviewed",
+      "edges": [
+        {
+          "from": "entry.case-REG-URL-Port-Out-of-Range",
+          "relationship": "parsed_by_profiles",
+          "to": "parser.fact-vector"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make polydiff-regression",
+          "id": "REF-POLYDIFF-REG-URL-PORT-OUT-OF-RANGE",
+          "output_hash": "448728244be4805ec1123924c738dce5fd5b308f8b8732cbe6988e830f149587",
+          "tool": "aegisgraph-polydiff",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": "32e6463bdbb25c40bf01c4e8c3fd7111ba68b25f08a928f9db6b85eb849c95f3",
+        "record_hash": "391f9d7cfbfa35bee45e52ff42651acbfe0b6ec401571396e27dd464c439d069"
+      },
+      "id": "AG-EV-POLYDIFF-REG-URL-PORT-OUT-OF-RANGE",
+      "limitations": "PolyDiff regression case derived from public bug-class literature. Inputs use IETF-reserved example domains (RFC 2606) and reserved IPv4 ranges (RFC 5737/5736). This record is bounded parser-behavior evidence; it is not a claim of a live vulnerability in any maintained library or service.",
+      "nodes": [
+        {
+          "evidence_source": "https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.3",
+          "id": "entry.case-REG-URL-Port-Out-of-Range",
+          "label": "port-confusion",
+          "node_type": "entry_point",
+          "source_anchor": "polydiff/regression/cases/REG-URL-Port-Out-of-Range"
+        },
+        {
+          "evidence_source": "PolyDiff v2 differential parser dispatch",
+          "id": "parser.fact-vector",
+          "label": "Disagreement axes: parsed",
+          "node_type": "fact_vector",
+          "source_anchor": "polydiff/factvec/schema_v2.json"
+        }
+      ],
+      "path_class": "link_preview",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "PolyDiff regression case REG-URL-Port-Out-of-Range; parsers: python_urllib,whatwg_url_py"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.85,
+        "auth_boundary": 0.55,
+        "confidence": 0.6,
+        "exploit_history": 0.7,
+        "mitigation_strength": 0.45,
+        "native_boundary": 0.15,
+        "observability": 0.6,
+        "parser_complexity": 0.65,
+        "privilege_impact": 0.55,
+        "remote_reachability": 0.8,
+        "total": 5.9
+      },
+      "target": {
+        "commit": "stream/polydiff-core",
+        "name": "PolyDiff URL parser regression corpus (>=30 historical cases)",
+        "repo_url": "local://polydiff/regression",
+        "source_policy": "synthetic"
+      },
+      "validation_task": {
+        "command": "make polydiff-regression",
+        "expected_output": "deterministic disagreement record matching expected.json",
+        "id": "VAL-POLYDIFF-REG-URL-PORT-OUT-OF-RANGE",
         "status": "passing"
       },
       "version": "v1.0"
