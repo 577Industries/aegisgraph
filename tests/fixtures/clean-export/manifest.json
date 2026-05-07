@@ -1,0 +1,21 @@
+{
+  "tool_output_type": "public_sanitized_export",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "safety_posture": "sanitized_candidate",
+  "release_authorized": false,
+  "release_note": "fixture for sanitize-check happy path",
+  "validation_status": "pass",
+  "dry_run": false,
+  "artifacts": [
+    {
+      "path": "extraction/output/manifest.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "excluded": [
+    "raw target source",
+    "credentials"
+  ]
+}

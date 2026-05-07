@@ -1,0 +1,18 @@
+{
+  "id": "AG-EV-FAKE-001",
+  "version": "v1.0",
+  "claim_state": "accepted",
+  "disclosure_status": "private_review",
+  "finding_type": "novel_private_candidate",
+  "validation_task": {
+    "id": "VAL-FAKE",
+    "command": "make fake",
+    "expected_output": "fake",
+    "status": "blocked"
+  },
+  "bytes_b64": "AAAA",
+  "limitations": "this is a deliberately corrupt fixture",
+  "notes": "credential leak pattern: api_key=AKIAIOSFODNN7EXAMPLE",
+  "private_marker": "-----BEGIN RSA PRIVATE KEY-----\nfakekey\n-----END RSA PRIVATE KEY-----",
+  "developer_path": "/home/founder/secret-workspace/credentials.txt"
+}
