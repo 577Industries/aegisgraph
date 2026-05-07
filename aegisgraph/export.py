@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,22 @@ PUBLIC_ALLOWED_INPUTS = [
     "smabench/results/latest/results.json",
     "validation-report.json",
 ]
+
+
+# The human authorization gate (release_authorized=True) requires BOTH:
+#
+#   1. AEGISGRAPH_RELEASE_AUTHORIZED=1 set in the calling environment
+#      (i.e. an operator deliberately authorized this run), AND
+#   2. validator/sanitize_check.py would pass against the rendered
+#      exports/public-sanitized/ tree.
+#
+# Until the validator-export stream lands sanitize_check.py, condition (2)
+# is structurally unmet and `release_authorized` MUST stay False. We do
+# NOT short-circuit through the env var alone — that would let a careless
+# operator bypass the sanitize check.
+#
+# See docs/decision-log/0011-public-export-human-gate.md.
+ENV_RELEASE_AUTHORIZED = "AEGISGRAPH_RELEASE_AUTHORIZED"
 
 
 def _existing_artifacts(root: Path, relpaths: list[str]) -> list[dict[str, Any]]:
@@ -74,30 +91,84 @@ def _sanitize_polydiff_report(root: Path) -> dict[str, Any] | None:
     return sanitized
 
 
-def export_public_sanitized(root: Path) -> dict[str, Any]:
+def export_public_sanitized(root: Path, *, dry_run: bool = False) -> dict[str, Any]:
+    """Build the public-sanitized export manifest.
+
+    This function ALWAYS produces a manifest with `release_authorized=False`
+    until the human authorization gate is wired (see deliverable note in
+    docs/decision-log/0011-public-export-human-gate.md). Even if an operator
+    sets AEGISGRAPH_RELEASE_AUTHORIZED=1, this function will not flip the
+    flag because the matching validator/sanitize_check.py module is owned
+    by the validator-export stream and has not landed yet. The manifest
+    documents the unmet gate explicitly in `release_note`.
+
+    `dry_run=True` runs every read step but does NOT write any file under
+    exports/public-sanitized/. The returned manifest is identical to a
+    real run; this lets reviewers verify the contents without mutating
+    the export tree. This is also the mode CI sanitize-check runs in
+    when no human authorization is present.
+    """
     validation = validate_repo(root)
     public_dir = root / "exports" / "public-sanitized"
     sanitized_polydiff = _sanitize_polydiff_report(root)
-    if sanitized_polydiff is not None:
-        write_json(public_dir / "polydiff_regression_report.sanitized.json", sanitized_polydiff)
+    sanitized_path = public_dir / "polydiff_regression_report.sanitized.json"
+
+    if sanitized_polydiff is not None and not dry_run:
+        write_json(sanitized_path, sanitized_polydiff)
 
     artifacts = _existing_artifacts(root, PUBLIC_ALLOWED_INPUTS)
-    if (public_dir / "polydiff_regression_report.sanitized.json").exists():
+    if not dry_run and sanitized_path.exists():
         artifacts.append(
             {
                 "path": "exports/public-sanitized/polydiff_regression_report.sanitized.json",
-                "sha256": sha256_file(public_dir / "polydiff_regression_report.sanitized.json"),
+                "sha256": sha256_file(sanitized_path),
             }
         )
+
+    # ---- Human authorization gate (deliverable 7) ----
+    # This block is intentionally fail-closed. The flag is False unless
+    # BOTH (a) env AEGISGRAPH_RELEASE_AUTHORIZED=1 AND (b) the
+    # validator-export stream's sanitize_check passes. Today (b) is
+    # unwired, so we always emit False with a clear release_note.
+    #
+    # TODO(validator-export-stream): replace `_sanitize_check_passes`
+    # with a real call to validator.sanitize_check. Until then, the
+    # function intentionally returns False so this gate cannot trip
+    # accidentally.
+    env_authorized = os.environ.get(ENV_RELEASE_AUTHORIZED) == "1"
+    sanitize_passes = _sanitize_check_passes(root)
+    release_authorized = env_authorized and sanitize_passes
+
+    if env_authorized and not sanitize_passes:
+        release_note = (
+            "AEGISGRAPH_RELEASE_AUTHORIZED=1 set, but validator/sanitize_check.py "
+            "is not yet wired or did not pass. release_authorized stays False. "
+            "Human approval is still required before replacing or supplementing "
+            "02_PUBLIC_RELEASE/ASEMA_Public_GitHub_Artifacts."
+        )
+    elif not env_authorized:
+        release_note = (
+            "Human authorization gate not yet wired. release_authorized is False "
+            "by default; set AEGISGRAPH_RELEASE_AUTHORIZED=1 AND ensure "
+            "validator/sanitize_check.py passes before any public release. See "
+            "docs/decision-log/0011-public-export-human-gate.md."
+        )
+    else:
+        release_note = (
+            "Both environment authorization and sanitize-check passed; this "
+            "manifest may be promoted by the operator after a final human review."
+        )
+
     manifest = {
         "tool_output_type": "public_sanitized_export",
         "version": "v1.0",
         "generated_by": "aegisgraph-tier3-research",
         "generated_at": STATIC_GENERATED_AT,
         "safety_posture": "sanitized_candidate",
-        "release_authorized": False,
-        "release_note": "Human approval is still required before replacing or supplementing 02_PUBLIC_RELEASE/ASEMA_Public_GitHub_Artifacts.",
+        "release_authorized": release_authorized,
+        "release_note": release_note,
         "validation_status": validation["status"],
+        "dry_run": dry_run,
         "artifacts": artifacts,
         "excluded": [
             "exports/private-submission/**",
@@ -109,5 +180,21 @@ def export_public_sanitized(root: Path) -> dict[str, Any]:
             "live dynamic traces",
         ],
     }
-    write_json(public_dir / "manifest.json", manifest)
+
+    if not dry_run:
+        write_json(public_dir / "manifest.json", manifest)
     return manifest
+
+
+def _sanitize_check_passes(root: Path) -> bool:  # pragma: no cover - stub
+    """Stub for the validator-export stream's sanitize check.
+
+    Returns False unconditionally until validator/sanitize_check.py lands.
+    The validator-export stream replaces this body with a real call:
+        from validator.sanitize_check import scan_public_export
+        return scan_public_export(root / "exports" / "public-sanitized").ok
+
+    Keeping the stub here (rather than at import time) means the export
+    module can be imported and unit-tested in isolation.
+    """
+    return False

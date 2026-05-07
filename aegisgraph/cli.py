@@ -100,8 +100,13 @@ def cmd_export(args: argparse.Namespace) -> int:
         manifest = export.export_private(_root())
         print(f"private export manifest: {len(manifest['artifacts'])} artifacts, validation={manifest['validation_status']}")
     elif args.export_command == "public-sanitized":
-        manifest = export.export_public_sanitized(_root())
-        print(f"public sanitized candidate: {len(manifest['artifacts'])} artifacts, release_authorized={manifest['release_authorized']}")
+        dry_run = bool(getattr(args, "dry_run", False))
+        manifest = export.export_public_sanitized(_root(), dry_run=dry_run)
+        prefix = "DRY-RUN " if dry_run else ""
+        print(
+            f"{prefix}public sanitized candidate: {len(manifest['artifacts'])} artifacts, "
+            f"release_authorized={manifest['release_authorized']}"
+        )
     else:  # pragma: no cover
         raise AssertionError(args.export_command)
     return 0
@@ -166,6 +171,16 @@ def build_parser() -> argparse.ArgumentParser:
     export_private = export_subparsers.add_parser("private")
     export_private.set_defaults(func=cmd_export)
     export_public = export_subparsers.add_parser("public-sanitized")
+    export_public.add_argument(
+        "--dry-run",
+        action="store_true",
+        help=(
+            "do not write files under exports/public-sanitized/. "
+            "Returns the manifest that would be written, including the "
+            "release_authorized flag and release_note. Use to verify "
+            "outputs without mutating the export tree."
+        ),
+    )
     export_public.set_defaults(func=cmd_export)
 
     return parser
