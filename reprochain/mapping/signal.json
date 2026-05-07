@@ -1,0 +1,132 @@
+{
+  "build_status": "blocked_pending_toolchain",
+  "extraction_phase": "anchor_only",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "records": [
+    {
+      "claim_state": "validation_tasked",
+      "edges": [
+        {
+          "from": "entry.inbound-media",
+          "relationship": "routes_to",
+          "to": "handler.media-pipeline"
+        },
+        {
+          "from": "handler.media-pipeline",
+          "relationship": "delegates_decode",
+          "to": "decoder.app-stack"
+        },
+        {
+          "from": "decoder.app-stack",
+          "relationship": "platform_indirection",
+          "to": "decoder.platform"
+        },
+        {
+          "from": "decoder.platform",
+          "relationship": "system_codec_links_libwebp",
+          "to": "sink.libwebp-buildhuffmantable"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "command": "make reprochain-build",
+          "id": "REF-REPROCHAIN-SIGNAL-ANDROID-PINS",
+          "output_hash": "93d4450ba40204c2306265b9172f623a2ae86530d6ed7a06d02776744e41bf8d",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        },
+        {
+          "command": "make reprochain-run",
+          "id": "REF-REPROCHAIN-SIGNAL-ANDROID-RUN",
+          "output_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        }
+      ],
+      "hash_chain": {
+        "canonicalization": "json-v1-sorted-no-hash-chain",
+        "previous_hash": null,
+        "record_hash": "ddd5fe03e40cc58ae4056cd7905dc93a35ebb18675130431d9cd19998a53a617"
+      },
+      "id": "AG-EV-REPROCHAIN-SIGNAL-ANDROID-MAP-001",
+      "limitations": "Reachability is mediated by the Android platform image decoder (android.graphics.ImageDecoder / BitmapFactory.decodeStream) which on modern Android delegates WebP decoding to a system codec that links libwebp. The application code does NOT call libwebp directly; the indirection means app-level reachability does not, on its own, establish exploitability against the deployed app. ReproChain harness validates the libwebp library-level OOB-write fragility at the pinned vulnerable commit (7ba44f8) and the absence of that signal at the pinned fixed commit (902bc91). It does NOT validate exploitability of Signal Android at commit 1043851; that would require behavioral reproduction against the deployed app, which is out of scope. Extraction phase: anchor_only. Anchor-only placeholders in extraction output produce node anchors that point at the target tree but not at specific source files; CodeQL-derived extraction will replace those with file/line anchors when it lands.",
+      "nodes": [
+        {
+          "evidence_source": "target pin from v0.3 public artifact package",
+          "id": "entry.inbound-media",
+          "label": "MmsAttachment ingest (Signal Android)",
+          "node_type": "entry_point",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "handler.media-pipeline",
+          "label": "Glide RequestBuilder.into() handler chain",
+          "node_type": "handler",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "decoder.platform",
+          "label": "Android ImageDecoder / BitmapFactory.decodeStream",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "extraction phase=anchor_only; app-stack decoder is the immediate caller of the platform decoder",
+          "id": "decoder.app-stack",
+          "label": "Glide-mediated decode path",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "ReproChain harness build manifest; vulnerable static archive at reprochain/vendor/libwebp/cmake-vuln/libwebp-vuln.a",
+          "id": "sink.libwebp-buildhuffmantable",
+          "label": "libwebp BuildHuffmanTable (CVE-2023-4863, vuln pin 7ba44f8)",
+          "node_type": "sink",
+          "source_anchor": "https://github.com/webmproject/libwebp/commit/7ba44f80f3b94fc0138db159afea770ef06532a0"
+        }
+      ],
+      "path_class": "media_decode",
+      "provenance": {
+        "generated_at": "2026-05-05T00:00:00Z",
+        "generated_by": "aegisgraph-tier3-research",
+        "private_by_default": true,
+        "source": "reprochain map_targets phase=anchor_only"
+      },
+      "recommendation_refs": [],
+      "safety_flags": [],
+      "score_vector": {
+        "attacker_control": 0.9,
+        "auth_boundary": 0.6,
+        "confidence": 0.55,
+        "exploit_history": 0.9,
+        "mitigation_strength": 0.5,
+        "native_boundary": 0.8,
+        "observability": 0.4,
+        "parser_complexity": 0.8,
+        "privilege_impact": 0.7,
+        "remote_reachability": 0.9,
+        "total": 7.05
+      },
+      "target": {
+        "commit": "1043851",
+        "name": "Signal Android",
+        "repo_url": "https://github.com/signalapp/Signal-Android",
+        "source_policy": "anchor-only"
+      },
+      "validation_task": {
+        "command": "make reprochain-run",
+        "expected_output": "fuzz_webp_decode_vuln crash_count > 0; fuzz_webp_decode_fix crash_count == 0; asan_report_summary.json differential.isolates_cve_2023_4863 == true",
+        "id": "VAL-REPROCHAIN-SIGNAL-ANDROID",
+        "status": "blocked"
+      },
+      "version": "v1.0"
+    }
+  ],
+  "safety_posture": "private_by_default",
+  "target_key": "signal",
+  "tool_output_type": "reprochain_mapping_target",
+  "version": "v1.0"
+}

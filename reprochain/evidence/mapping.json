@@ -1,26 +1,53 @@
 {
+  "build_status": "blocked_pending_toolchain",
+  "differential_pointer": "reprochain/evidence/asan_report_summary.json",
+  "extraction_phases": {
+    "element-x": "anchor_only",
+    "signal": "anchor_only"
+  },
   "generated_at": "2026-05-05T00:00:00Z",
   "generated_by": "aegisgraph-tier3-research",
+  "per_target_outputs": [
+    "reprochain/mapping/signal.json",
+    "reprochain/mapping/element-x.json"
+  ],
   "records": [
     {
       "claim_state": "validation_tasked",
       "edges": [
         {
           "from": "entry.inbound-media",
-          "relationship": "may_route_to",
+          "relationship": "routes_to",
+          "to": "handler.media-pipeline"
+        },
+        {
+          "from": "handler.media-pipeline",
+          "relationship": "delegates_decode",
           "to": "decoder.app-stack"
         },
         {
           "from": "decoder.app-stack",
-          "relationship": "requires_decoder_indirection_validation",
-          "to": "sink.libwebp"
+          "relationship": "platform_indirection",
+          "to": "decoder.platform"
+        },
+        {
+          "from": "decoder.platform",
+          "relationship": "system_codec_links_libwebp",
+          "to": "sink.libwebp-buildhuffmantable"
         }
       ],
       "evidence_refs": [
         {
-          "command": "make reprochain-map",
-          "id": "REF-REPROCHAIN-SIGNAL-ANDROID",
-          "output_hash": "19c1ccab490b5d061dbcaace357b89152ce5b0ec42ba0329e11509bafe37fa05",
+          "command": "make reprochain-build",
+          "id": "REF-REPROCHAIN-SIGNAL-ANDROID-PINS",
+          "output_hash": "93d4450ba40204c2306265b9172f623a2ae86530d6ed7a06d02776744e41bf8d",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        },
+        {
+          "command": "make reprochain-run",
+          "id": "REF-REPROCHAIN-SIGNAL-ANDROID-RUN",
+          "output_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
           "tool": "aegisgraph-reprochain",
           "version": "phase0"
         }
@@ -28,31 +55,45 @@
       "hash_chain": {
         "canonicalization": "json-v1-sorted-no-hash-chain",
         "previous_hash": null,
-        "record_hash": "89f4df8c7345230dab2b95554f52eb51a0aaf994c154f8d93eb2960aa5bffb78"
+        "record_hash": "ddd5fe03e40cc58ae4056cd7905dc93a35ebb18675130431d9cd19998a53a617"
       },
       "id": "AG-EV-REPROCHAIN-SIGNAL-ANDROID-MAP-001",
-      "limitations": "This record maps the research question and scoring basis only. It does not include triggering corpus bytes, does not target a production app, and does not claim that the pinned target app is vulnerable. Android platform decoder and vendored-library boundaries must be resolved in the next phase.",
+      "limitations": "Reachability is mediated by the Android platform image decoder (android.graphics.ImageDecoder / BitmapFactory.decodeStream) which on modern Android delegates WebP decoding to a system codec that links libwebp. The application code does NOT call libwebp directly; the indirection means app-level reachability does not, on its own, establish exploitability against the deployed app. ReproChain harness validates the libwebp library-level OOB-write fragility at the pinned vulnerable commit (7ba44f8) and the absence of that signal at the pinned fixed commit (902bc91). It does NOT validate exploitability of Signal Android at commit 1043851; that would require behavioral reproduction against the deployed app, which is out of scope. Extraction phase: anchor_only. Anchor-only placeholders in extraction output produce node anchors that point at the target tree but not at specific source files; CodeQL-derived extraction will replace those with file/line anchors when it lands.",
       "nodes": [
         {
-          "evidence_source": "extraction output anchor",
+          "evidence_source": "target pin from v0.3 public artifact package",
           "id": "entry.inbound-media",
-          "label": "Inbound media path",
+          "label": "MmsAttachment ingest (Signal Android)",
           "node_type": "entry_point",
           "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
         },
         {
-          "evidence_source": "phase0 map placeholder",
-          "id": "decoder.app-stack",
-          "label": "Glide/media decode path",
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "handler.media-pipeline",
+          "label": "Glide RequestBuilder.into() handler chain",
+          "node_type": "handler",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "decoder.platform",
+          "label": "Android ImageDecoder / BitmapFactory.decodeStream",
           "node_type": "decoder",
           "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
         },
         {
-          "evidence_source": "public CVE writeup summary, exact commit pins pending",
-          "id": "sink.libwebp",
-          "label": "libwebp CVE-2023-4863 public-information reproduction target",
+          "evidence_source": "extraction phase=anchor_only; app-stack decoder is the immediate caller of the platform decoder",
+          "id": "decoder.app-stack",
+          "label": "Glide-mediated decode path",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/signalapp/Signal-Android/tree/1043851"
+        },
+        {
+          "evidence_source": "ReproChain harness build manifest; vulnerable static archive at reprochain/vendor/libwebp/cmake-vuln/libwebp-vuln.a",
+          "id": "sink.libwebp-buildhuffmantable",
+          "label": "libwebp BuildHuffmanTable (CVE-2023-4863, vuln pin 7ba44f8)",
           "node_type": "sink",
-          "source_anchor": "reprochain/analysis/CVE-2023-4863.md"
+          "source_anchor": "https://github.com/webmproject/libwebp/commit/7ba44f80f3b94fc0138db159afea770ef06532a0"
         }
       ],
       "path_class": "media_decode",
@@ -60,7 +101,7 @@
         "generated_at": "2026-05-05T00:00:00Z",
         "generated_by": "aegisgraph-tier3-research",
         "private_by_default": true,
-        "source": "phase0 ReproChain mapping scaffold"
+        "source": "reprochain map_targets phase=anchor_only"
       },
       "recommendation_refs": [],
       "safety_flags": [],
@@ -85,7 +126,7 @@
       },
       "validation_task": {
         "command": "make reprochain-run",
-        "expected_output": "isolated ASAN-only libwebp differential result after commit pins are confirmed",
+        "expected_output": "fuzz_webp_decode_vuln crash_count > 0; fuzz_webp_decode_fix crash_count == 0; asan_report_summary.json differential.isolates_cve_2023_4863 == true",
         "id": "VAL-REPROCHAIN-SIGNAL-ANDROID",
         "status": "blocked"
       },
@@ -96,52 +137,83 @@
       "edges": [
         {
           "from": "entry.inbound-media",
-          "relationship": "may_route_to",
+          "relationship": "routes_to",
+          "to": "handler.media-pipeline"
+        },
+        {
+          "from": "handler.media-pipeline",
+          "relationship": "delegates_decode",
           "to": "decoder.app-stack"
         },
         {
           "from": "decoder.app-stack",
-          "relationship": "requires_decoder_indirection_validation",
-          "to": "sink.libwebp"
+          "relationship": "platform_indirection",
+          "to": "decoder.platform"
+        },
+        {
+          "from": "decoder.platform",
+          "relationship": "system_codec_links_libwebp",
+          "to": "sink.libwebp-buildhuffmantable"
         }
       ],
       "evidence_refs": [
         {
-          "command": "make reprochain-map",
-          "id": "REF-REPROCHAIN-ELEMENT-X-ANDROID",
-          "output_hash": "2d1c3710f8c14c7fa048040f248c00ec7571c36ca94b3e6b93e6911cf1d6190c",
+          "command": "make reprochain-build",
+          "id": "REF-REPROCHAIN-ELEMENT-X-ANDROID-PINS",
+          "output_hash": "93d4450ba40204c2306265b9172f623a2ae86530d6ed7a06d02776744e41bf8d",
+          "tool": "aegisgraph-reprochain",
+          "version": "phase0"
+        },
+        {
+          "command": "make reprochain-run",
+          "id": "REF-REPROCHAIN-ELEMENT-X-ANDROID-RUN",
+          "output_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
           "tool": "aegisgraph-reprochain",
           "version": "phase0"
         }
       ],
       "hash_chain": {
         "canonicalization": "json-v1-sorted-no-hash-chain",
-        "previous_hash": "89f4df8c7345230dab2b95554f52eb51a0aaf994c154f8d93eb2960aa5bffb78",
-        "record_hash": "b60e7816122da6a6a0783681c2b9d29ea815f3d364e0260c9dfccf0ef2bef919"
+        "previous_hash": "ddd5fe03e40cc58ae4056cd7905dc93a35ebb18675130431d9cd19998a53a617",
+        "record_hash": "00bc5e4199648f61fe75914a8fb471c359511701510174d65f5eeb7b104bc7e1"
       },
       "id": "AG-EV-REPROCHAIN-ELEMENT-X-ANDROID-MAP-001",
-      "limitations": "This record maps the research question and scoring basis only. It does not include triggering corpus bytes, does not target a production app, and does not claim that the pinned target app is vulnerable. Android platform decoder and vendored-library boundaries must be resolved in the next phase.",
+      "limitations": "Reachability is mediated by the Android platform image decoder (android.graphics.ImageDecoder / BitmapFactory.decodeStream) which on modern Android delegates WebP decoding to a system codec that links libwebp. The application code does NOT call libwebp directly; the indirection means app-level reachability does not, on its own, establish exploitability against the deployed app. ReproChain harness validates the libwebp library-level OOB-write fragility at the pinned vulnerable commit (7ba44f8) and the absence of that signal at the pinned fixed commit (902bc91). It does NOT validate exploitability of Element X Android at commit 91d265e6; that would require behavioral reproduction against the deployed app, which is out of scope. Extraction phase: anchor_only. Anchor-only placeholders in extraction output produce node anchors that point at the target tree but not at specific source files; CodeQL-derived extraction will replace those with file/line anchors when it lands.",
       "nodes": [
         {
-          "evidence_source": "extraction output anchor",
+          "evidence_source": "target pin from v0.3 public artifact package",
           "id": "entry.inbound-media",
-          "label": "Inbound media path",
+          "label": "Coil ImageRequest ingest (Element X Android)",
           "node_type": "entry_point",
           "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
         },
         {
-          "evidence_source": "phase0 map placeholder",
-          "id": "decoder.app-stack",
-          "label": "Coil/media decode path",
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "handler.media-pipeline",
+          "label": "Coil ImageDecoderDecoder handler chain",
+          "node_type": "handler",
+          "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
+        },
+        {
+          "evidence_source": "phase0 extraction placeholder, anchor-only",
+          "id": "decoder.platform",
+          "label": "Android ImageDecoder / BitmapFactory.decodeStream",
           "node_type": "decoder",
           "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
         },
         {
-          "evidence_source": "public CVE writeup summary, exact commit pins pending",
-          "id": "sink.libwebp",
-          "label": "libwebp CVE-2023-4863 public-information reproduction target",
+          "evidence_source": "extraction phase=anchor_only; app-stack decoder is the immediate caller of the platform decoder",
+          "id": "decoder.app-stack",
+          "label": "Coil-mediated decode path",
+          "node_type": "decoder",
+          "source_anchor": "https://github.com/element-hq/element-x-android/tree/91d265e6"
+        },
+        {
+          "evidence_source": "ReproChain harness build manifest; vulnerable static archive at reprochain/vendor/libwebp/cmake-vuln/libwebp-vuln.a",
+          "id": "sink.libwebp-buildhuffmantable",
+          "label": "libwebp BuildHuffmanTable (CVE-2023-4863, vuln pin 7ba44f8)",
           "node_type": "sink",
-          "source_anchor": "reprochain/analysis/CVE-2023-4863.md"
+          "source_anchor": "https://github.com/webmproject/libwebp/commit/7ba44f80f3b94fc0138db159afea770ef06532a0"
         }
       ],
       "path_class": "media_decode",
@@ -149,7 +221,7 @@
         "generated_at": "2026-05-05T00:00:00Z",
         "generated_by": "aegisgraph-tier3-research",
         "private_by_default": true,
-        "source": "phase0 ReproChain mapping scaffold"
+        "source": "reprochain map_targets phase=anchor_only"
       },
       "recommendation_refs": [],
       "safety_flags": [],
@@ -174,7 +246,7 @@
       },
       "validation_task": {
         "command": "make reprochain-run",
-        "expected_output": "isolated ASAN-only libwebp differential result after commit pins are confirmed",
+        "expected_output": "fuzz_webp_decode_vuln crash_count > 0; fuzz_webp_decode_fix crash_count == 0; asan_report_summary.json differential.isolates_cve_2023_4863 == true",
         "id": "VAL-REPROCHAIN-ELEMENT-X-ANDROID",
         "status": "blocked"
       },
@@ -182,6 +254,7 @@
     }
   ],
   "safety_posture": "private_by_default",
+  "status": "anchor_only",
   "tool_output_type": "reprochain_mapping",
   "version": "v1.0"
 }

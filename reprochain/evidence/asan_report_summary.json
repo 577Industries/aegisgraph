@@ -1,0 +1,29 @@
+{
+  "binaries": [
+    {
+      "binary": "reprochain/vendor/libwebp/cmake-vuln/fuzz_webp_decode_vuln",
+      "categories": [],
+      "crash_count": 0,
+      "executed": false,
+      "label": "vuln",
+      "skip_reason": "binary_not_built",
+      "top_frames": []
+    },
+    {
+      "binary": "reprochain/vendor/libwebp/cmake-fix/fuzz_webp_decode_fix",
+      "categories": [],
+      "crash_count": 0,
+      "executed": false,
+      "label": "fix",
+      "skip_reason": "binary_not_built",
+      "top_frames": []
+    }
+  ],
+  "differential": {},
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "scrubbing_policy": "crash_count + top-5 frame function names only. No payload bytes, no source paths, no line numbers, no addresses.",
+  "tool_output_type": "reprochain_asan_summary",
+  "version": "v1.0"
+}
