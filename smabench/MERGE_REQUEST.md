@@ -179,3 +179,16 @@ validation pass: 7 evidence records checked
   timestamp (Phase 0 contract). When `real-extraction` lands and
   starts emitting fresh `generated_at` strings, the byte-identity
   check still holds because the exclusion list catches them.
+
+## Verification (post-integration polish)
+
+Structured commands a reviewer can re-run end-to-end:
+
+```
+cd .worktrees/integration
+python3 -m pytest tests/test_smabench_*.py -q
+python3 -m aegisgraph.cli smabench run
+python3 -m aegisgraph.cli validate
+```
+
+Expected: all green, `byte_identical=True` across two consecutive runs (Ring 1 repeatability), 6+ Ring 1 corpora, validation_status=pass, claim-state lifecycle preserved. The 2 SMABENCH recommendation records (Signal Android, Element X Android) validate against `schema/recommendation.schema.json`.

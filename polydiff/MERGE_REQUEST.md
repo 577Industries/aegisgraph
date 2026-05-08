@@ -270,3 +270,17 @@ The following remained untouched:
   `polydiff-regression`, `polydiff-fuzz`, `reproduce` chain unchanged)
 - `devcontainer/`, `pyproject.toml`
 - `reprochain/**`, `extraction/**`, `smabench/**`, `validator/**`
+
+## Verification
+
+Structured commands a reviewer can re-run end-to-end:
+
+```
+cd .worktrees/integration
+python3 -m pytest tests/test_polydiff_*.py -q
+python3 -m aegisgraph.cli polydiff regression
+python3 -m aegisgraph.cli polydiff fuzz --budget 60
+python3 -m aegisgraph.cli validate
+```
+
+Expected: all green, `tier_p1_status: pass`, `rediscovered_historical_cves >= 3` (with the 2 currently-built parsers in this env; >=12 in the pinned devcontainer with all 7 wrappers built), `validation_status=pass`, claim-state lifecycle preserved.
