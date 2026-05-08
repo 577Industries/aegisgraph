@@ -58,7 +58,9 @@ The work is done when, at minimum:
 2. `aegisgraph reprochain map` produces a JSON evidence record showing the call graph from Signal Android's `MmsAttachment` ingest down through Glide / native decode to a libwebp call site, and the equivalent for Element X Android via Coil. The record carries the AegisGraph score vector and is anchored to commit-pinned source URLs.
 3. `aegisgraph polydiff run --target url-parsers` produces (a) a corpus of disagreement cases, (b) a triaged shortlist of security-relevant disagreements with a reproducible Python repro for each, and (c) a regression suite that catches at least three known historical URL-parser disagreement bugs (e.g., one of the documented `okhttp HttpUrl` vs. `java.net.URI` cases) without seeding.
 4. The full pipeline is reproducible from a clean checkout via `make reproduce` in under one hour on a 16-core developer machine.
-5. The evidence schema in §8 validates against everything ReproChain and PolyDiff produce, and the validator script catches deliberate corruption tests.
+5. The evidence schema in §8 validates against everything ReproChain and PolyDiff produce, and the validator script catches deliberate corruption tests (see ADR 0010 for the additive-only schema policy and ADR 0021 for validator hardening).
+
+*Environment note* (ReproChain done criteria): Build executes inside the pinned devcontainer (Clang 18 + libfuzzer-18 + cmake + libwebp submodule). Host environments without those tools report `build_status='blocked_pending_toolchain'` per `reprochain/BUILD_STATUS.md`. The vulnerable + fix commit pins (vulnerable `7ba44f80...`, fix `902bc919...` from v1.3.2) are documented in ADR 0009.
 
 A "stretch done" — beyond the minimum — is in §1.4.
 
@@ -85,7 +87,7 @@ The candidate set:
 | BLASTPASS (CVE-2023-41064 + 41061) | Recent, headline-grabbing | Sparse public details; requires PassKit/ImageIO internals | Reject |
 | WhatsApp VOIP RCE (CVE-2019-3568) | Widely cited; cross-platform | WhatsApp source not public; RTCP exploitation specifics scattered | Reject |
 | WhatsApp GIF double-free (CVE-2019-11932) | Public PoC; Android; well-documented Awakened writeup | Library `libpl_droidsonroids_gif` is small and not used by Signal/Element | Stretch |
-| **libwebp (CVE-2023-4863)** | BSD-licensed open library; affected basically every SMA; well-documented bug; reachable from Signal Android and Element X Android via image-load paths; clean reproduction stops at memory corruption | Library is small enough that a static analyzer "finding" it could be argued as cherry-picked | **Selected** |
+| **libwebp (CVE-2023-4863)** | BSD-licensed open library; affected basically every SMA; well-documented bug; reachable from Signal Android and Element X Android via image-load paths; clean reproduction stops at memory corruption | Library is small enough that a static analyzer "finding" it could be argued as cherry-picked | **Selected** (see ADR 0007) |
 | Matrix/Megolm Albrecht et al. attacks (2022) | High-impact academic work; multi-CVE | Requires protocol-cryptography depth; harder to "reproduce" without authoring an attacker-Matrix client | Reject (consider as future work) |
 
 The libwebp choice is load-bearing for the ReproChain narrative. The story it lets us tell to ASEMA reviewers:
@@ -100,7 +102,7 @@ The candidate set the user proposed:
 
 | Candidate | Demonstrability without crypto expertise | Likelihood of real findings | Composes with libwebp story | Automation feasibility | Verdict |
 |---|---|---|---|---|---|
-| Parser-disagreement bugs (URL, OpenGraph, image format detection, markdown) | High | High | Yes — both are parser problems | High | **Selected** |
+| Parser-disagreement bugs (URL, OpenGraph, image format detection, markdown) | High | High | Yes — both are parser problems | High | **Selected** (see ADR 0008) |
 | Group-state rollback windows (Megolm/MLS) | Low | Medium | Weak | Medium | Reject |
 | MLS/Olm session lifecycle reachability | Medium | Medium-low | Weak | Medium | Reject |
 
@@ -228,7 +230,7 @@ Goal: get a reproducible build of libwebp at both the vulnerable and patched com
 
 Tasks:
 
-1. Add libwebp as a git submodule under `reprochain/vendor/libwebp/`. Pin two refs: `libwebp-vuln` (pre-fix) and `libwebp-fix` (post-fix). Use the upstream `chromium/libwebp` repo, not a fork.
+1. Add libwebp as a git submodule under `reprochain/vendor/libwebp/`. Pin two refs: `libwebp-vuln` (pre-fix) and `libwebp-fix` (post-fix) — exact SHAs are recorded in ADR 0009 (vulnerable `7ba44f80...`, fix `902bc919...` from v1.3.2 / 2023-09-13). Use the upstream `chromium/libwebp` repo, not a fork.
 2. Write `reprochain/build.sh` that builds libwebp twice (vuln, fix) with `-O1 -g -fsanitize=address,fuzzer-no-link` and produces two static archives (`libwebp-vuln.a`, `libwebp-fix.a`).
 3. Write `reprochain/harness/fuzz_webp_decode.cc`, a libFuzzer harness that:
    - Receives `(data, size)` from libfuzzer.
@@ -455,7 +457,7 @@ The fact-vector is the common representation that lets us compare parsers that h
 }
 ```
 
-Every field above is a known axis on which URL parsers historically disagree. The complete list of fields is the result of mining the public corpus of URL-parser bug reports; we expect the list to grow during Phase B5 as fuzzing surfaces new axes.
+Every field above is a known axis on which URL parsers historically disagree. The complete list of fields is the result of mining the public corpus of URL-parser bug reports; we expect the list to grow during Phase B5 as fuzzing surfaces new axes. The v2 schema lifts axis count from ~32 to 45 (additive), governed by ADR 0020.
 
 For OpenGraph (Phase 2), there will be a sibling fact-vector schema covering: which `<meta>` tags are extracted, what URL is treated as the canonical OpenGraph image URL, whether HTML entities are decoded before URL parsing, etc.
 
@@ -520,6 +522,8 @@ Initial cases (to be expanded):
 - Specific Chromium URL bugs that affected SMA WebView use (research these)
 
 Acceptance: Running `make polydiff-regression` produces a report showing PolyDiff catches ≥3 cases as `Finding` records (this is Tier-P1 from §2.3). Bonus credit for catching ≥80% of the corpus.
+
+*Implementation note*: Phase 1 delivered 41 cases with 13 historical-CVE references; 8 rediscoveries triggered by the 2 currently-built parsers (Python `urllib`, `whatwg-url`). The remaining 5 wrappers (JDK URI, OkHttp, Rust `url`, Go `net/url`, libcurl) build cleanly in the pinned devcontainer; rediscovery count rises to ≥12 in that environment. Tier P1 status: `pass`. The fact-vector v2 schema (45 axes) is the artifact this regression set validates against (see ADR 0020).
 
 ### 5.8 Phase B7 — Fuzzer driver
 
@@ -598,6 +602,8 @@ Build a query pack (`extraction/codeql/queries/`) for SMA-relevant patterns. Ini
 Each query produces SARIF; SARIF is normalized into the evidence graph by an adapter (`extraction/adapters/codeql_to_graph.py`).
 
 Acceptance: `make extract-signal` runs the full query pack against Signal Android at the pinned commit, produces a graph in the AegisGraph schema, and the graph is checked into the evidence package.
+
+*Environment note*: Coverage 0.0 in environments without CodeQL CLI 2.20.6 + Java 21; the test contract gates strict ≥0.8 coverage on `AEGISGRAPH_FULL_TOOLCHAIN=1`. See `extraction/BUILD_STATUS.md` for the toolchain availability matrix.
 
 ### 6.3 Phase C2 — Semgrep ruleset
 
@@ -708,7 +714,7 @@ Canonical schema for AegisGraph evidence records. Every record has:
 - `provenance` — who/what/when produced this record
 - `safety_flags` — populated by the safety scanner
 
-`[DECIDE]` Whether to migrate the v0.3 records to v1.0 schema or maintain both. Default: maintain both; v1.0 is additive.
+`[DECIDE]` Whether to migrate the v0.3 records to v1.0 schema or maintain both. Default: maintain both; v1.0 is additive (see ADR 0010 for the additive-only schema policy and ADR 0020 for the concrete v2 fact-vector example).
 
 ### 8.2 Recommendation contract
 
@@ -722,6 +728,8 @@ The validator's safety scanner expands beyond v0.3's checks. New rules:
 - No vendored libwebp commits beyond what's needed for ReproChain (vuln + fix). No carrying-forward of unpatched code.
 - No SMA target source redistribution. Only anchors and derived measurements.
 - Standards-mapping language must include a caveat in every recommendation record that touches MASVS/MASTG/SSDF/SBOM/VEX/SARIF.
+
+The public-export sanitize gate is implemented in `validator/sanitize_check.py` (12 substantive + 6 structural rules). The gate is wired through `aegisgraph/export.py::_sanitize_check_passes` and the human-authorization environment variable `AEGISGRAPH_RELEASE_AUTHORIZED=1` (see ADR 0011 for the gate rationale and ADR 0021 for the validator hardening that implements it).
 
 ### 8.4 Audit trail
 
