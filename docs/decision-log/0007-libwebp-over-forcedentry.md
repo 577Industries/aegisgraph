@@ -51,3 +51,15 @@ The integration stream re-opens this ADR if any of the following happen:
 3. A non-Apple FORCEDENTRY-class media bug appears in a vendorable,
    public-source codec with a deterministic harness. (Would augment, not
    replace.)
+
+## Related
+
+- 0003 — libwebp selection (Phase-0 placeholder this ADR refines)
+- 0009 — libwebp commit pins (vulnerable + fix SHAs that close the commit-pin gate from this ADR)
+- 0011 — public-export human gate (the boundary that prevents corpus / vendored sources from leaving the private repo)
+
+## Proposal claims
+
+- C-NEW-RC — ReproChain pre-disclosure simulation depends on this target choice.
+- C-ABS-5 — "two evidence-producing capabilities" framing centers on this CVE.
+- C-NEW-EX — extraction reachability evidence rides the same media-decode path.

@@ -50,3 +50,15 @@ initial PolyDiff contribution. NOT MLS (RFC 9420) lifecycle modeling.
    the same disagreement framework.
 3. The team gains MLS protocol-cryptography depth and proposes adding
    MLS as a SECOND polydiff target (additive, not replacement).
+
+## Related
+
+- 0004 — PolyDiff selection (Phase-0 placeholder this ADR refines)
+- 0010 — schema additive-only policy (governs the URL-parser fact-vector evolution)
+- 0020 — fact-vector v2 migration (concrete additive evolution this ADR anticipated)
+
+## Proposal claims
+
+- C-NEW-PD — PolyDiff rediscovery target.
+- C-ABS-5 — measured-output framing relies on this scope.
+- C-V03-5 — supplements Semgrep zero-finding baseline with PolyDiff regression-set anchor.

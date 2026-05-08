@@ -68,3 +68,15 @@ class of mistake structurally impossible.
 - This ADR does not specify what counts as "sanitized." That contract
   is defined in `validator/sanitize_check.py` (validator-export stream)
   and the patterns in `aegisgraph/safety.py::BLOCKING_PATTERNS`.
+
+## Related
+
+- 0001 — repo split (the public-private split this gate sits between)
+- 0002 — private ReproChain handling (private-default policy this gate enforces at export time)
+- 0006 — disclosure ownership (what counts as a disclosable / public-safe finding)
+- 0021 — validator hardening (implements the gate via `validator/sanitize_check.py`)
+
+## Proposal claims
+
+- C-EVAL-2 — safety-scan / 8 forbidden categories enforced at the public-export boundary.
+- C-VAL-2 — validator independence boundary enforced at the same gate.

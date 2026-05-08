@@ -77,3 +77,15 @@ guarantee that record_hash(N+1) only changes when *content* changes.
   reviews and accepts.
 - Schemas live under `/schema/` only. Per-stream draft schemas living
   elsewhere are not subject to this policy until promoted.
+
+## Related
+
+- 0005 — validator migration (the v0.2 → v1.0 baseline this policy locks down going forward)
+- 0020 — fact-vector v2 migration (concrete additive v2 schema example governed by this policy)
+- 0021 — validator hardening (the validator that enforces the schema-validation rule above)
+
+## Proposal claims
+
+- C-TECH-3 — evidence schema (9 node families + 11 edge types) preserved across migrations.
+- C-EVAL-1 — public-package verification depends on schema stability.
+- C-EVAL-3 — reproducibility from target + commit + evidence refs depends on stable schema contracts.

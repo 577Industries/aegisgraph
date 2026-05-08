@@ -217,3 +217,13 @@ python3 -m aegisgraph.cli tooling --strict  # exits 1 outside the devcontainer
 python3 -m aegisgraph.cli export public-sanitized --dry-run
                       # release_authorized=False, dry_run=true, no files written
 ```
+
+## Related
+
+- 0010 — schema additive-only (this branch codifies the policy)
+- 0011 — public-export human gate (this branch wires the fail-closed gate)
+- 0021 — validator hardening (the follower stream that lands `validator/sanitize_check.py` and replaces the stub)
+
+## Proposal claims
+
+- (process) — this ADR is process / branch-state and does not directly substantiate a CETM claim, but it is the integration handoff that lets ReproChain + PolyDiff + Extraction evidence reach the public-export sanitize boundary.

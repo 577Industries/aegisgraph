@@ -111,3 +111,16 @@ Adopt a v2 fact-vector schema as an **additive** successor to v1.
   both v1 and v2 fact vectors going forward. Default
   recommendation: yes, with a v1 deprecation note in the validator
   output once integration ratifies v2.
+
+## Related
+
+- 0010 — schema additive-only policy (this v2 follows the additive contract)
+- 0004 — PolyDiff selection (Phase-0 placeholder; fact-vector axes follow from URL-parser scope)
+- 0008 — URL-parser differential over MLS lifecycle (selection that justifies the axis catalog)
+- 0021 — validator hardening (the validator that accepts both v1 and v2 records during the migration window)
+
+## Proposal claims
+
+- C-NEW-PD — PolyDiff fact-vector v2 is the artifact that records the rediscovered disagreements with full per-parser fidelity.
+- C-TECH-3 — concrete schema-evolution example for the evidence-graph contract.
+- C-V03-5 — fact-vector v2 axes underwrite the SOTA-matrix Semgrep-zero-finding supplement.

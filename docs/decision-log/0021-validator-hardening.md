@@ -225,8 +225,16 @@ reviewer can confirm the expected unbacked count matches.
   the matrix shows non-zero `claim_without_evidence` counts. This is
   expected and documented; reviewers should not block on it.
 
-## Related ADRs
+## Related
 
-- 0010 — schema additive-only
-- 0011 — public-export-human-gate (the gate this hardens)
-- 0012 — integration merge-ready (the integration handoff)
+- 0011 — public-export human gate (the gate this hardens)
+- 0010 — schema additive-only (governs the schemas this validator enforces)
+- 0020 — fact-vector v2 migration (validator must accept v1 + v2 in the migration window)
+- 0012 — integration merge-ready (the integration handoff that landed the stub this hardening replaces)
+
+## Proposal claims
+
+- C-EVAL-1 — public-package verification workflow / 11 validator checks.
+- C-EVAL-2 — safety-scan free of 8 forbidden categories.
+- C-VAL-2 — validator independence boundary.
+- C-EVAL-3 — reproducibility from target + commit + evidence refs (traceability matrix populates the proof).
