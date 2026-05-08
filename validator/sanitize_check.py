@@ -78,6 +78,18 @@ _TEXT_EXTENSIONS = frozenset(
 # but reserved so callers can add transient ignore patterns.
 _SKIP_NAMES: frozenset[str] = frozenset()
 
+# Path/content-pattern allowlist (Rule 1 only). These files are documentation
+# whose entire purpose is to NAME the things excluded from the public tree
+# (e.g. "corpora-private", "private-submission") — running Rule 1 against
+# them would generate self-referential false positives.
+#
+# Schema-aware rules (2-6) still apply to allowlisted files: a markdown doc
+# isn't a JSON record so 2-6 are no-ops, but if someone ever ships a
+# tool-output JSON named EXCLUSIONS.md (impossible by extension, but for
+# defense-in-depth) the structural rules would still catch it. The Rule 1
+# skip is the only relaxation.
+_RULE1_ALLOWLISTED_NAMES: frozenset[str] = frozenset({"EXCLUSIONS.md"})
+
 
 # ---------------------------------------------------------------------------
 # Forbidden patterns (Rule 1)
@@ -204,10 +216,22 @@ def _iter_files(root: Path) -> Iterable[Path]:
 
 
 def _scan_paths_and_content(root: Path, report: ScanReport) -> None:
-    """Apply Rule 1 (forbidden patterns) to each file's relpath + content."""
+    """Apply Rule 1 (forbidden patterns) to each file's relpath + content.
+
+    Files in `_RULE1_ALLOWLISTED_NAMES` (e.g. EXCLUSIONS.md) skip Rule 1
+    because they are documentation that intentionally names excluded items
+    (private-submission, corpora-private). Schema-aware rules 2-6 still
+    apply to those files via _scan_schema_documents; for a markdown doc
+    that's a no-op.
+    """
     for path in _iter_files(root):
         rel = str(path.relative_to(root))
         report.files_scanned += 1
+        if path.name in _RULE1_ALLOWLISTED_NAMES:
+            # Allowlisted from path + content rules; the file is by-design
+            # a description of excluded surfaces. Other rules still apply
+            # (but won't match a markdown doc).
+            continue
         for entry in FORBIDDEN_PATTERNS:
             if "path" in entry.where and entry.regex.search(rel):
                 report.add(
