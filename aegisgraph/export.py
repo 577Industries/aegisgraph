@@ -86,6 +86,21 @@ def _sanitize_polydiff_report(root: Path) -> dict[str, Any] | None:
     report = load_json(source)
     sanitized = dict(report)
     sanitized["safety_posture"] = "sanitized_candidate"
+
+    # The tool-output schema (schema/tool-output.schema.json) pins
+    # `version` to the const "v1.0" so every tool-output document carries
+    # the same outer-envelope contract. The polydiff regression report
+    # internally evolved to v2.0 (richer fact_vector schema, additive only),
+    # but for the sanitized public export we keep the v1.0 envelope so the
+    # validator's tool-output schema still matches. The originating
+    # internal schema version is preserved as `report_schema_version` so
+    # downstream consumers can still distinguish v1 vs v2 fact_vector
+    # shapes; structure is unchanged (additive fields keep working under
+    # tool-output.schema.json's `additionalProperties: true`).
+    if "version" in sanitized:
+        sanitized["report_schema_version"] = sanitized["version"]
+    sanitized["version"] = "v1.0"
+
     for vector in sanitized.get("fact_vectors", []):
         vector.pop("input_raw", None)
     return sanitized
