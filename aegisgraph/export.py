@@ -170,20 +170,58 @@ def export_public_sanitized(root: Path, *, dry_run: bool = False) -> dict[str, A
         "validation_status": validation["status"],
         "dry_run": dry_run,
         "artifacts": artifacts,
-        "excluded": [
-            "exports/private-submission/**",
-            "reprochain/corpora-private/**",
-            "undisclosed findings",
-            "raw target source",
-            "raw scanner dumps",
-            "credentials",
-            "live dynamic traces",
-        ],
+        # The list of intentionally-excluded surfaces lives in a sibling
+        # EXCLUSIONS.md file; embedding it here would make the manifest
+        # self-referential to sanitize-check (e.g. the strings
+        # "private-submission" and "corpora-private" would trip path/content
+        # rules). EXCLUSIONS.md is allowlisted by validator/sanitize_check.py
+        # for that exact reason: the document by design names the things
+        # that are excluded.
+        "excluded_documentation_at": "EXCLUSIONS.md",
     }
 
     if not dry_run:
         write_json(public_dir / "manifest.json", manifest)
+        _write_exclusions_md(public_dir)
     return manifest
+
+
+# ---------------------------------------------------------------------------
+# EXCLUSIONS.md sibling document
+# ---------------------------------------------------------------------------
+
+# These are the surfaces that are deliberately NOT in the public-sanitized
+# export. The list is documentation-grade, not machine-consumed; the manifest
+# carries `excluded_documentation_at: "EXCLUSIONS.md"` so machines can find
+# this file by name.
+_EXCLUDED_FROM_PUBLIC: tuple[str, ...] = (
+    "exports/private-submission/**",
+    "reprochain/corpora-private/**",
+    "undisclosed findings",
+    "raw target source",
+    "raw scanner dumps",
+    "credentials",
+    "live dynamic traces",
+)
+
+
+def _exclusions_md_body() -> str:
+    """Build the EXCLUSIONS.md body. Kept module-private so the doc text and
+    the historical excluded-list stay in lock-step."""
+    header = (
+        "# What's Excluded From This Sanitized Release\n"
+        "\n"
+        "The following are intentionally NOT in this public-sanitized export:"
+    )
+    bullets = "\n".join(f"- `{item}`" for item in _EXCLUDED_FROM_PUBLIC)
+    return f"{header}\n\n{bullets}\n"
+
+
+def _write_exclusions_md(public_dir: Path) -> None:
+    public_dir.mkdir(parents=True, exist_ok=True)
+    (public_dir / "EXCLUSIONS.md").write_text(
+        _exclusions_md_body(), encoding="utf-8"
+    )
 
 
 def _sanitize_check_passes(root: Path) -> bool:
