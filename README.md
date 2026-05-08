@@ -72,3 +72,14 @@ make reproduce
 python3 -m aegisgraph.cli validate
 python3 -m validator.cli traceability
 ```
+
+## Operating Procedures and Runbooks
+
+Day-to-day procedures (stream rebase loop, schema-delta-via-PR-plus-ADR contract, pre-merge checklist, merge order, sanitize/public-release flow, kill-switch list, quality gates, validator workflow, public-export approval gate, CI integration) live in `docs/operating-procedures.md`. New contributors should read sections 1, 3, and 6 before opening a PR.
+
+## Sub-package READMEs
+
+- `tests/README.md` — test-suite layout, gating environment variables, skip patterns, contract for adding new tests.
+- `validator/README.md` — `validate`, `strict-tooling`, `sanitize-check`, `traceability` CLI subcommands.
+- `schema/README.md` — schema versioning policy (ADR 0010), the six v1 schemas, fact-vector v2 proposal, migration governance.
+- `polydiff/MERGE_REQUEST.md`, `smabench/MERGE_REQUEST.md`, `reprochain/MERGE_REQUEST.md`, `extraction/MERGE_REQUEST.md`, `validator/MERGE_REQUEST.md` — per-stream merge requests with verification commands.
