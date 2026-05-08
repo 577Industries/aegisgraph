@@ -192,3 +192,78 @@ make reproduce        # full pipeline (extracts, regression, smabench, validate)
 If `make tooling-strict` fails locally because the maintainer is on a
 non-devcontainer machine, that is acceptable for development; the same
 command must pass on a self-hosted runner before final integration → main.
+
+## 8. Validator workflow
+
+`validator/cli.py` exposes four subcommands. See `validator/README.md` for the full reference; this section is the day-to-day operator playbook.
+
+```
+# Run schema + safety + hash-chain validation. Writes
+# validation-report.json; fails on any record that does not validate.
+python3 -m validator.cli validate
+
+# Same, but does not write to disk. Used by external reviewers and CI
+# in checkout-as-read-only mode. Equivalent to setting
+# AEGISGRAPH_VALIDATOR_NON_MUTATING=1.
+python3 -m validator.cli validate --non-mutating
+
+# Probe a custom subset of pinned tools (the integration stream's
+# REQUIRED_TOOLS table remains authoritative for `make reproduce`).
+python3 -m validator.cli strict-tooling --required clang,codeql,semgrep,docker,java,go,rustc
+
+# Scan a public-sanitized export tree (12 substantive + 6 structural
+# rules). Exit 1 on any failure with one failure per line. Used by
+# aegisgraph/export.py via lazy import and by sanitize.yml workflow.
+python3 -m validator.cli sanitize-check exports/public-sanitized/
+
+# Emit reports/traceability_matrix.{json,md} from SPEC.md headers,
+# proposal-claims-index.yml, dsip-requirements.yml, and on-disk
+# evidence files.
+python3 -m validator.cli traceability
+```
+
+Expected outputs:
+
+```
+$ python3 -m validator.cli validate
+status: pass — schemas=6 valid, records=N validated, hash-chain=ok
+
+$ python3 -m validator.cli sanitize-check exports/public-sanitized/
+status: ok (no failures)
+
+$ python3 -m validator.cli traceability
+[traceability] anchored=A unanchored=U
+wrote reports/traceability_matrix.json
+wrote reports/traceability_matrix.md
+```
+
+A non-zero `unanchored=U` count is expected during Phase 0 / Phase 1; reviewers should not block on it.
+
+## 9. Public-export approval gate
+
+The public-sanitized export pipeline is the single boundary between Tier-3 private research and the v0.3 public release. The flow is intentionally *not* automated, even when all gates pass.
+
+1. Operator runs `make export-public-sanitized`. The Make target invokes `python3 -m aegisgraph.cli export public-sanitized` (without `AEGISGRAPH_RELEASE_AUTHORIZED`), producing `exports/public-sanitized/manifest.json` with `release_authorized=False`. No tarball is published.
+2. PI reviews `04_REPORTS_AND_EXPORTS/handoff/RELEASE_APPROVAL.md`. The review covers (a) the manifest hash chain, (b) the SOTA matrix updates, (c) the limitation language on every record, and (d) the disclosure-status of every accepted finding.
+3. PI signs (printed name, date, APPROVE) by editing `RELEASE_APPROVAL.md` and committing it to the integration branch. The signed file is the human-side evidence.
+4. Operator sets `AEGISGRAPH_RELEASE_AUTHORIZED=1` and re-runs `python3 -m aegisgraph.cli export public-sanitized`. Now both gate conditions can flip: the env var is set AND `validator/sanitize_check.py` runs. If sanitize-check passes, `release_authorized=True`. If it fails, `release_authorized` stays False and `release_note` records which rule was violated.
+5. Operator publishes per the Phase D push procedure: copy the resulting `exports/public-sanitized/*.tar.gz` to the public-release repo on a `release/v0.3.0` branch, push, open PR, merge after CI re-runs the sanitize-check on the rendered tarball.
+
+The `release_authorized=False` default is structural — there is no condition under which the flag flips automatically without the env var; there is no condition under which it flips with only the env var (sanitize-check must also pass). See ADR 0011 for the rationale.
+
+Today (`stream/integration` first cut + post-validator-export merge): the stub in `aegisgraph/export.py::_sanitize_check_passes` is replaced with the real `validator.sanitize_check.is_export_safe(...)` call (commit `f5f399a`). All four gate cases (default / env-only / dry-run / authorized-with-passing-check) are covered by `tests/test_export_private_complete.py`.
+
+## 10. CI integration
+
+Current state of `.github/workflows/`:
+
+- **`ci.yml`** runs on every push and on PR. It executes `make tooling` (non-strict) + `make test` + the Python lint checks. It does NOT run `make reproduce` (that requires the pinned devcontainer; see below). Pass criteria: all unit + integration tests green; tooling versions written to `tooling-versions.json`.
+- **`reproduce.yml`** is `if: false` until a self-hosted runner with the pinned devcontainer image is provisioned. The workflow body is correct; flipping `if: false` → `if: ${{ vars.SELF_HOSTED_AVAILABLE }}` (or similar) wires it on. Until then, `make reproduce` is run on a maintainer workstation before each integration → main bump and the result is recorded in `reports/reproduce-status.json`.
+- **`sanitize.yml`** runs on `workflow_dispatch` only. It is the explicit operator-driven public-export gate: invoked manually after a sanitized export tarball is rendered, the workflow runs `python3 -m validator.cli sanitize-check` against the rendered tree and exits 1 on any failure. It does NOT run on push to avoid leaking sanitize-check failures to the public CI surface (failures are evidence; we treat them as private until reviewed).
+
+Self-hosted runner roadmap:
+- Requires CodeQL CLI 2.20.6, Clang 18 + libfuzzer-18, OpenJDK 21, Docker (for MobSF), Go 1.22.5, Rust 1.79.0, Node 20, Android SDK 34 + NDK r26d.
+- Hardware: ≥16 vCPU, ≥32 GB RAM, ≥100 GB SSD (CodeQL databases are large for Signal Android + Element X Android).
+- Cost-benefit: a single CodeQL build of Signal at the pinned commit takes ~25 min on a 16-vCPU runner. Weekly reproducibility CI = 100 min/week ≈ 7 hr/month of dedicated runner time. Cost-pending: decision on Hetzner CCX33 vs. GitHub-managed `larger` runners is open. See `docs/forge-os-2.0/financial-model.md` for the rough comparison; this VPS is **not** the same as the FORGE OS 2.0 prod VPS (different tenancy, different threat model).
+
+Until the runner exists, the integration owner is responsible for running `make reproduce` on a maintainer workstation before any integration → main bump and recording the result in `reports/reproduce-status.json`. Drift is flagged in the next reviewer pass.
