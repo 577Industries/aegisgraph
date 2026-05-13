@@ -1,7 +1,7 @@
 PYTHON ?= python3
 AEGISGRAPH := $(PYTHON) -m aegisgraph.cli
 
-.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm harnessgen-rust reviewer-packet
+.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm harnessgen-rust reviewer-packet m14-demo-dryrun
 
 # tooling: probe every tool and write tooling-versions.json without enforcing
 # minimum versions. Safe to run in any environment; useful diagnostic.
@@ -156,3 +156,15 @@ export-public-sanitized:
 # against the emitted findings/ tree as a final fail-closed gate.
 reviewer-packet:
 	$(AEGISGRAPH) workbench packet --top 10 --out exports/reviewer-packet
+
+# m14-demo-dryrun: end-to-end pipeline orchestration for the M14 demo
+# (Wave 10A). Exercises extract -> engine-select -> harnessgen render ->
+# InvariantCheck SARIF -> CrossSMA matrix -> reviewer packet -> optional
+# disclosure ledger tick. Fail-soft on missing binaries / runner /
+# counsel sign-off; every step records a status enum (success,
+# skipped_binary_absent, skipped_runner_blocked, skipped_counsel_blocked,
+# failed). Idempotent: each invocation writes a fresh ISO_DATE directory
+# under exports/m14-demo-dryrun/. No live fuzz, no live target-app
+# execution, no live network in this target.
+m14-demo-dryrun:
+	bash scripts/m14_demo_dryrun.sh

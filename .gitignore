@@ -46,6 +46,9 @@ exports/public-sanitized/*
 # date subdirectories are not committed (the manifest is byte-stable enough
 # that committing the bundle would only grow with each rebuild).
 exports/reviewer-packet/
+# M14 demo dry-run output is reproducible from `make m14-demo-dryrun`; each
+# invocation writes a fresh ISO_DATE directory (Wave 10A, plan §24).
+exports/m14-demo-dryrun/
 # Reviewer claim-state promotions are session-local; the workbench writes a
 # new file per promotion. They're additive (ADR-0010) and reproducible from
 # the parent record_hash + the claim-state delta. Not source-of-truth.
