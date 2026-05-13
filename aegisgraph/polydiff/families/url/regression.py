@@ -1,238 +1,38 @@
-"""PolyDiff orchestrator.
+"""URL family regression run.
 
-Replaces the legacy three-in-process-Python-shim implementation with a
-real subprocess-based dispatcher over a real ≥30-case regression
-corpus, per SPEC §5 and the engineering plan §11.4.
+Loads the on-disk regression corpus (`polydiff/regression/build_corpus.py`
++ `polydiff/regression/cases/<id>/input` overrides), dispatches the
+available URL parser wrappers via `profiles.fact_vectors_for`, computes
+disagreements + Finding records, and emits the report.
 
-Public surface (preserved for backwards compatibility with existing
-callers — `aegisgraph/cli.py`, the validator, the tests):
+Extracted from the monolithic `aegisgraph/polydiff.py` as part of
+T-M2.3 (PolyDiff URL family refactor). Pure refactor — no behavior
+change.
 
-  run_regression(root: Path) -> dict[str, Any]
-  fact_vectors_for(input_id, url) -> list[dict[str, Any]]
-  detect_disagreements(vectors) -> list[Disagreement]
-  Disagreement (dataclass)
-
-The new behavior:
-
-  - Dispatches each available parser as a subprocess (per
-    polydiff/parsers/PARSER_STATUS.json). Wrappers marked
-    `not_built_in_current_env` are skipped, with their
-    `parser_profile` recorded in the report under `skipped_parsers`.
-  - Reads cases from `polydiff/regression/build_corpus.CASES`
-    (canonical) and from `polydiff/regression/cases/<id>/input` (if
-    present). The Python module is the source of truth — on-disk
-    directories are documentation artifacts that may or may not be
-    populated in the current sandbox.
-  - Builds v2 fact-vectors via the wrappers, normalizes via
-    `polydiff/factvec/normalize.py`, runs detector + classifier, emits
-    Disagreement + Finding records.
-  - Computes `tier_p1_status="pass"` iff at least 3 cases that carry
-    a `historical_cve_or_disclosure_reference` produced a Disagreement
-    matching their `expected.json`.
+The `run_regression` entrypoint accepts injectable `write_json` /
+`fact_vectors_for` / `detect_disagreements` arguments so the
+`aegisgraph.polydiff` facade can re-bind them at the facade module
+level (preserving the historical monkeypatch contract: tests do
+`monkeypatch.setattr(aegisgraph.polydiff, "write_json", fake)` and
+expect the patch to flow through the run).
 """
 
 from __future__ import annotations
 
-import json
-import os
-import shlex
-import subprocess
 import sys
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
-from .constants import STATIC_GENERATED_AT
-from .evidence import evidence_ref, finalize_record, provenance
-from .io import sha256_text, write_json
-from .score import link_parser_score
+from aegisgraph.constants import STATIC_GENERATED_AT
+from aegisgraph.evidence import evidence_ref, finalize_record, provenance
+from aegisgraph.io import sha256_text
+from aegisgraph.score import link_parser_score
 
-
-# ---- Public re-exports / backwards-compat surface ---- #
-
-@dataclass(frozen=True)
-class Disagreement:
-    """Backwards-compatible Disagreement type used by tests + cli."""
-    input_id: str
-    axis: str
-    parser_values: dict[str, Any]
-    security_tags: list[str]
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "input_id": self.input_id,
-            "axis": self.axis,
-            "parser_values": dict(self.parser_values),
-            "security_tags": list(self.security_tags),
-        }
+from ...core.triage import Disagreement
+from .profiles import _wrapper_command, _source_root, load_parser_status
 
 
-# ---- Wrapper dispatch ---- #
-
-PARSER_STATUS_FILENAME = "PARSER_STATUS.json"
-SUBPROCESS_TIMEOUT_S = 5.0  # generous for cold-start; per-input budget is 100ms
-
-
-def _parser_status_path(root: Path) -> Path:
-    return root / "polydiff" / "parsers" / PARSER_STATUS_FILENAME
-
-
-def _source_root() -> Path:
-    """Source-tree root (the repo this module ships from).
-
-    Used as a fallback when `run_regression(tmp_path)` is invoked with a
-    tmp dir that doesn't have a parsers/ tree. Tests like
-    test_e2e_reproduce do exactly this — they want the regression to
-    produce real records inside the temp dir without copying the
-    parsers/ tree there.
-    """
-    return Path(__file__).resolve().parents[1]
-
-
-def load_parser_status(root: Path) -> dict[str, dict[str, Any]]:
-    p = _parser_status_path(root)
-    if not p.exists():
-        # Fall back to the source tree so callers that pass a tmp_path
-        # (e.g. integration tests) still see the canonical parser set.
-        p = _parser_status_path(_source_root())
-        if not p.exists():
-            return {}
-    with p.open("r", encoding="utf-8") as fh:
-        return json.load(fh).get("wrappers", {})
-
-
-def _wrapper_command(profile: str, status_entry: dict[str, Any], root: Path) -> list[str] | None:
-    """Return the argv to dispatch a wrapper, or None if unrunnable here."""
-    if status_entry.get("status") != "built":
-        return None
-    directory = status_entry.get("directory")
-    if not directory:
-        return None
-    abs_dir = root / directory
-    if not abs_dir.exists():
-        # Fall back to the source root (the worktree this module ships
-        # from). Lets `run_regression(tmp_path)` work without having to
-        # copy the entire parsers/ tree into the temp dir.
-        abs_dir = _source_root() / directory
-        if not abs_dir.exists():
-            return None
-
-    # We only auto-dispatch the Python wrappers in the orchestrator. The
-    # rest are buildable but require the toolchain inside the sandboxed
-    # devcontainer; they ship with their own test_basic.sh runners.
-    if profile in ("python_urllib", "whatwg_url_py"):
-        return [sys.executable, str(abs_dir / "wrapper.py")]
-    return None
-
-
-def run_wrapper(profile: str, command: list[str], input_id: str, raw_url: str) -> dict[str, Any]:
-    """Run a wrapper subprocess. Returns the v2 fact-vector envelope.
-
-    On wrapper crash (non-zero exit, non-JSON stdout, timeout), returns
-    a synthetic envelope with parsed=false and an error string. The
-    crash itself is recorded in the report under `parser_failures`.
-    """
-    full_cmd = command + ["--input-id", input_id]
-    try:
-        proc = subprocess.run(
-            full_cmd,
-            input=raw_url.encode("utf-8"),
-            capture_output=True,
-            timeout=SUBPROCESS_TIMEOUT_S,
-            check=False,
-        )
-    except subprocess.TimeoutExpired:
-        return _crash_envelope(profile, input_id, "wrapper subprocess timeout")
-    except FileNotFoundError as exc:
-        return _crash_envelope(profile, input_id, f"wrapper not found: {exc}")
-
-    if proc.returncode != 0:
-        return _crash_envelope(profile, input_id, f"wrapper exit code {proc.returncode}: {proc.stderr.decode('utf-8', 'replace')[:200]}")
-
-    line = proc.stdout.decode("utf-8", "replace").strip()
-    if not line:
-        return _crash_envelope(profile, input_id, "wrapper produced no stdout")
-    try:
-        return json.loads(line.splitlines()[0])
-    except json.JSONDecodeError as exc:
-        return _crash_envelope(profile, input_id, f"wrapper produced invalid JSON: {exc}")
-
-
-def _crash_envelope(profile: str, input_id: str, reason: str) -> dict[str, Any]:
-    return {
-        "schema_version": "v2",
-        "input_id": input_id,
-        "parser_profile": profile,
-        "parsed": False,
-        "errors": [reason],
-        "warnings": ["wrapper crash recorded as a Finding"],
-        "scheme": None,
-        "host": None,
-        "port": None,
-        "path": None,
-        "userinfo_present": False,
-        "host_is_private_or_link_local": False,
-        "parse_error": reason,
-    }
-
-
-# ---- Detector / classifier glue ---- #
-
-def fact_vectors_for(input_id: str, url: str, root: Path | None = None) -> list[dict[str, Any]]:
-    """Run every available wrapper against `url` and return the fact vectors.
-
-    `root` defaults to the repo root. Used by the tests for an
-    in-process equivalent of `run_regression`.
-    """
-    from polydiff.factvec.normalize import normalize  # local import to avoid cycle
-
-    if root is None:
-        from .io import repo_root
-        root = repo_root()
-
-    status = load_parser_status(root)
-    vectors: list[dict[str, Any]] = []
-    for profile, entry in sorted(status.items()):
-        cmd = _wrapper_command(profile, entry, root)
-        if cmd is None:
-            # Skip unrunnable wrappers; the regression report records this.
-            continue
-        envelope = run_wrapper(profile, cmd, input_id, url)
-        vectors.append(normalize(envelope, parser_profile=profile))
-    return vectors
-
-
-def detect_disagreements(
-    vectors: list[dict[str, Any]], rules_loader=None
-) -> list[Disagreement]:
-    """Backwards-compat wrapper around polydiff.disagreement.detect.
-
-    Accepts an optional `rules_loader` callable returning a list of
-    triage rules; defaults to loading from polydiff/triage/rules.yml.
-    """
-    from polydiff.disagreement.detector import detect as _detect
-    from polydiff.triage.classifier import classify, load_rules
-
-    rules = rules_loader() if rules_loader else load_rules()
-
-    def security_tags_for(axis: str, values: set[Any]) -> list[str]:
-        return classify(axis, values, rules=rules)
-
-    raw = _detect(vectors, security_tags_for=security_tags_for)
-    return [
-        Disagreement(
-            input_id=d.input_id,
-            axis=d.axis,
-            parser_values=d.parser_values,
-            security_tags=d.security_tags,
-        )
-        for d in raw
-    ]
-
-
-# ---- Regression run ---- #
-
-def _load_cases(root: Path):
+def _load_cases(root: Path) -> Iterable[tuple[str, str, dict[str, Any], str | None, list[str]]]:
     """Yield (case_id, raw_url, expected_dict, historical_cve, primary_tags) tuples."""
     # Source of truth: build_corpus.CASES (Python module).
     # Try `root` first; fall back to source repo so tmp-dir test runs work.
@@ -377,11 +177,21 @@ def _finding_record(
     return finalize_record(record, previous_hash=previous_hash)
 
 
-def run_regression(root: Path) -> dict[str, Any]:
-    """End-to-end regression run.
+def run_regression(
+    root: Path,
+    *,
+    write_json: Callable[[Path, dict[str, Any]], Path],
+    fact_vectors_for: Callable[..., list[dict[str, Any]]],
+    detect_disagreements: Callable[[list[dict[str, Any]]], list[Disagreement]],
+) -> dict[str, Any]:
+    """End-to-end URL-family regression run.
 
-    Discovers available parser wrappers, runs them against the corpus,
-    builds disagreements + findings, emits report + evidence.
+    Discovers available URL parser wrappers, runs them against the
+    corpus, builds disagreements + findings, emits report + evidence.
+
+    `write_json`, `fact_vectors_for`, and `detect_disagreements` are
+    injected by the facade (`aegisgraph.polydiff.__init__`) so its
+    module-level bindings are honored when tests monkeypatch them.
     """
     status = load_parser_status(root)
     available_profiles: list[str] = []
@@ -480,10 +290,9 @@ def run_regression(root: Path) -> dict[str, Any]:
 
 
 __all__ = [
-    "Disagreement",
-    "detect_disagreements",
-    "fact_vectors_for",
-    "load_parser_status",
     "run_regression",
-    "run_wrapper",
+    "_load_cases",
+    "_matches_expected",
+    "_normalize_record_id",
+    "_finding_record",
 ]
