@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector-image.schema.json",
+  "title": "PolyDiff Image-Family Fact Vector",
+  "description": "Per-implementation fact vector for the image family. Sibling of fact-vector.schema.json (URL family); both share input_id + parser_profile as the cross-family identity keys that the diff engine pairs vectors on. Axes follow Asemarefactor.md lines 63-77 (canonical Engine 1 image-family schema). When a wrapper binary is absent the wrapper emits a crash envelope with binary_missing=true and decode_outcome.status=crash; that envelope still validates so the missing parser stays auditable in the diff report.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "dimensions",
+    "color_space",
+    "alpha_premultiplied",
+    "frame_count",
+    "first_pixel_rgba",
+    "decode_outcome",
+    "parser_warnings"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wrapper id (libwebp, libavif, libheif, glide_bitmap, coil_decoder)."
+    },
+    "schema_version": {"type": "string"},
+    "binary_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set by the wrapper when the underlying native/JVM binary is not on PATH. The remaining axes are then null and decode_outcome.status MUST be 'crash'."
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "dimensions": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Decoded image dimensions in pixels. null when the wrapper produced no observable dimension (decode_error / binary_missing).",
+      "properties": {
+        "width": {"type": "integer", "minimum": 0},
+        "height": {"type": "integer", "minimum": 0}
+      }
+    },
+    "color_space": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Color profile name + bit depth as decoded by the implementation. null when not observable.",
+      "properties": {
+        "profile": {"type": ["string", "null"]},
+        "depth": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
+    "alpha_premultiplied": {
+      "type": ["boolean", "null"],
+      "description": "Whether the implementation reports alpha-premultiplied output."
+    },
+    "frame_count": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of frames decoded. >1 for animated WebP/AVIF/HEIF."
+    },
+    "first_pixel_rgba": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "RGBA quadruplet of the first decoded pixel (top-left). Pinned cross-impl comparison anchor.",
+      "properties": {
+        "r": {"type": "integer", "minimum": 0, "maximum": 255},
+        "g": {"type": "integer", "minimum": 0, "maximum": 255},
+        "b": {"type": "integer", "minimum": 0, "maximum": 255},
+        "a": {"type": "integer", "minimum": 0, "maximum": 255}
+      }
+    },
+    "decode_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "bytes_out"],
+      "description": "Implementation-reported decode result. status='crash' indicates the wrapper subprocess crashed (segfault, ASAN abort, FileNotFoundError); 'oom' indicates allocation refused; 'decode_error' is a clean rejection by the parser; 'ok' is a clean decode.",
+      "properties": {
+        "status": {"enum": ["ok", "decode_error", "oom", "crash"]},
+        "bytes_out": {"type": "integer", "minimum": 0}
+      }
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Implementation-emitted warnings (libwebp: 'invalid huffman table'; libheif: 'unrecognized box'; etc.). Empty array when the decode is clean."
+    }
+  }
+}

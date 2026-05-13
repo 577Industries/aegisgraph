@@ -1,0 +1,102 @@
+{
+  "tool_output_type": "polydiff_image_corpus",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "family": "image",
+  "notes": [
+    "Anchored corpus for PolyDiff image-family rediscovery + synthetic regressions.",
+    "Witnesses are pinned by SHA-256 ONLY. NO payload bytes appear in this repo.",
+    "The CVE-2023-4863 witness is vendored at reprochain/corpora-private/ engineering-private; the public/engineering image-family pipeline only handles the hash + size.",
+    "Synthetic anchors exercise the four canonical image divergence shapes from Asemarefactor.md lines 87-92: decode_outcome (HIGH), dimensions (MEDIUM), color_space (LOW), frame_count (MEDIUM-HIGH).",
+    "Per-case `implementations` lists the two wrapper ids the case is designed to disagree on; the diff engine runs ALL declared wrappers and picks up these axes (plus any others that surface).",
+    "Per-case `expected_fact_vector_diff` is keyed by axis name; each value is a 2-element array of the two impls' observations (matches the `implementations` ordering)."
+  ],
+  "cases": [
+    {
+      "case_id": "anchor_CVE-2023-4863",
+      "historical_cve_reference": "CVE-2023-4863",
+      "summary": "libwebp BuildHuffmanTable heap buffer overflow via malformed VP8L Huffman table. Reachable in Signal Android through Glide -> libwebp fallback.",
+      "bug_class": "heap-buffer-overflow-libwebp-huffman",
+      "publication_policy": "anchored-historical-public-citation",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+      "witness_size_bytes": 247,
+      "implementations": ["libwebp", "libheif"],
+      "expected_fact_vector_diff": {
+        "decode_outcome": [
+          {"status": "crash", "bytes_out": 0},
+          {"status": "ok", "bytes_out": 4}
+        ]
+      },
+      "expected_triage_class": "HIGH",
+      "expected_triage_rationale_contains": "memory corruption",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": "https://nvd.nist.gov/vuln/detail/CVE-2023-4863",
+      "limitations": "witness bytes are NOT in this repo; pinned-hash anchor only. The expected fact-vector diff documents the canonical disagreement shape — actual binary outputs depend on the pinned libwebp/libheif versions in the devcontainer."
+    },
+    {
+      "case_id": "anchor_synthetic_oversize_dim",
+      "historical_cve_reference": null,
+      "summary": "Synthetic anchor: image with declared 65536x65536 dimensions exceeds 32-bit RGBA buffer allocation. libwebp accepts; libavif rejects with decode_error.",
+      "bug_class": "synthetic-dimension-overflow",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+      "witness_size_bytes": 64,
+      "implementations": ["libwebp", "libavif"],
+      "expected_fact_vector_diff": {
+        "dimensions": [
+          {"width": 65536, "height": 65536},
+          {"width": 0, "height": 0}
+        ],
+        "decode_outcome": [
+          {"status": "ok", "bytes_out": 0},
+          {"status": "decode_error", "bytes_out": 0}
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "integer-overflow",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case constructed to exercise the dimensions-divergence triage rule"
+    },
+    {
+      "case_id": "anchor_synthetic_animated_frame_count",
+      "historical_cve_reference": null,
+      "summary": "Synthetic anchor: animated WebP with 3 frames declared but only 1 frame's data follows. libwebp reports frame_count=3 (declared); libheif reports frame_count=1 (parsed).",
+      "bug_class": "synthetic-animated-state-machine-deviation",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+      "witness_size_bytes": 128,
+      "implementations": ["libwebp", "libheif"],
+      "expected_fact_vector_diff": {
+        "frame_count": [3, 1]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "frame-count",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "synthetic case constructed to exercise the frame-count-divergence triage rule (libwebp class)"
+    },
+    {
+      "case_id": "anchor_synthetic_color_profile_divergence",
+      "historical_cve_reference": null,
+      "summary": "Synthetic anchor: image declares sRGB ICC profile in EXIF + Display P3 in metadata. libwebp reports sRGB; libavif reports Display P3. Pixel buffer identical.",
+      "bug_class": "synthetic-color-profile-metadata-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000004",
+      "witness_size_bytes": 96,
+      "implementations": ["libwebp", "libavif"],
+      "expected_fact_vector_diff": {
+        "color_space": [
+          {"profile": "sRGB", "depth": 8},
+          {"profile": "Display P3", "depth": 8}
+        ]
+      },
+      "expected_triage_class": "LOW",
+      "expected_triage_rationale_contains": "metadata interpretation",
+      "reachability_targets": [],
+      "reference_url": null,
+      "limitations": "synthetic case constructed to exercise the color-space-with-same-pixels noise rule"
+    }
+  ]
+}

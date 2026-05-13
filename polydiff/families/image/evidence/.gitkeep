@@ -1,0 +1,2 @@
+# Output directory for AG-DIS-IMG-* records emitted by run_regression().
+# Populated by `make polydiff-image-regression`.

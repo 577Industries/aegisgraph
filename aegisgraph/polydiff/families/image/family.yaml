@@ -1,0 +1,93 @@
+# PolyDiff image-family manifest (Engine 1, T-M2.1).
+#
+# Per Asemarefactor.md lines 42-92. This file is the single source of
+# truth for:
+#   - Which implementations the diff engine dispatches to.
+#   - The per-family fact-vector axes the diff engine compares.
+#   - Reachability mappings (witness -> SMA codepath via the evidence graph).
+#
+# Edits MUST keep this file in sync with:
+#   - schema/fact-vector-image.schema.json (axes + required fields)
+#   - aegisgraph/polydiff/families/image/wrappers/* (one module per impl)
+#   - polydiff/families/image/regression/corpus.json (anchored cases)
+
+family: image
+schema_version: v1.0
+
+implementations:
+  - id: libwebp
+    bindings: native
+    wrapper: wrappers/libwebp_cli.py
+    binary_hint: libwebp_dec_cli
+    version_pin: "libwebp@v1.3.2"  # CVE-2023-4863 fix is libwebp@v1.3.2; we
+                                   # ship the pin so disagreements record an
+                                   # exact `implementations_disagreeing` value.
+  - id: libavif
+    bindings: native
+    wrapper: wrappers/libavif_cli.py
+    binary_hint: libavif_dec_cli
+    version_pin: "libavif@v1.0.4"
+  - id: libheif
+    bindings: native
+    wrapper: wrappers/libheif_cli.py
+    binary_hint: libheif_dec_cli
+    version_pin: "libheif@v1.18.2"
+  - id: glide_bitmap
+    bindings: jvm
+    wrapper: wrappers/glide_bitmap_runner.py
+    binary_hint: glide_bitmap_runner.jar
+    version_pin: "glide@v4.16.0"
+  - id: coil_decoder
+    bindings: jvm
+    wrapper: wrappers/coil_decoder_runner.py
+    binary_hint: coil_decoder_runner.jar
+    version_pin: "coil@v2.6.0"
+
+fact_vector_schema:
+  schema_path: schema/fact-vector-image.schema.json
+  # Axes per Asemarefactor.md lines 63-77. Each axis is the JSON key the
+  # diff engine compares across vectors with the same input_id.
+  axes:
+    - dimensions: {width: int, height: int}
+    - color_space: {profile: string, depth: int}
+    - alpha_premultiplied: bool
+    - frame_count: int
+    - first_pixel_rgba: {r: int, g: int, b: int, a: int}
+    - decode_outcome: {status: "enum[ok, decode_error, oom, crash]", bytes_out: int}
+    - parser_warnings: "list[string]"
+
+# Triage classifier rules per Asemarefactor.md lines 87-93. Encoded as
+# additive logic in aegisgraph/polydiff/core/triage.py (function
+# `classify_image_disagreement`). Listed here for cross-reference; the
+# code is the executable source of truth.
+triage_rules:
+  - axis: decode_outcome
+    when: one_crash_one_ok
+    triage_class: HIGH
+    rationale: memory corruption suspect in the crashing path
+  - axis: color_space
+    when: profile_divergence_same_pixels
+    triage_class: LOW
+    rationale: metadata interpretation difference
+  - axis: dimensions
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: integer overflow suspect in dimension parsing
+  - axis: first_pixel_rgba
+    when: pixel_divergence_same_dimensions
+    triage_class: MEDIUM
+    rationale: color-channel handling bug
+  - axis: frame_count
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: parser state-machine deviation (libwebp class)
+
+reachability:
+  signal_android:
+    - path_class: media_handler
+      entry: SignalAttachment.requireBitmap
+      sink: "Glide.with().load().submit()"
+  element_x_android:
+    - path_class: media_handler
+      entry: MediaRepository.fetchAttachment
+      sink: "Coil.ImageLoader.execute"
