@@ -1,0 +1,109 @@
+# CrossSMA Target Registry
+#
+# Commit-pinned manifest of SMA targets that CrossSMA queries fan out
+# to. Per ADR principles (additive extension): the canonical 2-target
+# map at aegisgraph/constants.py:TARGETS remains the source of truth
+# for the M0-M2 toolchain. This file EXTENDS that map with 2 more
+# targets (wire-android, telegram-android) without touching the
+# global constants. Verified targets here MUST agree with
+# `aegisgraph.constants.TARGETS` for the corresponding commit pin --
+# the test suite enforces this.
+#
+# Schema (per Target entry):
+#
+#   target_id           : str   - stable id used in evidence records
+#   name                : str   - human-readable name
+#   repo_url            : str   - public source URL (anchor-only)
+#   commit              : str   - short commit pin (verified) or
+#                                 placeholder for stub entries
+#   verified            : bool  - true iff `commit` is verified against
+#                                 the actual repo; false for v0 stubs
+#   path_classes        : list  - subset of aegisgraph.constants.PATH_CLASSES
+#                                 that this target's extraction graph
+#                                 exposes
+#   dependency_snapshot : list  - <library>@<version> tokens captured
+#                                 from the static extraction. Used by
+#                                 the shared_library_check query.
+#
+# Stub targets (wire-android, telegram-android) ship at M5.5 with
+# placeholder commit pins. They graduate to verified at M11 per plan
+# §5; until then their cells in the matrix render as candidate_path
+# only when dependency snapshots happen to match.
+
+version: v1.0
+generated_by: aegisgraph/crosssma/registry/targets.yaml
+last_reviewed: 2026-05-13
+
+targets:
+
+  signal-android:
+    name: Signal Android
+    repo_url: https://github.com/signalapp/Signal-Android
+    commit: "1043851"
+    verified: true
+    path_classes:
+      - inbound_message
+      - media_decode
+      - link_preview
+      - deeplink
+      - qr_device_link
+      - sync_state
+      - crypto_key_lifecycle
+      - native_boundary
+    dependency_snapshot:
+      - libwebp@1.3.1
+      - libavif@1.0.4
+      - libheif@1.16.2
+      - glide@4.16.0
+      - okhttp@4.12.0
+
+  element-x-android:
+    name: Element X Android
+    repo_url: https://github.com/element-hq/element-x-android
+    commit: "91d265e6"
+    verified: true
+    path_classes:
+      - inbound_message
+      - media_decode
+      - link_preview
+      - deeplink
+      - qr_device_link
+      - sync_state
+      - crypto_key_lifecycle
+      - native_boundary
+    dependency_snapshot:
+      - libwebp@1.3.1
+      - libavif@1.0.4
+      - coil@2.5.0
+      - matrix-rust-sdk@0.7.0
+
+  wire-android:
+    name: Wire Android
+    repo_url: https://github.com/wireapp/wire-android
+    commit: "TODO-WIRE-COMMIT"
+    verified: false
+    path_classes:
+      - inbound_message
+      - media_decode
+      - link_preview
+      - deeplink
+      - qr_device_link
+      - native_boundary
+    dependency_snapshot:
+      - okhttp@4.12.0
+      - glide@4.16.0
+
+  telegram-android:
+    name: Telegram Android
+    repo_url: https://github.com/DrKLO/Telegram
+    commit: "TODO-TELEGRAM-COMMIT"
+    verified: false
+    path_classes:
+      - inbound_message
+      - media_decode
+      - link_preview
+      - deeplink
+      - native_boundary
+    dependency_snapshot:
+      - libwebp@1.3.1
+      - okhttp@4.12.0
