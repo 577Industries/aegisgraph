@@ -13,8 +13,10 @@ have these fields:
     mastg_mapping          — string MSTG/MASTG code
     ssdf_mapping           — string SSDF code
 
-At M3.3 the manifest carries exactly 5 entries: INV-01, INV-07, INV-09,
-INV-11, INV-13. The plan's full 25-30 invariants ship across M3-M11.
+At M3.3 the manifest carried 5 entries: INV-01, INV-07, INV-09, INV-11,
+INV-13. At M5.3 the library v1 expands to 15 entries (adds INV-02, -03,
+-04, -05, -06, -08, -10, -12, -14, -15). The plan's full 25-30
+invariants ship across M3-M11 per Phase II rollout.
 
 The encoding `query` field is a path RELATIVE TO the manifest.json
 location — the runner resolves it against `manifest.json.parent`.
@@ -32,6 +34,19 @@ from aegisgraph.io import load_json, repo_root
 
 
 M3_3_INVARIANTS = {"INV-01", "INV-07", "INV-09", "INV-11", "INV-13"}
+M5_3_NEW_INVARIANTS = {
+    "INV-02",
+    "INV-03",
+    "INV-04",
+    "INV-05",
+    "INV-06",
+    "INV-08",
+    "INV-10",
+    "INV-12",
+    "INV-14",
+    "INV-15",
+}
+M5_3_INVARIANTS = M3_3_INVARIANTS | M5_3_NEW_INVARIANTS
 
 REQUIRED_FIELDS = (
     "invariant_id",
@@ -67,12 +82,29 @@ def _entries() -> list[dict]:
     raise AssertionError(f"manifest.json must be a dict or list, got {type(manifest)}")
 
 
-def test_manifest_has_five_m3_3_invariants() -> None:
+def test_manifest_has_fifteen_m5_3_invariants() -> None:
+    """At M5.3 the library v1 declares 15 invariants. The M3.3 set is a
+    subset; library v1 adds 10 more (INV-02, -03, -04, -05, -06, -08,
+    -10, -12, -14, -15)."""
     entries = _entries()
     ids = {entry["invariant_id"] for entry in entries}
-    assert ids == M3_3_INVARIANTS, (
-        f"M3.3 manifest must declare exactly {sorted(M3_3_INVARIANTS)}, "
-        f"got {sorted(ids)}"
+    assert ids == M5_3_INVARIANTS, (
+        f"M5.3 manifest must declare exactly {sorted(M5_3_INVARIANTS)}, "
+        f"got {sorted(ids)}; "
+        f"missing: {sorted(M5_3_INVARIANTS - ids)}; "
+        f"unexpected: {sorted(ids - M5_3_INVARIANTS)}"
+    )
+
+
+def test_m3_3_baseline_subset_still_present() -> None:
+    """The five M3.3 invariants remain in the manifest after the M5.3
+    expansion (additive, not destructive)."""
+    entries = _entries()
+    ids = {entry["invariant_id"] for entry in entries}
+    assert M3_3_INVARIANTS.issubset(ids), (
+        f"M3.3 baseline invariants {sorted(M3_3_INVARIANTS)} must remain "
+        f"present after the M5.3 expansion; missing: "
+        f"{sorted(M3_3_INVARIANTS - ids)}"
     )
 
 

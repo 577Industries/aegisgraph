@@ -1,5 +1,5 @@
 name: aegisgraph/invariantcheck
-version: 0.3.0
+version: 0.5.0
 library: false
 extractor: java
 description: |
@@ -10,10 +10,12 @@ description: |
   `aegisgraph/invariants/manifest.json` carrying the natural-language
   statement, rationale, ground-truth fixtures, and MASTG / SSDF mappings.
 
-  M3.3 deliverable: scaffold + 5 invariants (INV-01, INV-07, INV-09,
-  INV-11, INV-13). INV-01 is fully encoded; INV-11 and INV-13 ship as
-  stubs (comment-only) and are fully encoded at M3.4. Semgrep encodings
-  (INV-07, INV-09) live under `library/semgrep/`.
+  M5.3 deliverable: library v1 with 15 invariants total.
+  Fully encoded: INV-01 (URL fetch policy), INV-02 (notification leak),
+  INV-05 (key storage no keystore), INV-07 (intent filter implicit
+  export — Semgrep), INV-08 (clipboard paste to send — Semgrep).
+  Stubs (rich comment block; M7 deliverable): INV-03, INV-04, INV-06,
+  INV-09, INV-10, INV-11, INV-12, INV-13, INV-14, INV-15.
 
   The pack is reproducible inside the AegisGraph devcontainer; CodeQL
   CLI ≥ 2.20.6 is pinned in devcontainer/Dockerfile and verified by
