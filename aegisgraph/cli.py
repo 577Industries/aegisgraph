@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from . import extraction, export, polydiff, reprochain, smabench, tooling
+from .disclosure import ledger as disclosure_ledger
+from .disclosure.pipeline import embargo_timer
 from .io import repo_root
 from .validation import validate_repo
 
@@ -126,6 +130,69 @@ def cmd_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def _ledger_path_arg(args: argparse.Namespace) -> Path | None:
+    raw = getattr(args, "ledger_path", None)
+    return Path(raw) if raw else None
+
+
+def _format_status_line(event_count: int, finding_count: int) -> str:
+    return (
+        f"disclosure ledger: {event_count} event(s) across "
+        f"{finding_count} finding(s)"
+    )
+
+
+def cmd_disclose(args: argparse.Namespace) -> int:
+    sub = args.disclose_command
+    ledger_override = _ledger_path_arg(args)
+
+    if sub == "ledger":
+        # Currently only --verify is wired; future: --tail, --stats.
+        if getattr(args, "verify", False):
+            errors = disclosure_ledger.verify_chain(ledger_override)
+            if not errors:
+                target = ledger_override or disclosure_ledger.ledger_path()
+                print(f"disclosure ledger chain intact: {target}")
+                return 0
+            print("disclosure ledger chain has errors:")
+            for line in errors:
+                print(f"  - {line}")
+            return 1
+        print("specify --verify (other ledger ops not yet wired)")
+        return 2
+
+    if sub == "status":
+        events = disclosure_ledger.read_all(ledger_override)
+        finding_ids = {
+            str(e.get("finding_id", "")) for e in events if e.get("finding_id")
+        }
+        print(_format_status_line(len(events), len(finding_ids)))
+        if events:
+            statuses = embargo_timer.compute_status(ledger_override)
+            for s in statuses:
+                marker = "EXPIRED" if s["expired"] else f"{s['days_remaining']}d"
+                print(
+                    f"  {s['finding_id']}: {s['current_event_type']} "
+                    f"(next: {s['next_action_date']}, {marker})"
+                )
+        return 0
+
+    if sub == "tick":
+        raw_as_of = getattr(args, "as_of", None)
+        if raw_as_of:
+            as_of = date.fromisoformat(raw_as_of)
+        else:
+            as_of = datetime.now(tz=timezone.utc).date()
+        statuses = embargo_timer.compute_status(
+            ledger_path=ledger_override,
+            as_of=as_of,
+        )
+        print(json.dumps(statuses, indent=2, sort_keys=True))
+        return 0
+
+    raise AssertionError(f"unknown disclose subcommand: {sub}")  # pragma: no cover
+
+
 def cmd_reproduce(_args: argparse.Namespace) -> int:
     tooling.write_tooling_report(_root())
     extraction.run_extract(_root())
@@ -203,6 +270,54 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     export_public.set_defaults(func=cmd_export)
+
+    disclose_parser = subparsers.add_parser(
+        "disclose",
+        help="coordinated-disclosure ledger + embargo operations",
+    )
+    disclose_subparsers = disclose_parser.add_subparsers(
+        dest="disclose_command", required=True
+    )
+
+    disclose_ledger = disclose_subparsers.add_parser(
+        "ledger", help="ledger inspection (--verify checks chain integrity)"
+    )
+    disclose_ledger.add_argument(
+        "--verify",
+        action="store_true",
+        help="verify the hash chain; exit 0 if intact, 1 if errors",
+    )
+    disclose_ledger.add_argument(
+        "--ledger-path",
+        default=None,
+        help="override ledger file path (default: aegisgraph/disclosure/ledger.jsonl)",
+    )
+    disclose_ledger.set_defaults(func=cmd_disclose)
+
+    disclose_status = disclose_subparsers.add_parser(
+        "status", help="human-readable summary of ledger events"
+    )
+    disclose_status.add_argument(
+        "--ledger-path", default=None, help="override ledger file path"
+    )
+    disclose_status.set_defaults(func=cmd_disclose)
+
+    disclose_tick = disclose_subparsers.add_parser(
+        "tick",
+        help=(
+            "embargo-timer cron callable; emits per-finding next-action JSON. "
+            "Reads the ledger; does NOT write."
+        ),
+    )
+    disclose_tick.add_argument(
+        "--ledger-path", default=None, help="override ledger file path"
+    )
+    disclose_tick.add_argument(
+        "--as-of",
+        default=None,
+        help="evaluation date in YYYY-MM-DD (default: today, UTC)",
+    )
+    disclose_tick.set_defaults(func=cmd_disclose)
 
     return parser
 

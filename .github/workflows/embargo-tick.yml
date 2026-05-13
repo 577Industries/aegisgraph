@@ -1,0 +1,105 @@
+name: tier3-research-embargo-tick
+
+# Daily embargo tick - runs `aegisgraph disclose tick`, reads the
+# hash-chained disclosure ledger, and opens a GH issue for any finding
+# whose embargo crosses a Day-7 / Day-14 / Day-30 / Day-60 / Day-90
+# milestone since the last tick.
+#
+# Per ADR-0014 + ADR-0006: the timer is pure calculation. This workflow
+# does NOT append to the ledger. It surfaces decisions a PI must make
+# (e.g. "Day 14 reached, vendor unresponsive: do you authorize
+# escalation to CERT/CC?"). Appending the corresponding event is a
+# separate PI-authorized step.
+#
+# Security note: this workflow consumes only repo-controlled inputs
+# (schedule + workflow_dispatch only; no pull_request / issues /
+# issue_comment trigger). No `${{ github.event.* }}` user-controlled
+# fields are interpolated into run: blocks. The only template
+# expansion is `secrets.GITHUB_TOKEN`, which is constant. The Python
+# script invoked at the end uses `subprocess.run` with list arguments
+# (no shell), so values flowing from tick.json (finding_id, integers)
+# cannot induce command injection. finding_id is also constrained by
+# its schema regex to ^AG-(EV|CRASH|DIS|IV|XSMA)-[A-Z0-9-]+$.
+
+on:
+  schedule:
+    # Daily at 13:00 UTC - mid-morning US-East, late-afternoon CET.
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]" || python -m pip install -e .
+          python -m pip install pytest jsonschema lxml pyyaml httpx whatwg-url jinja2
+
+      - name: Verify ledger chain integrity (fail-closed)
+        run: python -m aegisgraph.cli disclose ledger --verify
+
+      - name: Compute embargo statuses
+        run: |
+          python -m aegisgraph.cli disclose tick > tick.json
+          echo "wrote tick.json"
+
+      - name: Open issues for milestone crossings
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          data = json.loads(Path("tick.json").read_text(encoding="utf-8"))
+          for status in data:
+              finding = status["finding_id"]
+              # finding_id schema regex: ^AG-(EV|CRASH|DIS|IV|XSMA)-[A-Z0-9-]+$
+              # so it is safe to embed in titles/bodies without escaping.
+              for day in status["milestones_crossed"]:
+                  title = f"[disclosure] {finding} reached Day {day} of embargo"
+                  existing = subprocess.run(
+                      ["gh", "issue", "list", "--state", "open",
+                       "--search", title, "--json", "title"],
+                      capture_output=True, text=True, check=True,
+                  ).stdout
+                  if title in existing:
+                      print(f"skip (already open): {title}")
+                      continue
+                  body = (
+                      f"Finding {finding} crossed Day {day} of its embargo.\n\n"
+                      f"- current_event_type: {status['current_event_type']}\n"
+                      f"- embargo_days: {status['embargo_days']}\n"
+                      f"- next_action_date: {status['next_action_date']}\n"
+                      f"- days_remaining: {status['days_remaining']}\n"
+                      f"- expired: {status['expired']}\n\n"
+                      "Suggested next action (Day 7: file CVE pre-request; "
+                      "Day 14: escalate to CERT/CC if vendor unresponsive; "
+                      "Day 30/60: status check; Day 90: prepare "
+                      "disclosed_public transition). Appending the "
+                      "corresponding ledger event requires PI sign-off per "
+                      "ADR-0006."
+                  )
+                  subprocess.run(
+                      ["gh", "issue", "create",
+                       "--title", title,
+                       "--body", body,
+                       "--label", "disclosure,embargo-tick"],
+                      check=True,
+                  )
+                  print(f"opened: {title}")
+          PY
