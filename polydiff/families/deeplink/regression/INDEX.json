@@ -1,0 +1,48 @@
+{
+  "tool_output_type": "polydiff_deeplink_rediscovery_manifest",
+  "version": "v1.0",
+  "family": "deeplink",
+  "description": "Deeplink-family rediscovery manifest. Per Asemarefactor.md §'Engine 1: PolyDiff Extended', each anchored case is pinned by SHA-256 + size so that the regression run reproduces the documented disagreement deterministically. Payload bytes live engineering-private at reprochain/corpora-private/; this manifest carries only hashes.",
+  "anchors": [
+    {
+      "case_id": "anchor_android_intent_implicit_export",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d1",
+      "witness_size_bytes": 128,
+      "expected_disagreement_axes": ["intent_action", "declared_permissions"],
+      "expected_triage_class": "MEDIUM-HIGH",
+      "private_corpus_path": "reprochain/corpora-private/dl_android_intent_implicit_export.uri",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_ios_universal_link_origin_confusion",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d2",
+      "witness_size_bytes": 192,
+      "expected_disagreement_axes": ["host"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/dl_ios_universal_link_origin_confusion.uri",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_deeplink_open_redirect",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d3",
+      "witness_size_bytes": 256,
+      "expected_disagreement_axes": ["host", "path", "query_params"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/dl_deeplink_open_redirect.uri",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_custom_scheme_traversal",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d4",
+      "witness_size_bytes": 96,
+      "expected_disagreement_axes": ["path"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/dl_custom_scheme_traversal.uri",
+      "cve_reference": null
+    }
+  ]
+}
