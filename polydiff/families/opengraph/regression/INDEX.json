@@ -1,0 +1,48 @@
+{
+  "tool_output_type": "polydiff_opengraph_rediscovery_manifest",
+  "version": "v1.0",
+  "family": "opengraph",
+  "description": "Opengraph-family rediscovery manifest. Per Asemarefactor.md lines 35-37, each anchored case is pinned by SHA-256 + size so that the regression run reproduces the documented disagreement deterministically. Payload bytes live engineering-private at reprochain/corpora-private/; this manifest carries only hashes.",
+  "anchors": [
+    {
+      "case_id": "anchor_fb_crawler_2018_relative_url",
+      "kind": "historical-bug",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000005",
+      "witness_size_bytes": 384,
+      "expected_disagreement_axes": ["og_url"],
+      "expected_triage_class": "MEDIUM-HIGH",
+      "private_corpus_path": "reprochain/corpora-private/og_fb_crawler_2018_relative_url.html",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_twitter_card_player_xss",
+      "kind": "historical-bug",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000006",
+      "witness_size_bytes": 512,
+      "expected_disagreement_axes": ["twitter_card_type", "twitter_image"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/og_twitter_card_player_xss.html",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_oembed_provider_origin_confusion",
+      "kind": "synthetic",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000007",
+      "witness_size_bytes": 640,
+      "expected_disagreement_axes": ["canonical_url", "oembed_type"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/og_oembed_provider_origin_confusion.json",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_synthetic_meta_tag_quote_escape",
+      "kind": "synthetic",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000008",
+      "witness_size_bytes": 256,
+      "expected_disagreement_axes": ["decode_outcome", "og_title"],
+      "expected_triage_class": "HIGH",
+      "private_corpus_path": null,
+      "cve_reference": null
+    }
+  ]
+}

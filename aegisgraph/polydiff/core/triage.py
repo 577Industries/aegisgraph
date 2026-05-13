@@ -220,8 +220,125 @@ def _classify_decode_outcome(values: Any) -> tuple[str, str]:
     return ("LOW", "decode_outcome divergence without ok/crash pairing")
 
 
+# ---------------------------------------------------------------------------
+# Opengraph-family triage (T-M2.2)
+# ---------------------------------------------------------------------------
+#
+# Per the T-M2.2 spec, the opengraph family classifies disagreements as:
+#
+#   decode_outcome divergence, one ok + one crash     -> HIGH
+#       Parser crash potential — memory/stack handling suspect.
+#   og_url divergence with same input                  -> MEDIUM-HIGH
+#       Open-redirect / SSRF surface; downstream consumers diverge on
+#       what URL the link preview points to (Facebook crawler vs WHATWG
+#       URL class).
+#   twitter_card_type / og_type divergence             -> MEDIUM
+#       Semantic confusion bug class (player-card-vs-summary, etc.).
+#   canonical_url vs og_url divergence                 -> MEDIUM
+#       Link-preview-confusion class (Snyk-2022 URL-confusion extended
+#       to embed metadata; downstream picks the wrong canonical URL).
+#   title / description text divergence                -> LOW
+#       Cosmetic; benign formatting/encoding choices.
+#
+# Rules are ADDITIVE — they do not touch URL or image family classifiers.
+# The opengraph regression module calls
+# `classify_opengraph_disagreement(fact_vector_diff)` to stamp each emitted
+# AG-DIS-OG-* record with `triage_class` + rationale.
+
+
+def classify_opengraph_disagreement(fact_vector_diff: dict[str, Any]) -> dict[str, str]:
+    """Map an opengraph-family `fact_vector_diff` to triage class + rationale.
+
+    `fact_vector_diff` keys are axis names (e.g. "og_url", "decode_outcome",
+    "twitter_card_type"); values are arrays of per-implementation
+    observations. For each axis we evaluate the divergence shape and assign
+    a triage label. If the diff touches multiple axes the final label is
+    the most severe of the per-axis labels (priority HIGH > MEDIUM-HIGH >
+    MEDIUM > LOW > NOISE).
+
+    Returns: {"triage_class": str, "triage_rationale": str}
+
+    Raises: never. Unknown axes contribute NOISE and a generic rationale.
+    """
+    if not isinstance(fact_vector_diff, dict) or not fact_vector_diff:
+        return {
+            "triage_class": "NOISE",
+            "triage_rationale": "empty disagreement",
+        }
+
+    per_axis: list[tuple[str, str, str]] = []  # (axis, class, rationale)
+
+    for axis, values in fact_vector_diff.items():
+        cls, rationale = _classify_opengraph_axis(axis, values, fact_vector_diff)
+        per_axis.append((axis, cls, rationale))
+
+    # Pick the worst (highest-priority) per-axis label.
+    per_axis.sort(key=lambda t: _TRIAGE_PRIORITY.get(t[1], 0), reverse=True)
+    _top_axis, top_class, top_rationale = per_axis[0]
+    return {
+        "triage_class": top_class,
+        "triage_rationale": top_rationale,
+    }
+
+
+def _classify_opengraph_axis(
+    axis: str, values: Any, full_diff: dict[str, Any]
+) -> tuple[str, str]:
+    """Per-axis triage logic for the opengraph family.
+
+    Returns (triage_class, rationale).
+    """
+    if axis == "decode_outcome":
+        # Reuse the image-family decode_outcome classifier; the rule is
+        # family-agnostic (one_crash_one_ok -> HIGH).
+        return _classify_decode_outcome(values)
+    if axis == "og_url":
+        return (
+            "MEDIUM-HIGH",
+            "og_url divergence — open-redirect / SSRF surface "
+            "(downstream consumers resolve same input to different URLs)",
+        )
+    if axis == "twitter_card_type":
+        return (
+            "MEDIUM",
+            "twitter_card_type divergence — semantic confusion bug class "
+            "(card-type-divergence)",
+        )
+    if axis == "og_type":
+        return (
+            "MEDIUM",
+            "og_type divergence — semantic confusion bug class "
+            "(og-type-divergence)",
+        )
+    if axis == "canonical_url":
+        return (
+            "MEDIUM",
+            "canonical_url divergence — link-preview-confusion class "
+            "(Snyk-2022 URL-confusion extended to embed metadata)",
+        )
+    if axis == "og_image":
+        return ("LOW", "og_image divergence — cosmetic image-url divergence")
+    if axis == "twitter_image":
+        return ("LOW", "twitter_image divergence — cosmetic image-url divergence")
+    if axis == "og_title":
+        return ("LOW", "og_title divergence — cosmetic text divergence")
+    if axis == "og_video":
+        return ("LOW", "og_video divergence — cosmetic video-url divergence")
+    if axis == "oembed_type":
+        return (
+            "MEDIUM",
+            "oembed_type divergence — provider-origin-confusion class",
+        )
+    if axis == "parser_warnings":
+        return ("NOISE", "warnings-only divergence")
+    # Unknown axis: fall back to NOISE so a future schema addition cannot
+    # accidentally promote a benign axis to HIGH.
+    return ("NOISE", f"unknown opengraph-family axis {axis!r}")
+
+
 __all__ = [
     "Disagreement",
     "detect_disagreements",
     "classify_image_disagreement",
+    "classify_opengraph_disagreement",
 ]

@@ -1,0 +1,103 @@
+{
+  "tool_output_type": "polydiff_opengraph_corpus",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "family": "opengraph",
+  "notes": [
+    "Anchored corpus for PolyDiff opengraph-family rediscovery + synthetic regressions.",
+    "Witnesses are pinned by SHA-256 ONLY. NO payload bytes appear in this repo.",
+    "Anchors cover four canonical opengraph divergence shapes: og_url (MEDIUM-HIGH; FB crawler relative-URL class), twitter_card_type/twitter_image (MEDIUM; player XSS class), oembed canonical_url (MEDIUM; provider-origin-confusion), decode_outcome (HIGH; synthetic meta tag quote-escape parser crash).",
+    "Per-case `implementations` lists the two wrapper ids the case is designed to disagree on; the diff engine runs ALL declared wrappers and picks up these axes (plus any others that surface).",
+    "Per-case `expected_fact_vector_diff` is keyed by axis name; each value is a 2-element array of the two impls' observations (matches the `implementations` ordering)."
+  ],
+  "cases": [
+    {
+      "case_id": "anchor_fb_crawler_2018_relative_url",
+      "historical_cve_reference": null,
+      "summary": "Facebook crawler resolved relative URLs (e.g. './landing') against the crawled page's URL differently from WHATWG-URL conformant downstream consumers (~2018). One side resolved to attacker-controlled origin; the other to victim. Public link-preview bypass class.",
+      "bug_class": "facebook-crawler-relative-url-divergence",
+      "publication_policy": "anchored-historical-public-citation",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000005",
+      "witness_size_bytes": 384,
+      "implementations": ["facebook_og", "beautifulsoup_fallback"],
+      "expected_fact_vector_diff": {
+        "og_url": [
+          "https://attacker.example/landing",
+          "https://victim.example/landing"
+        ]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "open-redirect",
+      "reachability_targets": ["signal_android", "link_preview_generator"],
+      "reference_url": "https://www.facebook.com/business/help/docs (historical OG crawler documentation; specific 2018 bug write-up archived under engineering-private).",
+      "limitations": "witness bytes are NOT in this repo; pinned-hash anchor only. The expected fact-vector diff documents the canonical disagreement shape — actual parser outputs depend on the pinned wrapper versions."
+    },
+    {
+      "case_id": "anchor_twitter_card_player_xss",
+      "historical_cve_reference": null,
+      "summary": "Twitter Card `player` type had inconsistent URL sanitization between Twitter's crawler and downstream embedders. One impl emitted a player URL with un-sanitized javascript:-scheme prefix; the other rejected it as not-a-card. Historical XSS-prone link preview class.",
+      "bug_class": "twitter-card-player-sanitization-divergence",
+      "publication_policy": "anchored-historical-public-citation",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000006",
+      "witness_size_bytes": 512,
+      "implementations": ["twitter_card", "beautifulsoup_fallback"],
+      "expected_fact_vector_diff": {
+        "twitter_card_type": ["player", "summary"],
+        "twitter_image": [
+          "https://attacker.example/img.svg",
+          "https://attacker.example/img.svg"
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "card-type-divergence",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "twitter:player URL field is the historical sanitization-divergence vector; we surface it via twitter_card_type divergence in the public fact-vector axes (the URL itself is treated as an opaque string per the schema)."
+    },
+    {
+      "case_id": "anchor_oembed_provider_origin_confusion",
+      "historical_cve_reference": null,
+      "summary": "When OG metadata and the oEmbed provider JSON response declare DIFFERENT canonical URLs for the same page, downstream consumers picked inconsistently — the attacker-controlled OG URL or the legit oEmbed URL — based on parser priority. The attacker controlled whichever one the downstream trusted.",
+      "bug_class": "oembed-vs-og-canonical-url-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000007",
+      "witness_size_bytes": 640,
+      "implementations": ["oembed", "facebook_og"],
+      "expected_fact_vector_diff": {
+        "canonical_url": [
+          "https://provider.example/embed/x",
+          "https://attacker.example/x"
+        ],
+        "oembed_type": ["rich", null]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "link-preview-confusion",
+      "reachability_targets": ["link_preview_generator"],
+      "reference_url": null,
+      "limitations": "synthetic case constructed to exercise the canonical_url divergence triage rule. The oEmbed response payload and the OG HTML are supplied as separate witness bytes in private corpus (each wrapper sees only its own payload)."
+    },
+    {
+      "case_id": "anchor_synthetic_meta_tag_quote_escape",
+      "historical_cve_reference": null,
+      "summary": "Synthetic anchor: <meta name='og:title' content='he said \"hi\"'> uses nested quote chars. One impl crashes the underlying HTML tokenizer; another truncates the title at the first inner quote; a third returns the full string. Exercises decode_outcome divergence (HIGH triage).",
+      "bug_class": "synthetic-meta-tag-quote-escape-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "0000000000000000000000000000000000000000000000000000000000000008",
+      "witness_size_bytes": 256,
+      "implementations": ["facebook_og", "beautifulsoup_fallback"],
+      "expected_fact_vector_diff": {
+        "decode_outcome": [
+          {"status": "crash", "bytes_out": 0},
+          {"status": "ok", "bytes_out": 128}
+        ],
+        "og_title": [null, "he said "]
+      },
+      "expected_triage_class": "HIGH",
+      "expected_triage_rationale_contains": "crash",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design constructed to exercise the decode_outcome divergence triage rule"
+    }
+  ]
+}
