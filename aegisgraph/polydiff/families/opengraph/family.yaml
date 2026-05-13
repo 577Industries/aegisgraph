@@ -1,0 +1,108 @@
+# PolyDiff opengraph-family manifest (Engine 1, T-M2.2).
+#
+# Per Asemarefactor.md §"Engine 1: PolyDiff Extended" (proposed module
+# layout lines 22-37 lists opengraph/ as one of the five new families).
+# This file is the single source of truth for:
+#   - Which implementations the diff engine dispatches to.
+#   - The per-family fact-vector axes the diff engine compares.
+#   - Reachability mappings (witness -> SMA codepath via evidence graph).
+#
+# Edits MUST keep this file in sync with:
+#   - schema/fact-vector-opengraph.schema.json (axes + required fields)
+#   - aegisgraph/polydiff/families/opengraph/wrappers/* (one module per impl)
+#   - polydiff/families/opengraph/regression/corpus.json (anchored cases)
+
+family: opengraph
+schema_version: v1.0
+
+implementations:
+  - id: facebook_og
+    bindings: python
+    wrapper: wrappers/facebook_og.py
+    binary_hint: facebook_og_parser
+    version_pin: "facebook-opengraph-parser@v0.1.0"  # synthetic pin; the
+                                                    # actual parser package
+                                                    # may be unavailable in
+                                                    # the devcontainer —
+                                                    # wrapper emits
+                                                    # binary_missing=true.
+  - id: twitter_card
+    bindings: python
+    wrapper: wrappers/twitter_card.py
+    binary_hint: twitter_card_parser
+    version_pin: "twitter-card-parser@v0.1.0"
+  - id: oembed
+    bindings: python
+    wrapper: wrappers/oembed.py
+    binary_hint: oembed_parser
+    version_pin: "oembed-parser@v0.1.0"
+  - id: beautifulsoup_fallback
+    bindings: python
+    wrapper: wrappers/beautifulsoup_fallback.py
+    binary_hint: bs4_og_extractor
+    version_pin: "beautifulsoup4@v4.12.3+html5lib@v1.1"
+
+fact_vector_schema:
+  schema_path: schema/fact-vector-opengraph.schema.json
+  # Axes per the T-M2.2 spec: 11 axes covering OG, Twitter Card, oEmbed,
+  # canonical URL, parser warnings, decode outcome.
+  axes:
+    - og_title: "string|null"
+    - og_image: "string|null"
+    - og_type: "string|null"
+    - og_url: "string|null"
+    - og_video: "string|null"
+    - twitter_card_type: "string|null"
+    - twitter_image: "string|null"
+    - oembed_type: "string|null"
+    - canonical_url: "string|null"
+    - parser_warnings: "list[string]"
+    - decode_outcome: {status: "enum[ok, decode_error, oom, crash]", bytes_out: int}
+
+# Triage classifier rules. Encoded as additive logic in
+# aegisgraph/polydiff/core/triage.py (function
+# `classify_opengraph_disagreement`). Listed here for cross-reference; the
+# code is the executable source of truth.
+triage_rules:
+  - axis: decode_outcome
+    when: one_crash_one_ok
+    triage_class: HIGH
+    rationale: parser crash potential — memory or stack handling suspect
+  - axis: og_url
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: open-redirect / SSRF surface — same input, different resolved URL
+  - axis: twitter_card_type
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: semantic confusion bug class (card-type-divergence)
+  - axis: og_type
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: semantic confusion bug class (og-type-divergence)
+  - axis: canonical_url
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: link-preview-confusion class (Snyk-2022 URL-confusion extension)
+  - axis: og_title
+    when: any-mismatch
+    triage_class: LOW
+    rationale: cosmetic text divergence
+  - axis: og_image
+    when: any-mismatch
+    triage_class: LOW
+    rationale: cosmetic image-url divergence
+
+reachability:
+  signal_android:
+    - path_class: link_preview
+      entry: LinkPreviewRepository.fetchPreview
+      sink: "OpenGraphRenderer.render"
+  element_x_android:
+    - path_class: link_preview
+      entry: LinkPreviewProvider.previewFor
+      sink: "MatrixUrlPreview.parse"
+  link_preview_generator:
+    - path_class: link_preview
+      entry: LinkPreviewService.parse
+      sink: "OpenGraphMetaExtractor.extract"

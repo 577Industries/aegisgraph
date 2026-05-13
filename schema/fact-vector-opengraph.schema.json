@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector-opengraph.schema.json",
+  "title": "PolyDiff Opengraph-Family Fact Vector",
+  "description": "Per-implementation fact vector for the opengraph family. Sibling of fact-vector.schema.json (URL family) and fact-vector-image.schema.json (image family); all share input_id + parser_profile as the cross-family identity keys that the diff engine pairs vectors on. Axes follow the T-M2.2 spec: og_title, og_image, og_type, og_url, og_video, twitter_card_type, twitter_image, oembed_type, canonical_url, parser_warnings, decode_outcome. When a wrapper binary/package is absent the wrapper emits a crash envelope with binary_missing=true and decode_outcome.status=crash; that envelope still validates so the missing parser stays auditable in the diff report.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "og_title",
+    "og_image",
+    "og_type",
+    "og_url",
+    "og_video",
+    "twitter_card_type",
+    "twitter_image",
+    "oembed_type",
+    "canonical_url",
+    "parser_warnings",
+    "decode_outcome"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wrapper id (facebook_og, twitter_card, oembed, beautifulsoup_fallback)."
+    },
+    "schema_version": {"type": "string"},
+    "binary_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set by the wrapper when the underlying Python parser package/binary is not available. The opengraph axes are then null and decode_outcome.status MUST be 'crash'."
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "og_title": {
+      "type": ["string", "null"],
+      "description": "Value of <meta property='og:title'> as parsed. null when absent or not observable."
+    },
+    "og_image": {
+      "type": ["string", "null"],
+      "description": "Value of <meta property='og:image'> as parsed. URL string. null when absent."
+    },
+    "og_type": {
+      "type": ["string", "null"],
+      "description": "Value of <meta property='og:type'> as parsed. Examples: article, website, video.movie. null when absent."
+    },
+    "og_url": {
+      "type": ["string", "null"],
+      "description": "Value of <meta property='og:url'> as parsed (resolved if relative). This axis is where the Facebook-crawler-vs-WHATWG-URL divergence surfaces. null when absent."
+    },
+    "og_video": {
+      "type": ["string", "null"],
+      "description": "Value of <meta property='og:video'> as parsed. URL string. null when absent."
+    },
+    "twitter_card_type": {
+      "type": ["string", "null"],
+      "description": "Value of <meta name='twitter:card'>. Examples: summary, summary_large_image, player, app. The player card type historically had XSS-prone url-sanitization variance. null when absent."
+    },
+    "twitter_image": {
+      "type": ["string", "null"],
+      "description": "Value of <meta name='twitter:image'>. URL string. null when absent."
+    },
+    "oembed_type": {
+      "type": ["string", "null"],
+      "description": "Value of the `type` field in an oEmbed JSON/XML response (photo, video, link, rich). null when not an oEmbed response."
+    },
+    "canonical_url": {
+      "type": ["string", "null"],
+      "description": "Value of <link rel='canonical' href='...'> as parsed. null when absent."
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Implementation-emitted warnings (e.g. 'unrecognized og:type', 'malformed meta tag'). Empty array on a clean parse."
+    },
+    "decode_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "bytes_out"],
+      "description": "Implementation-reported parse outcome. status='crash' indicates wrapper subprocess crashed (segfault, FileNotFoundError); 'oom' indicates allocation refused; 'decode_error' is a clean rejection by the parser; 'ok' is a clean parse.",
+      "properties": {
+        "status": {"enum": ["ok", "decode_error", "oom", "crash"]},
+        "bytes_out": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
