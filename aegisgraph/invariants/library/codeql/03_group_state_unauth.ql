@@ -1,6 +1,6 @@
 /**
  * @id aegisgraph/inv-03-group-state-unauth
- * @name InvariantCheck INV-03: Group-state mutation without sender authorization (STUB — M7 deliverable)
+ * @name InvariantCheck INV-03: Group-state mutation without sender authorization
  * @description Group-event handlers (add member, change admin, change
  *              avatar, rotate sender key) must verify the sender's
  *              authorization role and current group membership against
@@ -9,7 +9,7 @@
  *              check is exposed to relayed or replayed
  *              group-management events from removed or non-admin members,
  *              causing silent group-composition tampering.
- * @kind problem
+ * @kind path-problem
  * @problem.severity warning
  * @precision medium
  * @id-mapping INV-03
@@ -19,81 +19,206 @@
  *       aegisgraph-invariantcheck
  *       mastg-auth-2
  *       ssdf-pw-4-4
- *       stub
  */
 
 /*
- * ─────────────────────────────────────────────────────────────────────
- * STUB QUERY — NOT YET FULLY ENCODED (M7 deliverable)
- * ─────────────────────────────────────────────────────────────────────
+ * Encoding notes:
  *
- * This file is committed so the M5.3 manifest entry for INV-03 resolves
- * to a real file on disk. The full encoding is scheduled for M7
- * (alongside the ground-truth pass against demo-vulnerable-app fixtures
- * and the Signal / Element X anchor commits).
+ *   Sources: inbound group-event accessors on a *GroupEvent / *Event /
+ *            *GroupV2Update / *GroupChange typed payload. We recognize
+ *            both the Signal lineage (getGroupChange, getMembers,
+ *            getModifyMemberRolesAction) and the Matrix lineage
+ *            (getStateKey, getContent, getMembershipEvent).
  *
- * Intended encoding sketch (drives the M7 work):
+ *   Sinks: state-mutating writes inside the same handler — GroupDatabase
+ *          updates, SenderKeyStore stores, Room/Group setters.
  *
- *   Sources (group-event handler entry points):
- *     - Methods named *handleGroupV2Update / *handleGroupCreate /
- *       *handleAddMember / *handleRemoveMember / *handleChangeAdmin /
- *       *handleAvatarChange / *handleRotateSenderKey on a *Receiver,
- *       *Service, or *Handler type
- *     - Methods annotated with @Subscribe / @OnGroupEvent (EventBus / RxBus
- *       wiring patterns)
- *     - Top-of-handler parameters typed
- *       org.signal.libsignal.groups.GroupV2Update,
- *       org.matrix.android.sdk.api.session.events.model.Event (for
- *       Matrix's m.room.member / m.room.power_levels handlers)
+ *   Barriers: sender-role / sender-membership predicates. We accept any
+ *             method whose name matches a role-check pattern
+ *             (isAdmin, hasPermissionToMutate, isAuthorizedSender,
+ *             requireAdminPermission, checkGroupAdminRole) or any
+ *             comparison against an admin-role constant.
  *
- *   Sinks (state-mutating side effects in the same handler):
- *     - GroupDatabase.updateMembers / RoomDatabase.updatePowerLevels /
- *       LocalGroupAuthority.applyChange
- *     - SenderKeyStore.storeSenderKey when invoked inside a group-event
- *       handler
- *     - RoomMember.setRole / Group.setAvatar / Group.rename
- *
- *   Barriers (sender-role / sender-membership checks):
- *     - Boolean guards involving a comparison of sender_id /
- *       sender_member_id against an admin-list or member-list query
- *     - Method calls named *isAdmin / *hasPermissionToMutate /
- *       *isGroupMember / *isAuthorizedSender / *checkGroupAdminRole /
- *       *requireAdminPermission
- *     - Comparison against constants like Role.ADMIN, PowerLevel.MODERATOR
- *
- *   Configuration:
- *     The classic encoding is two-step: first, find handler methods that
- *     mutate group state (sink presence). Second, for each such handler,
- *     check whether any of the barrier predicates appears on every path
- *     from the handler entry to the mutation. Where no path-dominating
- *     barrier exists, emit a finding.
- *
- *     module GroupStateUnauthConfig implements DataFlow::ConfigSig { ... }
- *     module GroupStateUnauthFlow = TaintTracking::Global<GroupStateUnauthConfig>;
- *
- *   Select clause emits: sink, "INV-03: Group-state mutation in handler
- *     $@ proceeds without a sender-role / sender-membership barrier."
- *
- * Until this stub is fleshed out, the runner produces an empty SARIF
- * result set for INV-03. The manifest entry truthfully records
- * `expected_violations: "unknown"` for the demo fixture and real targets;
- * the ground-truth assertion lands with the full encoding at M7.
- *
- * See aegisgraph/invariants/manifest.json :: INV-03 for the canonical
- * statement, rationale, MASTG-AUTH-2 / SSDF PW.4.4 mappings.
- *
- * TODO[M7]: Fully encode this query per the spec above. Add three
- * synthetic test fixtures under tests/fixtures/demo-vulnerable-app/ that
- * exercise (a) an admin-check-present handler (negative), (b) a missing-
- * check handler (positive), and (c) a handler whose admin check happens
- * on a non-dominating branch (positive).
- * ─────────────────────────────────────────────────────────────────────
+ * TODO[ground-truth-pass]: Signal-android and Element-X class names below
+ * are placeholders rooted in public-protocol naming. The M7-GT pass
+ * pins these against the actual class names in the anchored commits
+ * (signal_android@1043851 / elementx_android@91d265e6) and prunes
+ * false positives.
  */
 
 import java
+import semmle.code.java.dataflow.TaintTracking
+import semmle.code.java.dataflow.FlowSources
+import DataFlow::PathGraph
 
-// Trivially-empty query so codeql syntactically accepts the file while
-// the stub is in place. select clause produces no results.
-from Method m
-where none()
-select m, "INV-03 stub — see comment block in this file for the M7 encoding plan."
+/**
+ * Sources: inbound group-event payload accessors.
+ *
+ * We name-match getters on payload types that messenger codebases
+ * expose for group-management events. The list draws from Signal's
+ * GroupV2 update lineage and Matrix's m.room.member /
+ * m.room.power_levels event handlers.
+ *
+ * TODO[ground-truth-pass]: confirm exact Signal/Element X class names
+ * against pinned commit; today we match by method name to keep the
+ * query target-agnostic.
+ */
+class GroupEventSource extends DataFlow::Node {
+  GroupEventSource() {
+    // Signal-lineage group-event getters.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "getGroupChange", "getModifyMemberRolesAction",
+            "getAddMembersAction", "getDeleteMembersAction",
+            "getModifyTitleAction", "getModifyAvatarAction",
+            "getRotateSenderKeyAction", "getGroupMasterKey",
+            "getModifyMemberAccessControlAction",
+            "getPromotePendingMembersAction"
+          ]) and
+      this.asExpr() = mc
+    )
+    or
+    // Matrix-lineage state-event getters.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "getStateKey", "getMembershipEvent", "getPowerLevelsContent",
+            "getRoomMemberContent", "getRoomCreateContent",
+            "getRoomJoinRulesContent"
+          ]) and
+      this.asExpr() = mc
+    )
+    or
+    // Top-level parameter access on a handler that takes a typed
+    // group-event payload (e.g. `void handleAddMember(GroupV2Update u)`).
+    exists(Parameter p |
+      p.getType()
+          .(RefType)
+          .getName()
+          .regexpMatch(".*Group(V2)?(Update|Change|Event|Action).*|.*MembershipEvent.*|.*RoomMemberContent.*") and
+      this.asExpr() = p.getAnAccess()
+    )
+  }
+}
+
+/**
+ * Sinks: state-mutating writes inside the same handler.
+ *
+ * We match GroupDatabase / RoomDatabase / SenderKeyStore /
+ * LocalGroupAuthority methods that persist a change.
+ */
+class GroupStateMutationSink extends DataFlow::Node {
+  GroupStateMutationSink() {
+    // GroupDatabase / RoomDatabase mutation methods.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*GroupDatabase.*|.*RoomDatabase.*|.*GroupTable.*|.*LocalGroupAuthority.*") and
+      mc.getMethod()
+          .hasName([
+            "updateMembers", "addMember", "removeMember",
+            "updatePowerLevels", "setRole", "applyChange",
+            "applyGroupChange", "updateTitle", "setAvatar",
+            "rename", "rotateSenderKey", "promoteMember",
+            "demoteMember", "bulkInsert", "insert", "update", "delete"
+          ]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // SenderKeyStore.storeSenderKey when invoked from a group-event
+    // handler — name match catches both Signal and libsignal shapes.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*SenderKeyStore.*|.*SenderKeyDatabase.*") and
+      mc.getMethod()
+          .hasName(["storeSenderKey", "saveSenderKey", "putSenderKey"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // RoomMember / Group setters on the model object — direct mutation
+    // through model state without going through the database layer.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*RoomMember.*|.*GroupMember.*|.*Group$") and
+      mc.getMethod()
+          .hasName(["setRole", "setAvatar", "rename", "setName", "setMembership"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+  }
+}
+
+/**
+ * Barriers: sender-role / sender-membership predicates.
+ *
+ * A value passing through any of these checks is considered safe to
+ * propagate to the mutation sink.
+ */
+class SenderAuthorizationBarrier extends DataFlow::Node {
+  SenderAuthorizationBarrier() {
+    // Direct role-check method names — covers most messenger lineages.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "isAdmin", "isCoAdmin", "isModerator", "isOwner",
+            "hasPermissionToMutate", "isGroupMember", "isAuthorizedSender",
+            "checkGroupAdminRole", "requireAdminPermission",
+            "verifySenderRole", "verifyMembership", "isSenderAdmin",
+            "canModifyGroup", "canKickMember", "hasAdminRole",
+            "isAuthorizedToChange"
+          ]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // Field/enum comparison against a role constant — handles the
+    // `if (sender.role == Role.ADMIN)` shape.
+    exists(FieldAccess fa |
+      fa.getField()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*Role|.*PowerLevel|.*Membership") and
+      fa.getField()
+          .getName()
+          .regexpMatch("(?i)ADMIN|OWNER|MODERATOR|CO_ADMIN") and
+      this.asExpr() = fa
+    )
+    or
+    // Methods on a *GroupAuthority / *PermissionChecker type — once a
+    // sender has been validated by such a helper, taint clears.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*GroupAuthority.*|.*PermissionChecker.*|.*RoleChecker.*|.*AccessControl.*") and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+  }
+}
+
+/**
+ * Configuration: taint flow from group-event payload sources to
+ * group-state mutation sinks, with sender-authorization predicates as
+ * barriers.
+ */
+module GroupStateUnauthConfig implements DataFlow::ConfigSig {
+  predicate isSource(DataFlow::Node src) { src instanceof GroupEventSource }
+
+  predicate isSink(DataFlow::Node snk) { snk instanceof GroupStateMutationSink }
+
+  predicate isBarrier(DataFlow::Node node) {
+    node instanceof SenderAuthorizationBarrier
+  }
+}
+
+module GroupStateUnauthFlow = TaintTracking::Global<GroupStateUnauthConfig>;
+
+from GroupStateUnauthFlow::PathNode source, GroupStateUnauthFlow::PathNode sink
+where GroupStateUnauthFlow::flowPath(source, sink)
+select sink.getNode(), source, sink,
+  "INV-03: Group-event payload from $@ reaches group-state mutation without traversing a sender-authorization barrier.",
+  source.getNode(), "this source"

@@ -88,11 +88,21 @@ def test_library_v1_invariant_ids_match_expected_set() -> None:
 
 
 def test_library_version_bumped_to_m5_3() -> None:
-    """The library_version metadata field reflects the M5.3 deliverable."""
+    """The library_version metadata field reflects a M5.3-or-later
+    milestone. At M5.3 the value was `m5.3-library-v1`; at M7-INV it is
+    `m7-inv-library-v2`. We accept any version string that mentions
+    either the M5.3 or a later milestone marker so that subsequent
+    library increments don't have to break this test."""
     manifest = _load_manifest()
-    library_version = manifest.get("library_version", "")
-    assert "m5.3" in library_version.lower() or "v1" in library_version.lower(), (
-        f"library_version should reflect M5.3 / v1 milestone, "
+    library_version = manifest.get("library_version", "").lower()
+    # Accept any of: m5.3, m7-inv, library-v1, library-v2, or a higher
+    # version pattern. The intent is "post-M3.3 scaffold".
+    assert any(
+        marker in library_version
+        for marker in ("m5.3", "m6", "m7", "m8", "m9", "m10", "m11",
+                       "library-v1", "library-v2", "library-v3")
+    ), (
+        f"library_version should reflect a M5.3-or-later milestone, "
         f"got {library_version!r}"
     )
 

@@ -1,6 +1,6 @@
 /**
  * @id aegisgraph/inv-04-device-link-no-kex
- * @name InvariantCheck INV-04: Device-linking flow lacks key-exchange round-trip (STUB — M7 deliverable)
+ * @name InvariantCheck INV-04: Device-linking flow lacks key-exchange round-trip
  * @description Device-linking flows (QR scan, link code, magic-link) must
  *              not provision device-side key material, session state, or
  *              sync tokens without completing a key-exchange round-trip
@@ -12,7 +12,7 @@
  *              Closely related to INV-13 (QR payload unverified binding);
  *              INV-04 covers the link-code / magic-link / app-clip surface
  *              that doesn't require a camera.
- * @kind problem
+ * @kind path-problem
  * @problem.severity error
  * @precision medium
  * @id-mapping INV-04
@@ -22,70 +22,198 @@
  *       aegisgraph-invariantcheck
  *       mastg-auth-9
  *       ssdf-pw-4-4
- *       stub
  */
 
 /*
- * ─────────────────────────────────────────────────────────────────────
- * STUB QUERY — NOT YET FULLY ENCODED (M7 deliverable)
- * ─────────────────────────────────────────────────────────────────────
+ * Encoding notes:
  *
- * This file is committed so the M5.3 manifest entry for INV-04 resolves
- * to a real file on disk. The full encoding is scheduled for M7.
+ *   Sources: link-code text-input commits, magic-link Uri parameters,
+ *            and QR-scan callback strings (the QR-camera surface is
+ *            primarily INV-13's responsibility but is also matched here
+ *            for defense-in-depth — duplicate findings are deduplicated
+ *            by the consolidator using location keys).
  *
- * Intended encoding sketch (drives the M7 work):
+ *   Sinks: device-side provisioning calls — DeviceRegistrationStore,
+ *          IdentityKeyStore, SessionStore, SyncToken persistence.
  *
- *   Sources (device-link entry points):
- *     - QR-scan callback inputs (camera intent result), handled in INV-13;
- *       INV-04 picks up the non-camera surface.
- *     - Link-code text-input field commit:
- *         org.signal.devicelink.LinkCodeView.onSubmit
- *         org.matrix.android.sdk.api.devices.DeviceLinkCode.parse
- *     - Magic-link Uri parameter parsing where the host is a known
- *       device-linking host (e.g. signal.org/install, app.element.io/link).
+ *   Barriers: KEX-completion predicates — methods on a *KeyExchange /
+ *             *X3DH / *NoiseHandshake / *MlsKeyAgreement type named
+ *             complete / verify / finalize / ratchet / confirmRoundTrip;
+ *             field comparisons against kexConfirmed-style booleans.
  *
- *   Sinks (device-side state provisioning):
- *     - DeviceRegistrationStore.register / saveDevice
- *     - IdentityKeyStore.saveIdentity / DeviceKeyStore.storeKey
- *     - SessionStore.storeSession on a freshly-issued session
- *     - SyncToken.persist on a newly-issued sync token
- *
- *   Barriers (KEX-completion checks):
- *     - Methods on a *KeyExchange / *X3DH / *NoiseHandshake / *MlsKeyAgreement
- *       type named ["complete", "verify", "finalize", "ratchet",
- *       "confirmRoundTrip"]
- *     - Boolean comparison guards on fields named *kexConfirmed,
- *       *handshakeVerified, *deviceVerified, *linkSecretConfirmed
- *
- *   Configuration:
- *     class DeviceLinkKexConfig extends TaintTracking::Configuration { ... }
- *     module DeviceLinkKexFlow = TaintTracking::Global<DeviceLinkKexConfig>;
- *
- *   Select clause emits: sink, "INV-04: Device-link source from $@ reaches
- *     device-state provisioning without a KEX-completion barrier."
- *
- *   Ground truth (planned):
- *     - demo-vulnerable-app: 1 violation (link-code submit handler that
- *       calls saveDevice() before X3DH.complete()).
- *     - Signal Android / Element X: unknown until the M7 anchor pass.
- *
- * Until this stub is fleshed out, the runner produces an empty SARIF
- * result set for INV-04.
- *
- * See aegisgraph/invariants/manifest.json :: INV-04 for the canonical
- * statement, rationale, MASTG-AUTH-9 / SSDF PW.4.4 mappings.
- *
- * TODO[M7]: Fully encode this query per the spec above. Coordinate the
- * fully-encoded version with INV-13 so the two queries' sources don't
- * overlap (INV-13 owns the QR-camera surface; INV-04 owns the link-code
- * and magic-link surfaces).
- * ─────────────────────────────────────────────────────────────────────
+ * TODO[ground-truth-pass]: confirm Signal-android DeviceRegistrationStore
+ * and Element-X DeviceLinkCode class names against pinned commits.
  */
 
 import java
+import semmle.code.java.dataflow.TaintTracking
+import semmle.code.java.dataflow.FlowSources
+import DataFlow::PathGraph
 
-// Trivially-empty query so codeql syntactically accepts the file while
-// the stub is in place. select clause produces no results.
-from Method m
-where none()
-select m, "INV-04 stub — see comment block in this file for the M7 encoding plan."
+/**
+ * Sources: device-linking entry points.
+ *
+ * Three shapes:
+ *   * Link-code text submitted via a *LinkCodeView / *DeviceLinkCode
+ *     parse/submit method.
+ *   * Magic-link Uri parameters extracted from an inbound Intent on a
+ *     known device-linking host.
+ *   * QR-scan camera-intent result strings — overlaps INV-13 by design.
+ */
+class DeviceLinkSource extends DataFlow::Node {
+  DeviceLinkSource() {
+    // Link-code parse / submit methods (Signal / Element naming).
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*LinkCode.*|.*DeviceLinkCode.*|.*LinkCodeView.*|.*ProvisioningCode.*") and
+      mc.getMethod()
+          .hasName(["parse", "submit", "onSubmit", "verify", "decode", "fromString"]) and
+      this.asExpr() = mc
+    )
+    or
+    // Magic-link Uri parameter extraction via getQueryParameter on a
+    // device-linking host.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("android.net", "Uri") and
+      mc.getMethod()
+          .hasName(["getQueryParameter", "getQueryParameters", "getFragment", "getPath"]) and
+      this.asExpr() = mc
+    )
+    or
+    // QR-scan result strings — ML Kit Barcode / ZXing Result.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*Barcode.*|.*QRResult.*|.*BarcodeScanner.*|.*ScanResult.*|com\\.google\\.zxing\\..*") and
+      mc.getMethod()
+          .hasName(["getRawValue", "getDisplayValue", "getText", "getContents"]) and
+      this.asExpr() = mc
+    )
+    or
+    // Top-of-handler parameters typed *ProvisioningEnvelope /
+    // *DeviceLinkPayload.
+    exists(Parameter p |
+      p.getType()
+          .(RefType)
+          .getName()
+          .regexpMatch(".*ProvisioningEnvelope.*|.*DeviceLinkPayload.*|.*ProvisionMessage.*|.*LinkRequest.*") and
+      this.asExpr() = p.getAnAccess()
+    )
+  }
+}
+
+/**
+ * Sinks: device-side provisioning calls.
+ */
+class DeviceProvisioningSink extends DataFlow::Node {
+  DeviceProvisioningSink() {
+    // Device registration writes.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*DeviceRegistration.*|.*DeviceStore.*|.*DeviceTable.*") and
+      mc.getMethod()
+          .hasName(["register", "saveDevice", "addDevice", "persistDevice", "storeDevice"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Identity-key / device-key persistence (libsignal-style).
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*IdentityKeyStore.*|.*DeviceKeyStore.*|.*ProvisioningKeyStore.*") and
+      mc.getMethod()
+          .hasName(["saveIdentity", "storeKey", "putIdentity", "saveDeviceKey"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Session-store provisioning for a newly-issued session.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*SessionStore.*|.*SessionDatabase.*") and
+      mc.getMethod()
+          .hasName(["storeSession", "saveSession", "putSession"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Sync-token persistence.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*SyncToken.*|.*SyncStateStore.*") and
+      mc.getMethod()
+          .hasName(["persist", "save", "store"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+  }
+}
+
+/**
+ * Barriers: KEX-completion predicates and verified-handshake guards.
+ */
+class KexCompletionBarrier extends DataFlow::Node {
+  KexCompletionBarrier() {
+    // Method calls on a *KeyExchange / *X3DH / *Noise / *MLS / *PQXDH
+    // type named complete / verify / finalize / ratchet.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*KeyExchange.*|.*X3DH.*|.*PQXDH.*|.*NoiseHandshake.*|.*MlsKeyAgreement.*|.*MlsHandshake.*|.*HandshakeState.*") and
+      mc.getMethod()
+          .hasName([
+            "complete", "verify", "finalize", "ratchet",
+            "confirmRoundTrip", "checkComplete", "isComplete",
+            "verifyEphemeral", "verifyHandshake"
+          ]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // Boolean field access for a *kexConfirmed / *handshakeVerified flag.
+    exists(FieldAccess fa |
+      fa.getField()
+          .getName()
+          .regexpMatch("(?i).*(kex|handshake|provisioning|deviceLink)(Confirmed|Verified|Complete|Done)") and
+      this.asExpr() = fa
+    )
+    or
+    // Generic name-based barrier — explicit barrier helpers in the
+    // device-linking code.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "isHandshakeComplete", "verifyKex", "assertKexComplete",
+            "ensureLinkVerified", "verifyDeviceLink", "verifyProvisioningEnvelope"
+          ]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+  }
+}
+
+/**
+ * Configuration: taint flow from device-link sources to device-
+ * provisioning sinks, with KEX-completion predicates as barriers.
+ */
+module DeviceLinkKexConfig implements DataFlow::ConfigSig {
+  predicate isSource(DataFlow::Node src) { src instanceof DeviceLinkSource }
+
+  predicate isSink(DataFlow::Node snk) { snk instanceof DeviceProvisioningSink }
+
+  predicate isBarrier(DataFlow::Node node) { node instanceof KexCompletionBarrier }
+}
+
+module DeviceLinkKexFlow = TaintTracking::Global<DeviceLinkKexConfig>;
+
+from DeviceLinkKexFlow::PathNode source, DeviceLinkKexFlow::PathNode sink
+where DeviceLinkKexFlow::flowPath(source, sink)
+select sink.getNode(), source, sink,
+  "INV-04: Device-link payload from $@ reaches device-provisioning sink without traversing a KEX-completion barrier.",
+  source.getNode(), "this source"
