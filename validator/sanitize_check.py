@@ -142,9 +142,28 @@ _FORBIDDEN_FINDING_TYPES = frozenset({"novel_private_candidate"})
 
 _REQUIRED_PUBLIC_SAFETY_POSTURE = "sanitized_candidate"
 
-# Rule 5: payload-bearing field names. Anything here being non-empty is a
-# blocking violation regardless of file context.
-_PAYLOAD_FIELD_NAMES = ("bytes_b64", "payload", "raw_bytes", "raw_reproducer")
+# Rule 5 / Rule 9: payload-bearing field names. Anything here being non-empty
+# is a blocking violation regardless of file context. v0.4 (plan §10) extends
+# this with raw_witness and raw_corpus_input — additional payload surfaces
+# introduced by HarnessGen/PolyDiff witness output and CrossSMA crash
+# correlation. Plus `source_snippet` belongs only in invariant_violation
+# `location` blocks where Rule 8 explicitly forbids it; outside of that we
+# also catch the field as a payload-bearing surface at the record level.
+_PAYLOAD_FIELD_NAMES = (
+    "bytes_b64",
+    "payload",
+    "raw_bytes",
+    "raw_reproducer",
+    "raw_witness",
+    "raw_corpus_input",
+)
+
+# v0.4 Rule 7: disclosure_event records exported publicly must have an
+# event_type in this whitelist. Anything else (vendor_contacted,
+# embargo_set, etc.) is an in-flight private state and must be redacted.
+_PUBLIC_SAFE_DISCLOSURE_EVENT_TYPES = frozenset(
+    {"cve_assigned", "cve_published", "disclosure_public"}
+)
 
 
 def _import_blocking_patterns() -> tuple[re.Pattern[str], ...] | None:
@@ -341,8 +360,22 @@ def _check_evidence_record(
     report: ScanReport,
     blocking_patterns: tuple[re.Pattern[str], ...],
 ) -> None:
-    """Apply schema-aware rules (2, 3, 5, 6) to one evidence-shaped record."""
-    record_id = str(record.get("id", "<unknown>"))
+    """Apply schema-aware rules (2, 3, 5, 6 + v0.4 7/8/9) to one record.
+
+    v0.4 record-kind dispatch: classifies the record via _detect_record_kind
+    and runs the matching v0.4 rule (7 for disclosure_event, 8 for
+    invariant_violation, 9 for crash). Rules 2/3/5/5b/6 still apply to
+    every kind (they're cheap structural checks).
+    """
+    # Prefer a kind-specific ID over the generic "id" key.
+    record_id = str(
+        record.get("id")
+        or record.get("entry_id")
+        or record.get("violation_id")
+        or record.get("crash_id")
+        or record.get("candidate_id")
+        or "<unknown>"
+    )
     report.schema_records_checked += 1
 
     # Rule 2: accepted claims must have a public-safe disclosure_status.
@@ -371,7 +404,8 @@ def _check_evidence_record(
             )
         )
 
-    # Rule 5: payload fields.
+    # Rule 5 (and Rule 9 for crash records, since the payload-fields tuple
+    # was extended in v0.4 to cover raw_witness/raw_corpus_input).
     _check_payload_fields(record, record_id, rel, report)
 
     # Rule 5b: aegisgraph BLOCKING_PATTERNS overlap.
@@ -395,6 +429,15 @@ def _check_evidence_record(
                 ),
             )
         )
+
+    # v0.4 record-kind dispatch.
+    kind = _detect_record_kind(record)
+    if kind == "disclosure_event":
+        _check_disclosure_event_record(record, rel, report)
+    elif kind == "invariant_violation":
+        _check_invariant_violation_record(record, rel, report)
+    elif kind == "crash":
+        _check_crash_record(record, rel, report)
 
 
 def _check_tool_output(
@@ -425,7 +468,9 @@ def _records_from_document(document: Any) -> list[dict[str, Any]]:
     rules to top-level evidence-records, embedded `records`, or
     `evidence_records` lists. Findings (finding.schema.json) are only
     embedded inline; we accept them anywhere they appear with the
-    finding_type / disclosure_status keys.
+    finding_type / disclosure_status keys. v0.4 adds disclosure_events,
+    invariant_violations, crashes, disagreements, discovery_runs, and
+    cross_target_candidates lists.
     """
     if not isinstance(document, dict):
         return []
@@ -441,7 +486,170 @@ def _records_from_document(document: Any) -> list[dict[str, Any]]:
         out.extend(r for r in document["evidence_records"] if isinstance(r, dict))
     if isinstance(document.get("findings"), list):
         out.extend(r for r in document["findings"] if isinstance(r, dict))
+    # v0.4 additive arrays (plan §10 — public artifact schema additions).
+    for key in (
+        "disclosure_events",
+        "invariant_violations",
+        "crashes",
+        "disagreements",
+        "discovery_runs",
+        "cross_target_candidates",
+    ):
+        if isinstance(document.get(key), list):
+            out.extend(r for r in document[key] if isinstance(r, dict))
     return out
+
+
+def _detect_record_kind(record: dict[str, Any]) -> str | None:
+    """Classify a record by its ID prefix or known shape markers.
+
+    Returns one of {disclosure_event, invariant_violation, crash,
+    cross_target_candidate, evidence, finding, None}. Used to route to
+    the v0.4 Rules 7/8/9.
+    """
+    # Prefer ID-prefix classification — every v1 record carries one.
+    for id_key in ("entry_id", "violation_id", "crash_id", "candidate_id", "id"):
+        rid = record.get(id_key)
+        if not isinstance(rid, str):
+            continue
+        if rid.startswith("AG-DISC-"):
+            return "disclosure_event"
+        if rid.startswith("AG-IV-"):
+            return "invariant_violation"
+        if rid.startswith("AG-CRASH-"):
+            return "crash"
+        if rid.startswith("AG-XSMA-"):
+            return "cross_target_candidate"
+        if rid.startswith("AG-EV-"):
+            return "evidence"
+        if rid.startswith("AG-FIND-"):
+            return "finding"
+    # Fallback: structural cues.
+    if "event_type" in record and "engine_origin" in record:
+        return "disclosure_event"
+    if "invariant_id" in record and "sarif_result_uri" in record:
+        return "invariant_violation"
+    if "crash_sha256" in record or "stack_trace_hash" in record:
+        return "crash"
+    if "structural_signature" in record and "target_findings" in record:
+        return "cross_target_candidate"
+    return None
+
+
+def _check_disclosure_event_record(
+    record: dict[str, Any],
+    rel: str,
+    report: ScanReport,
+) -> None:
+    """Rule 7 (v0.4): disclosure_event records in public exports.
+
+    Allowed: event_type ∈ _PUBLIC_SAFE_DISCLOSURE_EVENT_TYPES, vendor_contact
+    is null or an org-id-only token (no '@'), notes_hash is null. Anything
+    else trips a per-failure rule so the operator knows exactly which
+    surface to redact.
+    """
+    record_id = str(record.get("entry_id", record.get("id", "<unknown>")))
+    event_type = record.get("event_type")
+    if event_type is not None and event_type not in _PUBLIC_SAFE_DISCLOSURE_EVENT_TYPES:
+        report.add(
+            Failure(
+                rule="disclosure_event_private_event_type",
+                where=f"schema:{rel}:{record_id}",
+                detail=(
+                    f"disclosure_event.event_type={event_type!r} is private/in-flight; "
+                    f"public exports may only carry "
+                    f"{sorted(_PUBLIC_SAFE_DISCLOSURE_EVENT_TYPES)}"
+                ),
+            )
+        )
+    vendor_contact = record.get("vendor_contact")
+    if isinstance(vendor_contact, str) and "@" in vendor_contact:
+        report.add(
+            Failure(
+                rule="disclosure_event_vendor_contact_populated",
+                where=f"schema:{rel}:{record_id}",
+                detail=(
+                    "disclosure_event.vendor_contact must be redacted to "
+                    "organization-id-only in public exports (no '@' permitted)"
+                ),
+            )
+        )
+    notes_hash = record.get("notes_hash")
+    if notes_hash not in (None, "", []):
+        report.add(
+            Failure(
+                rule="disclosure_event_notes_hash_populated",
+                where=f"schema:{rel}:{record_id}",
+                detail=(
+                    "disclosure_event.notes_hash must be null in public exports; "
+                    f"got {notes_hash!r}"
+                ),
+            )
+        )
+
+
+def _check_invariant_violation_record(
+    record: dict[str, Any],
+    rel: str,
+    report: ScanReport,
+) -> None:
+    """Rule 8 (v0.4): invariant_violation source-snippet redaction.
+
+    The `location` block allows only repo_url + commit + path + start_line
+    (and optionally end_line / start_column). Any `source_snippet` key
+    anywhere inside `location` is a leak.
+    """
+    record_id = str(record.get("violation_id", record.get("id", "<unknown>")))
+    location = record.get("location")
+    if not isinstance(location, dict):
+        return
+    if "source_snippet" in location:
+        report.add(
+            Failure(
+                rule="invariant_violation_source_snippet",
+                where=f"schema:{rel}:{record_id}",
+                detail=(
+                    "invariant_violation.location.source_snippet is forbidden; "
+                    "public exports must keep location to repo_url + commit + "
+                    "path + start_line only"
+                ),
+            )
+        )
+    # Also catch a top-level source_snippet at the record level.
+    if "source_snippet" in record:
+        report.add(
+            Failure(
+                rule="invariant_violation_source_snippet",
+                where=f"schema:{rel}:{record_id}",
+                detail=(
+                    "invariant_violation.source_snippet at top level is forbidden; "
+                    "use sarif_result_uri to reference the engineering-private SARIF"
+                ),
+            )
+        )
+
+
+def _check_crash_record(
+    record: dict[str, Any],
+    rel: str,
+    report: ScanReport,
+) -> None:
+    """Rule 9 (v0.4): crash record completeness.
+
+    Every crash record must have crash_sha256 set AND must NOT carry any
+    payload-bearing field (covered by Rule 5 / _check_payload_fields with
+    the v0.4-extended _PAYLOAD_FIELD_NAMES tuple).
+    """
+    record_id = str(record.get("crash_id", record.get("id", "<unknown>")))
+    sha = record.get("crash_sha256")
+    if not isinstance(sha, str) or not sha.strip():
+        report.add(
+            Failure(
+                rule="crash_record_missing_sha256",
+                where=f"schema:{rel}:{record_id}",
+                detail="crash record must carry a non-empty crash_sha256 field",
+            )
+        )
 
 
 def _scan_schema_documents(root: Path, report: ScanReport) -> None:
