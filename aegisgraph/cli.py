@@ -12,6 +12,7 @@ from .disclosure import ledger as disclosure_ledger
 from .disclosure.pipeline import embargo_timer
 from .io import repo_root
 from .validation import validate_repo
+from .workbench import cli as workbench_cli
 
 
 def _root() -> Path:
@@ -318,6 +319,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="evaluation date in YYYY-MM-DD (default: today, UTC)",
     )
     disclose_tick.set_defaults(func=cmd_disclose)
+
+    workbench_cli.register_subparser(subparsers)
 
     return parser
 
