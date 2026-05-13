@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector-deeplink.schema.json",
+  "title": "PolyDiff Deeplink-Family Fact Vector",
+  "description": "Per-implementation fact vector for the deeplink family. Sibling of fact-vector.schema.json (URL family), fact-vector-image.schema.json (image family), and fact-vector-opengraph.schema.json (opengraph family); all share input_id + parser_profile as the cross-family identity keys that the diff engine pairs vectors on. Axes follow the T-M2.4 spec: scheme, host, path, query_params, fragment_action, declared_permissions, intent_action, intent_category, parser_warnings, decode_outcome. When a wrapper binary/package is absent (e.g. the Android or iOS toolchain is not installed in the devcontainer) the wrapper emits a crash envelope with binary_missing=true and decode_outcome.status='parse_error'; that envelope still validates so the missing parser stays auditable in the diff report.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "scheme",
+    "host",
+    "path",
+    "query_params",
+    "fragment_action",
+    "declared_permissions",
+    "intent_action",
+    "intent_category",
+    "parser_warnings",
+    "decode_outcome"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wrapper id (android_intent_uri, ios_universal_link, web_url_fallback, custom_scheme_parser)."
+    },
+    "schema_version": {"type": "string"},
+    "binary_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set by the wrapper when the underlying parser binary/toolchain is not available. The deeplink axes are then null/empty and decode_outcome.status MUST be 'parse_error'."
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "scheme": {
+      "type": "string",
+      "description": "URI scheme parsed from input (http, https, sgnl, signal, intent, etc.). Empty string permitted for parse_error / binary_missing envelopes."
+    },
+    "host": {
+      "type": ["string", "null"],
+      "description": "Authority host component (e.g. 'example.com'). null when absent (opaque scheme) or unparseable."
+    },
+    "path": {
+      "type": ["string", "null"],
+      "description": "Path component (e.g. '/chat/abc'). null when absent or unparseable. Traversal characters ('../') are reported as-parsed; the triage classifier flags path divergence regardless of content."
+    },
+    "query_params": {
+      "type": ["object", "null"],
+      "additionalProperties": true,
+      "description": "Parsed query parameters as key-value map. null when no query string is present. Multi-valued keys are reported as their first occurrence (per WHATWG-URL); divergence in handling of duplicates surfaces here."
+    },
+    "fragment_action": {
+      "type": ["string", "null"],
+      "description": "Fragment-encoded action (e.g. '#openLink'). For intent:// URIs this may carry the encoded Intent extras (e.g. 'Intent;action=android.intent.action.VIEW;end'). null when no fragment is present."
+    },
+    "declared_permissions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "For Android intent URIs, the permissions declared in the intent. Empty array when none are declared. Divergence in this axis surfaces Android implicit-export risk."
+    },
+    "intent_action": {
+      "type": ["string", "null"],
+      "description": "For 'intent://' schemes, the Intent action component (e.g. 'android.intent.action.VIEW'). null for non-intent schemes."
+    },
+    "intent_category": {
+      "type": ["array", "null"],
+      "items": {"type": "string"},
+      "description": "Intent categories (e.g. 'android.intent.category.BROWSABLE'). null for non-intent schemes; empty array when intent declares none."
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Implementation-emitted warnings (e.g. 'unknown scheme', 'malformed query string', 'path traversal segment'). Empty array on a clean parse."
+    },
+    "decode_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "bytes_out"],
+      "description": "Implementation-reported parse outcome. 'parse_error' covers parser crash, FileNotFoundError (toolchain missing), and other catastrophic failures; 'scheme_unknown' is the parser cleanly recognizing a scheme outside its known set; 'malformed' is a known scheme with bad syntax; 'ok' is a clean parse.",
+      "properties": {
+        "status": {"enum": ["ok", "parse_error", "scheme_unknown", "malformed"]},
+        "bytes_out": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

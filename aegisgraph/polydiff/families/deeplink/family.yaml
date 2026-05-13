@@ -1,0 +1,108 @@
+# PolyDiff deeplink-family manifest (Engine 1, T-M2.4).
+#
+# Per Asemarefactor.md §"Engine 1: PolyDiff Extended" module layout, this
+# file is the single source of truth for:
+#   - Which implementations the diff engine dispatches to.
+#   - The per-family fact-vector axes the diff engine compares.
+#   - Reachability mappings (witness -> SMA codepath via evidence graph).
+#
+# Edits MUST keep this file in sync with:
+#   - schema/fact-vector-deeplink.schema.json (axes + required fields)
+#   - aegisgraph/polydiff/families/deeplink/wrappers/* (one module per impl)
+#   - polydiff/families/deeplink/regression/corpus.json (anchored cases)
+
+family: deeplink
+schema_version: v1.0
+
+implementations:
+  - id: android_intent_uri
+    bindings: python
+    wrapper: wrappers/android_intent_uri.py
+    binary_hint: android_intent_parser
+    version_pin: "android-intent-uri-parser@v0.1.0"  # synthetic pin; the
+                                                    # actual Android SDK
+                                                    # toolchain may be
+                                                    # unavailable in the
+                                                    # devcontainer —
+                                                    # wrapper emits
+                                                    # binary_missing=true.
+  - id: ios_universal_link
+    bindings: python
+    wrapper: wrappers/ios_universal_link.py
+    binary_hint: ios_universal_link_parser
+    version_pin: "ios-nsurlcomponents-parser@v0.1.0"
+  - id: web_url_fallback
+    bindings: python
+    wrapper: wrappers/web_url_fallback.py
+    binary_hint: whatwg_url_parser
+    version_pin: "whatwg-url-parser@v1.0.0"
+  - id: custom_scheme_parser
+    bindings: python
+    wrapper: wrappers/custom_scheme_parser.py
+    binary_hint: custom_scheme_parser
+    version_pin: "custom-scheme-parser@v0.1.0"
+
+fact_vector_schema:
+  schema_path: schema/fact-vector-deeplink.schema.json
+  # Axes per the T-M2.4 spec: 10 axes covering scheme, authority/path
+  # components, query/fragment, Android intent-specific axes, parser
+  # warnings, decode outcome.
+  axes:
+    - scheme: "string"
+    - host: "string|null"
+    - path: "string|null"
+    - query_params: "object|null"
+    - fragment_action: "string|null"
+    - declared_permissions: "list[string]"
+    - intent_action: "string|null"
+    - intent_category: "list[string]|null"
+    - parser_warnings: "list[string]"
+    - decode_outcome: {status: "enum[ok, parse_error, scheme_unknown, malformed]", bytes_out: int}
+
+# Triage classifier rules. Encoded as additive logic in
+# aegisgraph/polydiff/core/triage.py (function
+# `classify_deeplink_disagreement`). Listed here for cross-reference; the
+# code is the executable source of truth.
+triage_rules:
+  - axis: decode_outcome
+    when: one_ok_one_parse_error
+    triage_class: HIGH
+    rationale: parser crash potential — one impl parsed cleanly while another crashed/rejected
+  - axis: intent_action
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: Android intent-confusion bug class — same URI, different Intent action selected
+  - axis: host
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: parser inconsistency / redirect surface — same input, different authority host
+  - axis: path
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: parser inconsistency / traversal surface — same input, different resolved path
+  - axis: declared_permissions
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: Android implicit-export surface — declared permission set diverges
+  - axis: fragment_action
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: fragment-encoded action divergence — link-handler may dispatch differently
+  - axis: query_params
+    when: any-mismatch
+    triage_class: LOW
+    rationale: query-string semantics often spec-tolerant; cosmetic unless paired with host/path
+
+reachability:
+  signal_android:
+    - path_class: deeplink_handler
+      entry: "DeepLinkActivity.onCreate"
+      sink: "DeepLinkRouter.dispatch"
+  element_x_android:
+    - path_class: deeplink_handler
+      entry: "DeepLinkActivity.handleIntent"
+      sink: "DeepLinkParser.parse"
+  signal_ios:
+    - path_class: universal_link
+      entry: "AppDelegate.continueUserActivity"
+      sink: "URLOpenerImpl.openURL"

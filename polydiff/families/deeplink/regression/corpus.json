@@ -1,0 +1,116 @@
+{
+  "tool_output_type": "polydiff_deeplink_corpus",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "family": "deeplink",
+  "notes": [
+    "Anchored corpus for PolyDiff deeplink-family rediscovery + synthetic regressions.",
+    "Witnesses are pinned by SHA-256 ONLY. NO payload bytes appear in this repo.",
+    "Anchors cover four canonical deeplink divergence shapes: intent_action (MEDIUM-HIGH; Android intent-confusion / implicit-export class), host (MEDIUM; iOS universal-link origin-confusion), host+path or query_params (MEDIUM; deeplink open-redirect class), and path (MEDIUM; custom-scheme traversal class).",
+    "Per-case `implementations` lists the two wrapper ids the case is designed to disagree on; the diff engine runs ALL declared wrappers and picks up these axes (plus any others that surface).",
+    "Per-case `expected_fact_vector_diff` is keyed by axis name; each value is a 2-element array of the two impls' observations (matches the `implementations` ordering)."
+  ],
+  "cases": [
+    {
+      "case_id": "anchor_android_intent_implicit_export",
+      "historical_cve_reference": null,
+      "summary": "An `intent://` URI that, when parsed by Android's Intent.parseUri, produces an Intent with an action that matches a non-declared filter in the SMA's manifest. The Android intent parser emits one action while the SMA's deeplink router resolves a different action from the same URI — leading to silent-export risk (Android intent-confusion bug class). SHA-256-pinned synthetic representation.",
+      "bug_class": "android-intent-implicit-export-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d1",
+      "witness_size_bytes": 128,
+      "implementations": ["android_intent_uri", "custom_scheme_parser"],
+      "expected_fact_vector_diff": {
+        "intent_action": [
+          "android.intent.action.VIEW",
+          "android.intent.action.SEND"
+        ],
+        "declared_permissions": [
+          [],
+          ["android.permission.CAMERA"]
+        ]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "intent",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "witness bytes are NOT in this repo; pinned-hash anchor only. The expected fact-vector diff documents the canonical disagreement shape — actual parser outputs depend on the pinned wrapper versions."
+    },
+    {
+      "case_id": "anchor_ios_universal_link_origin_confusion",
+      "historical_cve_reference": null,
+      "summary": "An HTTPS URL that NSURLComponents parses one way and the SMA's link-handler parses differently. One impl returns the host as the apex domain (origin); the other follows a path-component-as-host quirk that produces a different origin downstream. Maps to iOS universal-link origin-confusion class. SHA-256-pinned synthetic representation.",
+      "bug_class": "ios-universal-link-origin-confusion",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d2",
+      "witness_size_bytes": 192,
+      "implementations": ["ios_universal_link", "web_url_fallback"],
+      "expected_fact_vector_diff": {
+        "host": [
+          "trusted.example",
+          "attacker.example"
+        ],
+        "path": [
+          "/open",
+          "/open"
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "host",
+      "reachability_targets": ["signal_ios"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the host-divergence triage rule; the iOS NSURLComponents quirk class is documented in iOS security guidance generally rather than a specific public bug write-up."
+    },
+    {
+      "case_id": "anchor_deeplink_open_redirect",
+      "historical_cve_reference": null,
+      "summary": "A `signal://` URI with an embedded HTTP URL in a parameter. The proprietary-scheme parser returns the apex host with the embedded URL parked in query_params; a WHATWG-URL fallback that the SMA might call before policy check would resolve to the embedded host directly. If the SMA fetches the parameter without policy check, open-redirect surfaces. Maps to a documented deeplink open-redirect bug class.",
+      "bug_class": "deeplink-open-redirect-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d3",
+      "witness_size_bytes": 256,
+      "implementations": ["custom_scheme_parser", "web_url_fallback"],
+      "expected_fact_vector_diff": {
+        "host": [
+          "victim.example",
+          "attacker.example"
+        ],
+        "path": [
+          "/redirect",
+          "/landing"
+        ],
+        "query_params": [
+          {"to": "https://attacker.example/landing"},
+          {}
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "host",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the host+path divergence triage rule on a deeplink open-redirect shape. Public bug write-ups for this class are commonly documented in mobile-deeplink security research."
+    },
+    {
+      "case_id": "anchor_custom_scheme_traversal",
+      "historical_cve_reference": null,
+      "summary": "A proprietary-scheme URI (e.g. `sgnl://chat/../..//system/`) where the path component admits traversal. The custom-scheme parser normalizes the traversal segments inconsistently across impls; one resolves to `/system/` while another preserves the literal `chat/../..//system/`. Maps to a deeplink-traversal bug class. SHA-256-pinned synthetic representation.",
+      "bug_class": "custom-scheme-traversal-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000d4",
+      "witness_size_bytes": 96,
+      "implementations": ["custom_scheme_parser", "web_url_fallback"],
+      "expected_fact_vector_diff": {
+        "path": [
+          "/system/",
+          "/chat/../..//system/"
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "path",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the path-divergence triage rule on a custom-scheme traversal shape."
+    }
+  ]
+}

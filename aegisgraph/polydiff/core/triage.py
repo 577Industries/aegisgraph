@@ -336,9 +336,187 @@ def _classify_opengraph_axis(
     return ("NOISE", f"unknown opengraph-family axis {axis!r}")
 
 
+# ---------------------------------------------------------------------------
+# Deeplink-family triage (T-M2.4)
+# ---------------------------------------------------------------------------
+#
+# Per the T-M2.4 spec, the deeplink family classifies disagreements as:
+#
+#   decode_outcome divergence (one ok, one parse_error)        -> HIGH
+#       Parser crash potential — one impl parsed cleanly while another
+#       crashed/rejected the same input.
+#   intent_action divergence                                   -> MEDIUM-HIGH
+#       Android intent-confusion bug class — same URI, different Intent
+#       action selected by Intent.parseUri vs the SMA's filters.
+#   host or path divergence with same input                    -> MEDIUM
+#       Parser inconsistency / redirect surface.
+#   declared_permissions divergence                            -> MEDIUM
+#       Android implicit-export surface — declared permission set diverges.
+#   fragment_action divergence                                 -> MEDIUM
+#       Fragment-encoded action divergence — link-handler may dispatch
+#       differently.
+#   query_params divergence                                    -> LOW
+#       Query-string semantics often spec-tolerant.
+#
+# Rules are ADDITIVE — they do not touch URL, image, or opengraph family
+# classifiers. The deeplink regression module calls
+# `classify_deeplink_disagreement(fact_vector_diff)` to stamp each emitted
+# AG-DIS-DL-* record with `triage_class` + rationale.
+
+
+def classify_deeplink_disagreement(fact_vector_diff: dict[str, Any]) -> dict[str, str]:
+    """Map a deeplink-family `fact_vector_diff` to triage class + rationale.
+
+    `fact_vector_diff` keys are axis names (e.g. "intent_action",
+    "decode_outcome", "host"); values are arrays of per-implementation
+    observations. For each axis we evaluate the divergence shape and
+    assign a triage label. If the diff touches multiple axes the final
+    label is the most severe of the per-axis labels (priority HIGH >
+    MEDIUM-HIGH > MEDIUM > LOW > NOISE).
+
+    Returns: {"triage_class": str, "triage_rationale": str}
+
+    Raises: never. Unknown axes contribute NOISE and a generic rationale.
+    """
+    if not isinstance(fact_vector_diff, dict) or not fact_vector_diff:
+        return {
+            "triage_class": "NOISE",
+            "triage_rationale": "empty disagreement",
+        }
+
+    per_axis: list[tuple[str, str, str]] = []  # (axis, class, rationale)
+
+    for axis, values in fact_vector_diff.items():
+        cls, rationale = _classify_deeplink_axis(axis, values, fact_vector_diff)
+        per_axis.append((axis, cls, rationale))
+
+    # Pick the worst (highest-priority) per-axis label.
+    per_axis.sort(key=lambda t: _TRIAGE_PRIORITY.get(t[1], 0), reverse=True)
+    _top_axis, top_class, top_rationale = per_axis[0]
+    return {
+        "triage_class": top_class,
+        "triage_rationale": top_rationale,
+    }
+
+
+def _classify_deeplink_axis(
+    axis: str, values: Any, full_diff: dict[str, Any]
+) -> tuple[str, str]:
+    """Per-axis triage logic for the deeplink family.
+
+    Returns (triage_class, rationale).
+    """
+    if axis == "decode_outcome":
+        return _classify_deeplink_decode_outcome(values)
+    if axis == "intent_action":
+        return (
+            "MEDIUM-HIGH",
+            "intent_action divergence — Android intent-confusion bug class "
+            "(same URI parsed to different Intent action)",
+        )
+    if axis == "intent_category":
+        return (
+            "MEDIUM-HIGH",
+            "intent_category divergence — Android intent-confusion bug class "
+            "(same URI parsed to different Intent categories)",
+        )
+    if axis == "host":
+        return (
+            "MEDIUM",
+            "host divergence — parser inconsistency / redirect surface "
+            "(same input, different authority host)",
+        )
+    if axis == "path":
+        return (
+            "MEDIUM",
+            "path divergence — parser inconsistency / traversal surface "
+            "(same input, different resolved path)",
+        )
+    if axis == "declared_permissions":
+        return (
+            "MEDIUM",
+            "declared_permissions divergence — Android implicit-export "
+            "surface (declared permission set diverges)",
+        )
+    if axis == "fragment_action":
+        return (
+            "MEDIUM",
+            "fragment_action divergence — link-handler may dispatch "
+            "differently on fragment-encoded action",
+        )
+    if axis == "scheme":
+        return (
+            "MEDIUM",
+            "scheme divergence — implementations recognized different URI "
+            "schemes for the same input",
+        )
+    if axis == "query_params":
+        return (
+            "LOW",
+            "query_params divergence — query-string semantics often "
+            "spec-tolerant; cosmetic unless paired with host/path",
+        )
+    if axis == "parser_warnings":
+        return ("NOISE", "warnings-only divergence")
+    # Unknown axis: fall back to NOISE so a future schema addition cannot
+    # accidentally promote a benign axis to HIGH.
+    return ("NOISE", f"unknown deeplink-family axis {axis!r}")
+
+
+def _classify_deeplink_decode_outcome(values: Any) -> tuple[str, str]:
+    """Decode_outcome triage for the deeplink family.
+
+    The deeplink fact-vector schema uses the status enum
+    {ok, parse_error, scheme_unknown, malformed}. A one-ok-one-parse_error
+    pairing is the canonical HIGH signal (one impl parsed cleanly while
+    another crashed/rejected the same input — parser crash potential).
+    """
+    if not isinstance(values, list) or len(values) < 2:
+        return ("NOISE", "decode_outcome with <2 observations")
+
+    statuses: list[str] = []
+    for v in values:
+        if isinstance(v, dict):
+            statuses.append(str(v.get("status", "")))
+        else:
+            statuses.append(str(v))
+
+    has_ok = any(s == "ok" for s in statuses)
+    has_parse_error = any(s == "parse_error" for s in statuses)
+    has_scheme_unknown = any(s == "scheme_unknown" for s in statuses)
+    has_malformed = any(s == "malformed" for s in statuses)
+
+    if has_ok and has_parse_error:
+        return (
+            "HIGH",
+            "decode_outcome divergence (one ok, one parse_error) — parser "
+            "crash potential",
+        )
+    if has_ok and has_malformed:
+        return (
+            "MEDIUM-HIGH",
+            "decode_outcome divergence (one ok, one malformed) — parser "
+            "acceptance mismatch on syntactically-broken input",
+        )
+    if has_ok and has_scheme_unknown:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (one ok, one scheme_unknown) — "
+            "scheme-recognition disagreement",
+        )
+    if has_parse_error and has_malformed:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (parse_error vs malformed) — parser "
+            "robustness gap on the same input",
+        )
+    return ("LOW", "decode_outcome divergence without ok pairing")
+
+
 __all__ = [
     "Disagreement",
     "detect_disagreements",
     "classify_image_disagreement",
     "classify_opengraph_disagreement",
+    "classify_deeplink_disagreement",
 ]
