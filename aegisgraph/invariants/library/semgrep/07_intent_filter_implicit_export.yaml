@@ -1,0 +1,66 @@
+# AegisGraph InvariantCheck INV-07
+# Statement: AndroidManifest <intent-filter> on an exported component must
+# carry a guarding android:permission (or signature-level permission) when
+# the component handles attacker-reachable actions or data schemes.
+#
+# Rationale: an exported activity/service/receiver with an open
+# intent-filter and no permission gate is reachable from any installed
+# app. Combined with weak input validation, this is a textbook
+# lateral-movement and intent-spoofing path.
+#
+# See aegisgraph/invariants/manifest.json :: INV-07 for the canonical
+# statement, rationale, MASTG-PLATFORM-1 / SSDF PW.4.1 mappings, and the
+# demo-vulnerable-app ground-truth expectation (2 violations).
+#
+# Ground-truth notes:
+#   * pre-Android-12 (targetSdk < 31): a component with any
+#     intent-filter is IMPLICITLY exported even without
+#     android:exported="true" — Rule #1 covers explicit export, Rule
+#     #2 covers the implicit-export case (no android:exported attribute
+#     present).
+#   * components that DO declare android:permission="..." are clean
+#     (the pattern-not-regex below excludes them).
+
+rules:
+  - id: aegisgraph.inv-07-intent-filter-implicit-export
+    languages:
+      - generic
+    severity: WARNING
+    message: |
+      INV-07: An Android component declares <intent-filter> but is not
+      protected by android:permission. Either set
+      android:exported="false" (and gate the component behind a
+      same-app intent), or declare an android:permission attribute
+      (preferably signature-level) on the component element.
+    metadata:
+      category: security
+      invariant_id: INV-07
+      cwe: CWE-926
+      mastg: MSTG-PLATFORM-1
+      ssdf: PW.4.1
+      aegisgraph_path_class:
+        - deeplink
+        - inbound_message
+      references:
+        - https://developer.android.com/guide/topics/manifest/activity-element#exported
+        - https://owasp.org/www-project-mobile-app-security/MASTG/0x05h-Testing-Platform-Interaction
+    paths:
+      include:
+        - "**/AndroidManifest.xml"
+    pattern-either:
+      # Rule 1: explicitly exported activity/service/receiver/provider with an
+      # intent-filter but NO android:permission attribute on the component
+      # element.
+      - patterns:
+          - pattern-regex: |
+              <(?:activity|service|receiver|provider)\b[^>]*android:exported\s*=\s*"true"[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>
+          - pattern-not-regex: |
+              <(?:activity|service|receiver|provider)\b[^>]*android:exported\s*=\s*"true"[^>]*android:permission\s*=\s*"[^"]+"
+
+      # Rule 2: implicit-export — component without an android:exported
+      # attribute but with an intent-filter (pre-Android-12 semantics).
+      - patterns:
+          - pattern-regex: |
+              <(?:activity|service|receiver|provider)\b(?:(?!android:exported\s*=)[^>])*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>
+          - pattern-not-regex: |
+              <(?:activity|service|receiver|provider)\b(?:(?!android:exported\s*=)[^>])*android:permission\s*=\s*"[^"]+"
