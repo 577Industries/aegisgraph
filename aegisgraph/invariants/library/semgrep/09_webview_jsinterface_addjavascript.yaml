@@ -1,4 +1,4 @@
-# AegisGraph InvariantCheck INV-09 (STUB — M5.3 deliverable)
+# AegisGraph InvariantCheck INV-09 (M7-GT-v3 production)
 #
 # Statement: Android WebView instances shall not call
 # addJavascriptInterface() on user-controlled content without setting
@@ -11,57 +11,64 @@
 # room content, oEmbed) without origin restrictions, the bridge becomes
 # a remote-code-execution surface.
 #
-# ─────────────────────────────────────────────────────────────────────
-# STUB RULE — NOT YET FULLY ENCODED (M5.3 deliverable)
-# ─────────────────────────────────────────────────────────────────────
-#
-# This file is committed so the M3.3 manifest entry for INV-09 resolves
-# to a real file on disk. The full Semgrep encoding is scheduled for
-# M5.3 (the milestone that ships INV-02..-06, 08, 10, 12, 14, 15).
-#
-# Intended encoding sketch (drives the M5.3 work):
-#
-#   languages: [java, kotlin]
-#   pattern-either:
-#     - pattern: |
-#         $W.addJavascriptInterface(...)
-#     - patterns:
-#         - pattern: |
-#             $W.getSettings().setJavaScriptEnabled(true)
-#         - pattern-not-regex: |
-#             setAllowFileAccess\s*\(\s*false\s*\)
-#         - pattern-not-regex: |
-#             setAllowContentAccess\s*\(\s*false\s*\)
-#
-# Until this stub is fleshed out, Semgrep will load this file without
-# producing matches (no `pattern` is provided in the placeholder rule
-# below, only metadata; semgrep validates rules at load-time without
-# requiring them to fire).
-#
 # See aegisgraph/invariants/manifest.json :: INV-09 for the canonical
-# statement, rationale, and MASTG-PLATFORM-7 / SSDF PW.5.1 mappings.
+# statement, rationale, MASTG-PLATFORM-7 / SSDF PW.5.1 mappings, and
+# the demo-vulnerable-app ground-truth expectation (2 violations).
+#
+# Pattern strategy:
+#   Find: a method that calls $W.addJavascriptInterface(...)
+#   Inside the same method, NOT also calling:
+#     * $X.setAllowFileAccess(false)   (file-URL barrier)
+#     * $Y.setAllowContentAccess(false) (content-URL barrier)
+#     * any of {isSameOrigin, checkOrigin, verifyOriginAllowlist,
+#       isAllowedOrigin} as a method call
+#   Then the bridge is unhardened — emit a finding.
 
 rules:
-  - id: aegisgraph.inv-09-webview-jsinterface-addjavascript-stub
+  - id: aegisgraph.inv-09-webview-jsinterface-addjavascript
     languages:
       - java
-    severity: INFO
+    severity: ERROR
     message: |
-      INV-09 stub — see header comment block in this file for the M5.3
-      encoding plan. This rule's pattern is intentionally narrow so the
-      stub remains a no-op until the full rule lands.
+      INV-09: WebView.addJavascriptInterface() is called without the
+      required hardening sequence — setAllowFileAccess(false),
+      setAllowContentAccess(false), and a same-origin guard on the bound
+      object. When the WebView loads attacker-influenced HTML, the
+      JS-to-Java bridge becomes a remote-code-execution surface.
     metadata:
       category: security
       invariant_id: INV-09
       cwe: CWE-749
       mastg: MSTG-PLATFORM-7
       ssdf: PW.5.1
-      stub: true
       aegisgraph_path_class:
         - link_preview
         - native_boundary
-    # Placeholder pattern — matches a syntactic literal that will never
-    # appear in real Android source ("__aegisgraph_inv09_stub__"), so the
-    # rule loads cleanly but produces no findings until M5.3 replaces it.
-    pattern: |
-      String x = "__aegisgraph_inv09_stub__";
+      references:
+        - https://developer.android.com/reference/android/webkit/WebView#addJavascriptInterface(java.lang.Object,%20java.lang.String)
+        - https://owasp.org/www-project-mobile-app-security/MASTG/0x05h-Testing-Platform-Interaction
+    patterns:
+      # The enclosing method calls addJavascriptInterface.
+      - pattern: |
+          $RET $METHOD(...) {
+            ...
+            $W.addJavascriptInterface($OBJ, $NAME);
+            ...
+          }
+      # Barrier 1: same method must NOT also call setAllowFileAccess(false).
+      - pattern-not: |
+          $RET $METHOD(...) {
+            ...
+            $X.setAllowFileAccess(false);
+            ...
+          }
+      # Barrier 2: same method must NOT also call setAllowContentAccess(false).
+      - pattern-not: |
+          $RET $METHOD(...) {
+            ...
+            $Y.setAllowContentAccess(false);
+            ...
+          }
+      # Barrier 3: same method must NOT contain a same-origin guard.
+      - pattern-not-regex: |
+          (?:isSameOrigin|checkOrigin|verifyOriginAllowlist|isAllowedOrigin)

@@ -13,6 +13,10 @@ History:
              the production-encoded Semgrep set to 2 (INV-07, -08). Three
              stubs remain after M7-INV (INV-09 Semgrep, INV-11 CodeQL,
              INV-13 CodeQL); those graduate later.
+    M7-GT-v3 (Wave 8A) — the final 3 stubs graduate (INV-09 Semgrep,
+             INV-11 CodeQL, INV-13 CodeQL), closing the library at 15/15
+             production. Total production CodeQL: 12; Semgrep: 3. Stub
+             tuples are now empty.
 
 What this test asserts (no CodeQL / Semgrep binary required — text-only):
 
@@ -55,9 +59,9 @@ from aegisgraph.io import repo_root
 
 LIBRARY_DIR = repo_root() / "aegisgraph" / "invariants" / "library"
 
-# All ten production CodeQL queries (3 prior + 7 M7-INV graduations).
-# The two prior fully-encoded Semgrep rules (INV-07, INV-08) are checked
-# below via FULLY_ENCODED_SEMGREP.
+# All twelve production CodeQL queries (3 prior + 7 M7-INV + 2 M7-GT-v3).
+# The three fully-encoded Semgrep rules (INV-07, INV-08, INV-09) are
+# checked below via FULLY_ENCODED_SEMGREP.
 FULLY_ENCODED_CODEQL = (
     ("01_url_fetch_without_policy.ql", "INV-01", "UrlFetchPolicy"),
     ("02_notification_leak.ql", "INV-02", "NotificationLeak"),
@@ -66,7 +70,9 @@ FULLY_ENCODED_CODEQL = (
     ("05_key_storage_no_keystore.ql", "INV-05", "KeyStorage"),
     ("06_pq_downgrade.ql", "INV-06", "PqDowngrade"),
     ("10_attachment_path_traversal.ql", "INV-10", "AttachmentPathTraversal"),
+    ("11_deeplink_open_redirect.ql", "INV-11", "DeeplinkOpenRedirect"),
     ("12_media_decode_unsanitized.ql", "INV-12", "MediaDecodeUnsanitized"),
+    ("13_qr_payload_unverified_binding.ql", "INV-13", "QrPayloadBinding"),
     ("14_backup_blob_unauthenticated.ql", "INV-14", "BackupBlob"),
     ("15_metadata_leak_outside_envelope.ql", "INV-15", "MetadataLeak"),
 )
@@ -74,18 +80,16 @@ FULLY_ENCODED_CODEQL = (
 FULLY_ENCODED_SEMGREP = (
     ("07_intent_filter_implicit_export.yaml", "INV-07", "intent-filter"),
     ("08_clipboard_paste_to_send.yaml", "INV-08", "clipboard"),
+    ("09_webview_jsinterface_addjavascript.yaml", "INV-09", "webview"),
 )
 
-# Remaining stubs after the M7-INV pass — these still ship as
-# `where none()` placeholders awaiting later milestones.
-STUB_CODEQL = (
-    "11_deeplink_open_redirect.ql",
-    "13_qr_payload_unverified_binding.ql",
-)
+# After M7-GT-v3 (Wave 8A), no stubs remain — all 15 invariants are
+# production-encoded. The empty tuples are retained for backward
+# compatibility with parametrized tests downstream; the
+# test_no_remaining_stubs assertion below asserts this explicitly.
+STUB_CODEQL: tuple[str, ...] = ()
 
-STUB_SEMGREP = (
-    "09_webview_jsinterface_addjavascript.yaml",
-)
+STUB_SEMGREP: tuple[str, ...] = ()
 
 
 # Regexes for the structural source/sink/barrier class declarations.
@@ -171,60 +175,44 @@ def test_fully_encoded_semgrep_has_rule_structure(
     )
 
 
-@pytest.mark.parametrize("filename", STUB_CODEQL)
-def test_stub_carries_stub_marker(filename: str) -> None:
-    """Each remaining stub must carry a stub marker so a grep over the
-    library lists outstanding work.
-
-    After the M7-INV pass, INV-11 and INV-13 remain as CodeQL stubs
-    scheduled for graduation at their respective deeplink / qr-binding
-    milestones (M3.4 lineage, not M7). Their stubs carry a STUB header
-    and `where none()` body but were never tagged TODO[M7] because they
-    were never part of the M5.3 batch.
-    """
-    text = (LIBRARY_DIR / "codeql" / filename).read_text(encoding="utf-8")
-    # Stubs must have an INV-NN reference in the header.
-    assert "@id-mapping INV-" in text, (
-        f"{filename}: stub missing @id-mapping INV-NN tag"
+def test_no_remaining_stubs() -> None:
+    """After the M7-GT-v3 pass (Wave 8A), no stubs remain — all 15
+    invariants are production-encoded. This assertion replaces the
+    earlier per-stub parametrized tests."""
+    assert STUB_CODEQL == (), (
+        f"M7-GT-v3 closes the InvariantCheck library at 15/15 "
+        f"production; STUB_CODEQL must be empty, got {STUB_CODEQL}"
     )
-    # Stub status must be reflected in the @tags block.
-    assert "stub" in text.lower(), (
-        f"{filename}: stub missing `stub` marker in header"
-    )
-    # Stubs use the trivial `where none()` form so codeql accepts the
-    # file without producing matches.
-    assert "where none()" in text, (
-        f"{filename}: stub should use `where none()` so the query is a "
-        f"syntactic-only placeholder"
+    assert STUB_SEMGREP == (), (
+        f"M7-GT-v3 closes the InvariantCheck library at 15/15 "
+        f"production; STUB_SEMGREP must be empty, got {STUB_SEMGREP}"
     )
 
 
-@pytest.mark.parametrize("filename", STUB_CODEQL)
-def test_stub_has_rich_intent_block(filename: str) -> None:
-    """Each stub must carry the intent comment block describing planned
-    sources / sinks / barriers (per M5.3 spec)."""
-    text = (LIBRARY_DIR / "codeql" / filename).read_text(encoding="utf-8")
-    # All three taint-config concept words present in the comment block.
-    for keyword in ("Sources", "Sinks", "Barriers"):
-        assert keyword in text, (
-            f"{filename}: stub intent block missing '{keyword}:' section"
+def test_no_codeql_file_carries_where_none_marker() -> None:
+    """After M7-GT-v3 no CodeQL query may carry the `where none()` stub
+    marker — every query is a real TaintTracking::Global flowPath
+    select."""
+    codeql_dir = LIBRARY_DIR / "codeql"
+    for ql_file in codeql_dir.glob("*.ql"):
+        text = ql_file.read_text(encoding="utf-8")
+        assert "where none()" not in text, (
+            f"{ql_file.name}: still carries `where none()` stub marker — "
+            f"M7-GT-v3 requires a production TaintTracking::Global flowPath select"
         )
 
 
-def test_ground_truth_fixture_dir_is_optional() -> None:
-    """The demo-vulnerable-app fixture directory is the planned home of
-    real ground-truth assertions. At M5.3 / M7-INV the directory may or
-    may not exist — we accept both cases.
-
-    When the directory IS present, future M7-GT assertions will
-    validate expected_violations counts against synthetic-vulnerable
-    Java/Kotlin snippets. Until then, this test is informational only.
-    """
+def test_ground_truth_fixture_dir_is_present() -> None:
+    """The demo-vulnerable-app fixture directory is required after the
+    M7-GT-v3 pass (Wave 8A); test_ground_truth_pass.py exercises it."""
     fixture_dir = repo_root() / "tests" / "fixtures" / "demo-vulnerable-app"
-    # We accept either present or absent. The M7-GT pass creates the
-    # directory and populates it; until then the absence is the
-    # expected state.
-    assert fixture_dir.is_dir() or not fixture_dir.exists(), (
-        f"tests/fixtures/demo-vulnerable-app exists but is not a "
-        f"directory: {fixture_dir}"
+    assert fixture_dir.is_dir(), (
+        f"tests/fixtures/demo-vulnerable-app must exist after M7-GT-v3; "
+        f"got {fixture_dir} (is_dir={fixture_dir.is_dir()}, "
+        f"exists={fixture_dir.exists()})"
     )
+    # Required subdirectories.
+    assert (fixture_dir / "src" / "main" / "java" / "com" / "example" / "demo").is_dir()
+    assert (fixture_dir / "fixtures").is_dir()
+    assert (fixture_dir / "AndroidManifest.xml").is_file()
+    assert (fixture_dir / "README.md").is_file()

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Synthetic ground-truth fixture for InvariantCheck INV-07.
+  Not based on any real product code.
+
+  Expected violations: 2
+    * BadIntentActivity: explicitly exported=true with intent-filter and
+      no android:permission attribute.
+    * BadReceiver: implicitly exported (no android:exported attribute)
+      with an intent-filter but no android:permission.
+
+  Clean controls:
+    * GoodInternalActivity (no intent-filter, exported=false) — clean.
+    * GoodPermissionedReceiver (has android:permission) — clean.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.demo">
+
+    <application android:label="demo-vulnerable-app">
+
+        <!-- VIOLATION 1: explicit exported=true with intent-filter and no permission -->
+        <activity
+            android:name=".BadIntentActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.demo.OPEN_DEEPLINK" />
+                <data android:scheme="example" />
+            </intent-filter>
+        </activity>
+
+        <!-- VIOLATION 2: implicit exported (no android:exported attr) with intent-filter -->
+        <receiver android:name=".BadReceiver">
+            <intent-filter>
+                <action android:name="com.example.demo.BROADCAST" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Clean control: no intent-filter, exported=false -->
+        <activity
+            android:name=".GoodInternalActivity"
+            android:exported="false" />
+
+        <!-- Clean control: permissioned receiver -->
+        <receiver
+            android:name=".GoodPermissionedReceiver"
+            android:exported="true"
+            android:permission="com.example.demo.permission.SIGNATURE_ONLY">
+            <intent-filter>
+                <action android:name="com.example.demo.SIGNED_BROADCAST" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

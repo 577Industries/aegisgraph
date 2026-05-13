@@ -19,19 +19,24 @@
 #     #2 covers the implicit-export case (no android:exported attribute
 #     present).
 #   * components that DO declare android:permission="..." are clean
-#     (the pattern-not-regex below excludes them).
+#     (the metavariable-regex below excludes them).
+#
+# Pattern strategy (M7-GT-v3 update):
+#   The regex flag (?s) enables DOTALL so the component element can
+#   span multiple lines (the typical AndroidManifest.xml shape). A
+#   metavariable-regex on the named capture group $COMPONENT
+#   subtracts components that carry android:permission="...".
 
 rules:
-  - id: aegisgraph.inv-07-intent-filter-implicit-export
+  - id: aegisgraph.inv-07-intent-filter-explicit-exported
     languages:
       - generic
     severity: WARNING
     message: |
-      INV-07: An Android component declares <intent-filter> but is not
-      protected by android:permission. Either set
-      android:exported="false" (and gate the component behind a
-      same-app intent), or declare an android:permission attribute
-      (preferably signature-level) on the component element.
+      INV-07: An Android component declares android:exported="true" with
+      an <intent-filter> but is not protected by android:permission. Set
+      a signature-level android:permission attribute on the component
+      element.
     metadata:
       category: security
       invariant_id: INV-07
@@ -47,20 +52,50 @@ rules:
     paths:
       include:
         - "**/AndroidManifest.xml"
-    pattern-either:
-      # Rule 1: explicitly exported activity/service/receiver/provider with an
-      # intent-filter but NO android:permission attribute on the component
-      # element.
-      - patterns:
-          - pattern-regex: |
-              <(?:activity|service|receiver|provider)\b[^>]*android:exported\s*=\s*"true"[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>
-          - pattern-not-regex: |
-              <(?:activity|service|receiver|provider)\b[^>]*android:exported\s*=\s*"true"[^>]*android:permission\s*=\s*"[^"]+"
+    patterns:
+      # Rule 1: explicitly exported activity/service/receiver/provider
+      # with an intent-filter on the component.
+      - pattern-regex: |
+          (?s)(?P<COMPONENT><(?:activity|service|receiver|provider)\b[^>]*android:exported\s*=\s*"true"[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>)
+      # Subtract components that carry android:permission="...".
+      - metavariable-regex:
+          metavariable: $COMPONENT
+          regex: "^(?!(?s).*android:permission\\s*=\\s*\"[^\"]+\")"
+      # pattern-not-regex retained as belt-and-braces for legacy semgrep
+      # versions that interpret it differently.
+      - pattern-not-regex: |
+          (?s)android:exported\s*=\s*"true"[^>]*android:permission\s*=\s*"[^"]+"
 
-      # Rule 2: implicit-export — component without an android:exported
-      # attribute but with an intent-filter (pre-Android-12 semantics).
-      - patterns:
-          - pattern-regex: |
-              <(?:activity|service|receiver|provider)\b(?:(?!android:exported\s*=)[^>])*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>
-          - pattern-not-regex: |
-              <(?:activity|service|receiver|provider)\b(?:(?!android:exported\s*=)[^>])*android:permission\s*=\s*"[^"]+"
+  - id: aegisgraph.inv-07-intent-filter-implicit-export
+    languages:
+      - generic
+    severity: WARNING
+    message: |
+      INV-07: An Android component with an <intent-filter> is implicitly
+      exported (no android:exported attribute) and is not protected by
+      android:permission. Either set android:exported="false" or declare
+      a signature-level android:permission attribute.
+    metadata:
+      category: security
+      invariant_id: INV-07
+      cwe: CWE-926
+      mastg: MSTG-PLATFORM-1
+      ssdf: PW.4.1
+      aegisgraph_path_class:
+        - deeplink
+        - inbound_message
+      references:
+        - https://developer.android.com/guide/topics/manifest/activity-element#exported
+    paths:
+      include:
+        - "**/AndroidManifest.xml"
+    patterns:
+      # Rule 2: component without android:exported= attribute but with
+      # an intent-filter (pre-Android-12 semantics treat this as
+      # implicit export).
+      - pattern-regex: |
+          (?s)(?P<COMPONENT><(?:activity|service|receiver|provider)\b(?:(?!android:exported\s*=)[^>])*>(?:(?!</(?:activity|service|receiver|provider)>).)*?<intent-filter\b[^>]*>(?:(?!</(?:activity|service|receiver|provider)>).)*?</(?:activity|service|receiver|provider)>)
+      # Subtract components that carry android:permission="...".
+      - metavariable-regex:
+          metavariable: $COMPONENT
+          regex: "^(?!(?s).*android:permission\\s*=\\s*\"[^\"]+\")"
