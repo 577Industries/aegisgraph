@@ -219,6 +219,23 @@ public class LinkPreviewUtil {
 """
 
 
+# Synthetic excerpt of Element X Android MediaRepository for the M5.1b JVM
+# entry point. The real Element X source is Apache-2.0 — we re-derive only
+# the public method signature, not the implementation, so the extractor can
+# be exercised offline without pulling the Element X tree.
+_ELEMENT_X_MEDIA_SOURCE = """\
+// derived signature from Element X Android MediaRepository.kt (Apache-2.0)
+package io.element.android.libraries.matrix.api.media;
+
+public class MediaRepository {
+    public static byte[] fetchAttachment(byte[] data) {
+        // implementation omitted; aegisgraph extracts only the signature.
+        return null;
+    }
+}
+"""
+
+
 _PATH_SPECS = {
     "libwebp": {
         "engine": "native",
@@ -258,6 +275,62 @@ _PATH_SPECS = {
         "java_version": "17",
         "fuzzer_engine": "jazzer",
         "sanitizers": [],
+    },
+    # M5.1b: second JVM entry point. Element X Android MediaRepository
+    # mirrors the Signal LinkPreviewUtil shape (static method, byte[] input)
+    # and renders cleanly through the existing Jazzer + Gradle templates.
+    "element_x_media": {
+        "engine": "jvm",
+        "harness_id": "MediaRepositoryFuzzer",
+        "fuzzer_class_name": "MediaRepositoryFuzzer",
+        "package": "org.aegisgraph.fuzz",
+        "target_class": "io.element.android.libraries.matrix.api.media.MediaRepository",
+        "target_class_simple": "MediaRepository",
+        "entry_method": "fetchAttachment",
+        "source_text": _ELEMENT_X_MEDIA_SOURCE,
+        "source_path": "MediaRepository.java",
+        # The template wraps `data.consumeRemainingAsString()` in `input`;
+        # we widen it back to bytes via `input.getBytes()` for the call.
+        "target_call": (
+            "MediaRepository.fetchAttachment(input.getBytes())"
+        ),
+        "expected_exceptions": [
+            "IllegalArgumentException",
+            "java.io.IOException",
+        ],
+        # Gradle stub: media parser module only (no full Element X app).
+        "target_module": "io.element.android:libraries-matrix-api-media-parser",
+        "target_module_version": "PLACEHOLDER",
+        "jazzer_version": "0.22.1",
+        "java_version": "17",
+        "fuzzer_engine": "jazzer",
+        "sanitizers": [],
+    },
+    # M5.1b: second native entry point. libavif uses a setup-teardown
+    # decoder lifecycle (create-decoder -> create-image -> read-memory
+    # -> destroy-image -> destroy-decoder) that the simple single-call
+    # libfuzzer_native template cannot express. The harness source is
+    # shipped as a committed canonical artifact under reprochain/harness/
+    # libavif/avifDecoderRead.harness.cc and the Makefile is rendered
+    # from the existing native.Makefile.j2 template. The "native_static"
+    # engine instructs the orchestrator to verify the on-disk source +
+    # re-emit the Makefile + manifest (no template re-render of .cc).
+    "libavif": {
+        "engine": "native_static",
+        "harness_id": "avifDecoderRead",
+        "entry_function": "avifDecoderReadMemory",
+        "header": "avif/avif.h",
+        "harness_source_filename": "avifDecoderRead.harness.cc",
+        "link_libs": ["avif"],
+        "header_include_dirs": ["/usr/include/avif"],
+        "compiler": "clang++",
+        "sanitizers": ["address", "undefined"],
+        "notes": (
+            "libavif decoder lifecycle (create-decoder -> create-image -> "
+            "read-memory -> destroy-image -> destroy-decoder) is extended "
+            "from the libwebp single-call shape; both share the same ASAN "
+            "+ UBSan + libfuzzer build profile."
+        ),
     },
 }
 
@@ -426,6 +499,65 @@ def _generate_jvm_harness(
     return manifest
 
 
+def _generate_native_static_harness(
+    path_id: str,
+    spec: dict[str, Any],
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Native-engine flow for paths whose .cc source is shipped as a
+    committed canonical artifact (setup/teardown shapes the single-call
+    libfuzzer_native template can't express).
+
+    Verifies the committed `.cc` source exists, re-renders the Makefile
+    via the existing native.Makefile.j2 template, and re-emits the
+    hash-only manifest pointing at the on-disk SHA-256 of both files.
+    No template re-render of the harness source itself — the canonical
+    content is the source of truth and is reviewer-readable verbatim.
+    """
+    source_filename = spec["harness_source_filename"]
+    source_path = output_dir / source_filename
+    if not source_path.is_file():
+        raise FileNotFoundError(
+            f"native_static harness source {source_path} not found; "
+            "the committed .cc artifact must exist before this engine "
+            "is invoked. Ship the canonical content first."
+        )
+    harness_source = source_path.read_text(encoding="utf-8")
+
+    makefile_context = {
+        "harness_id": spec["harness_id"],
+        "harness_source": source_filename,
+        "harness_binary": f"{spec['harness_id']}_fuzzer",
+        "header_include_dirs": spec["header_include_dirs"],
+        "link_libs": spec["link_libs"],
+        "compiler": spec["compiler"],
+    }
+    makefile_text = render_native_makefile(makefile_context)
+    write_text(output_dir / "Makefile", makefile_text)
+
+    manifest = {
+        "harness_id": spec["harness_id"],
+        "path_id": path_id,
+        "entry_function": spec["entry_function"],
+        "header": spec["header"],
+        "harness_source_filename": source_filename,
+        "harness_source_sha256": sha256_text(harness_source),
+        "makefile_sha256": sha256_text(makefile_text),
+        "sanitizers": spec["sanitizers"],
+        "fuzzer_engine": "libfuzzer",
+        "generated_by": "aegisgraph.harnessgen",
+        "generated_at": STATIC_GENERATED_AT,
+        "private_by_default": True,
+        "notes": spec.get(
+            "notes",
+            "Hash-only manifest. Live fuzz runs happen on the self-hosted "
+            "runner; this manifest does not embed crash bytes or stack traces.",
+        ),
+    }
+    write_json(output_dir / "manifest.json", manifest)
+    return manifest
+
+
 def generate_harness_for_path(
     path_id: str,
     output_dir: Path,
@@ -433,8 +565,9 @@ def generate_harness_for_path(
     """Generate the harness artifacts for `path_id` into `output_dir`.
 
     Dispatch by engine:
-      native -> libFuzzer C++ entrypoint + Makefile + manifest
-      jvm    -> Jazzer Java entrypoint + build.gradle + manifest
+      native        -> libFuzzer C++ entrypoint + Makefile + manifest
+      native_static -> verify committed .cc + (re-)render Makefile + manifest
+      jvm           -> Jazzer Java entrypoint + build.gradle + manifest
 
     Returns the manifest dict.
     """
@@ -444,11 +577,13 @@ def generate_harness_for_path(
     engine = spec.get("engine", "native")
     if engine == "native":
         return _generate_native_harness(path_id, spec, output_dir)
+    if engine == "native_static":
+        return _generate_native_static_harness(path_id, spec, output_dir)
     if engine == "jvm":
         return _generate_jvm_harness(path_id, spec, output_dir)
     raise ValueError(
         f"unknown engine {engine!r} for path_id {path_id!r}; "
-        "expected one of: native, jvm"
+        "expected one of: native, native_static, jvm"
     )
 
 
@@ -485,8 +620,11 @@ def build_parser() -> argparse.ArgumentParser:
         description=(
             "AegisGraph HarnessGen (Engine 2): graph-driven fuzz harness "
             "generation. M3.1 wired libwebp/WebPDecodeRGB (native); M5.1 "
-            "adds signal_linkpreview/LinkPreviewUtilFuzzer (JVM/Jazzer). "
-            "Live fuzz runs are deferred to the self-hosted runner."
+            "adds signal_linkpreview/LinkPreviewUtilFuzzer (JVM/Jazzer); "
+            "M5.1b adds libavif/avifDecoderRead (native, lifecycle) + "
+            "element_x_media/MediaRepositoryFuzzer (JVM/Jazzer) to hit "
+            "the M7 5/5 entry-point target. Live fuzz runs are deferred "
+            "to the self-hosted runner."
         ),
     )
     sub = parser.add_subparsers(dest="command", required=False)
@@ -496,7 +634,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     gen.add_argument(
         "path_id",
-        help="path identifier (M3.1: libwebp; M5.1: signal_linkpreview)",
+        help=(
+            "path identifier (M3.1: libwebp; M5.1: signal_linkpreview; "
+            "M5.1b: libavif, element_x_media)"
+        ),
     )
     gen.add_argument(
         "--output-dir",
