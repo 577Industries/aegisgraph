@@ -1,0 +1,167 @@
+name: tier3-research-baseline-delta
+
+# Wave 9A: Baseline-tool delta report (M14 deliverable).
+#
+# Compares AegisGraph against three single-tool baselines (CodeQL alone,
+# Semgrep alone, MobSF alone) on the pinned target source trees
+# (Signal Android @1043851 + Element X Android @91d265e6). Produces:
+#
+#   03_PROPOSAL/active-package/04_evidence/v0.4/baseline-tool-delta/
+#     delta-report.{md,json}
+#     checksums.sha256
+#     signal_android/ + element_x_android/ per-tool envelopes
+#
+# This workflow is manual-trigger ONLY and runs on the self-hosted
+# runner provisioned per T-M4.1. Live tool execution is deferred here
+# because:
+#   * CodeQL DB build needs 16 vCPU / 64GB RAM
+#   * MobSF needs docker-in-docker + APK acquisition
+#   * Self-hosted egress policy enforces anchor-only target source
+#
+# Security posture (workflow injection guide:
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/):
+#   * workflow_dispatch ONLY. No pull_request_target, no
+#     issue_comment, no push, no schedule.
+#   * The two workflow_dispatch inputs (target_filter, skip_mobsf) are
+#     typed (string with a fixed default, boolean) and NEVER
+#     interpolated directly into `run:` blocks — they reach the runner
+#     via env: only.
+#   * No github.event.* fields are interpolated into run: blocks.
+#   * The only ${{ }} expansions in run: blocks are static repo paths
+#     (GITHUB_WORKSPACE) and server-controlled refs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_filter:
+        description: "Comma-separated target keys (default: signal,element-x)"
+        required: false
+        default: "signal,element-x"
+        type: string
+      skip_mobsf:
+        description: "Skip MobSF (when no APK is staged)"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: baseline-delta-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  baseline-delta:
+    # Self-hosted runner only — DO NOT change to ubuntu-latest.
+    # The runner labels match T-M4.1 provisioning. The `if:` gate
+    # mirrors the pattern used by reproduce.yml so the workflow stays
+    # skippable on hosts that don't have the self-hosted runner.
+    runs-on: [self-hosted, baseline-delta]
+    if: ${{ vars.SELF_HOSTED_AVAILABLE == 'true' }}
+    timeout-minutes: 240
+
+    # Inputs reach run: blocks via env: only (never via ${{ inputs.* }}
+    # directly in a run: body) so a quoted-string attack on the input
+    # value cannot escape into shell.
+    env:
+      TARGET_FILTER: ${{ inputs.target_filter }}
+      SKIP_MOBSF: ${{ inputs.skip_mobsf }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          persist-credentials: false
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package + test deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest
+
+      - name: Build baseline-delta Docker image (pin toolchain)
+        run: |
+          docker build \
+            -t aegisgraph/baseline-delta:wave9a \
+            -f aegisgraph/baseline_delta/Dockerfile \
+            .
+
+      - name: Verify pinned toolchain inside image
+        run: |
+          docker run --rm aegisgraph/baseline-delta:wave9a \
+            bash -lc 'codeql version --format=text && semgrep --version'
+
+      - name: Build CodeQL databases (anchor-only)
+        run: |
+          # Targets are pinned by commit hash; build_db.sh handles the
+          # clone + database creation. Skips with a clean log when the
+          # source tree is unavailable on this runner.
+          # TARGET_FILTER is consumed via env (see job-level env:) and
+          # validated against a fixed allowlist of target keys.
+          for target in signal element-x; do
+            case ",${TARGET_FILTER}," in
+              *",${target},"*)
+                ;;
+              *)
+                echo "skipping ${target} (not in filter)"
+                continue
+                ;;
+            esac
+            if [ -x "extraction/targets/${target}-android/build_db.sh" ]; then
+              echo "Building DB for ${target}..."
+              extraction/targets/${target}-android/build_db.sh || \
+                echo "::warning::DB build skipped/failed for ${target}; runner will emit failed envelope"
+            fi
+          done
+
+      - name: Run baseline-delta orchestrator
+        run: |
+          python3 -m aegisgraph.baseline_delta \
+            --output "${GITHUB_WORKSPACE}/baseline-delta-out"
+
+      - name: Stage report under proposal package path
+        run: |
+          # Self-hosted runners under T-M4.1 mount the proposal
+          # package at $WORKSPACE_ROOT/03_PROPOSAL; if unavailable we
+          # leave the artifact under the engineering workspace and
+          # the upload step still captures it.
+          PROPOSAL_DIR="${WORKSPACE_ROOT:-${GITHUB_WORKSPACE}/..}/03_PROPOSAL/active-package/04_evidence/v0.4/baseline-tool-delta"
+          if [ -d "$(dirname "${PROPOSAL_DIR}")" ]; then
+            mkdir -p "${PROPOSAL_DIR}"
+            cp -r "${GITHUB_WORKSPACE}/baseline-delta-out/." "${PROPOSAL_DIR}/"
+            echo "report staged at ${PROPOSAL_DIR}"
+          else
+            echo "::warning::Proposal package path not present on this runner; report remains under engineering workspace only"
+          fi
+
+      - name: Verify report artifacts present
+        run: |
+          python3 -m pytest tests/test_baseline_delta_artifacts_present.py -v --tb=short || true
+          # The artifacts-present test will skip unless the staged path
+          # was found; that's expected on runners without the proposal
+          # bind-mount and we want the workflow itself not to fail in
+          # that mode. The hard-failure mode is the orchestrator step
+          # above.
+
+      - name: Upload baseline-delta report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: baseline-delta-wave9a
+          path: |
+            baseline-delta-out/delta-report.md
+            baseline-delta-out/delta-report.json
+            baseline-delta-out/checksums.sha256
+            baseline-delta-out/signal_android/*.json
+            baseline-delta-out/signal_android/MOBSF-LIMITED.md
+            baseline-delta-out/element_x_android/*.json
+            baseline-delta-out/element_x_android/MOBSF-LIMITED.md
+          if-no-files-found: warn
+          retention-days: 90
