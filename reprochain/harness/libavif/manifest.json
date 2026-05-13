@@ -1,0 +1,18 @@
+{
+  "entry_function": "avifDecoderReadMemory",
+  "fuzzer_engine": "libfuzzer",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph.harnessgen",
+  "harness_id": "avifDecoderRead",
+  "harness_source_filename": "avifDecoderRead.harness.cc",
+  "harness_source_sha256": "473c7d298f3618c751728b84293a990eaa6be77a8bac77fba08af867f1d45711",
+  "header": "avif/avif.h",
+  "makefile_sha256": "3d7aa7c06ff0d63f374c0af0cad95d8d7f30612fe6dd7da2d2f0013a10cd7b92",
+  "notes": "libavif decoder lifecycle (create-decoder -> create-image -> read-memory -> destroy-image -> destroy-decoder) is extended from the libwebp single-call shape; both share the same ASAN + UBSan + libfuzzer build profile.",
+  "path_id": "libavif",
+  "private_by_default": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ]
+}
