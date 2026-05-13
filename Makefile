@@ -1,7 +1,7 @@
 PYTHON ?= python3
 AEGISGRAPH := $(PYTHON) -m aegisgraph.cli
 
-.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm
+.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm harnessgen-rust
 
 # tooling: probe every tool and write tooling-versions.json without enforcing
 # minimum versions. Safe to run in any environment; useful diagnostic.
@@ -81,6 +81,21 @@ harnessgen-jvm:
 	@if [ -z "$(PATH_ID)" ]; then echo "PATH_ID is required (e.g. make harnessgen-jvm PATH_ID=signal_linkpreview)"; exit 2; fi
 	$(PYTHON) -m aegisgraph.harnessgen.harnessgen generate-harness $(PATH_ID)
 	@echo "harnessgen-jvm: artifacts emitted; live Jazzer run deferred to self-hosted runner."
+
+# harnessgen-rust: build + run a cargo-fuzz Rust harness on the self-hosted
+# runner. LOCAL/RUNNER ONLY -- requires Rust nightly + cargo-fuzz +
+# libfuzzer-sys driver. NOT in `reproduce`. Override PATH_ID=<path>:
+#
+#     make harnessgen-rust PATH_ID=matrix_rust_sdk_messagetype
+#
+# At M5.2 this generates the harness artifacts (fuzz_target_message_type.rs
+# + Cargo.toml + fuzz/Cargo.toml + manifest.json) and prints the next step.
+# Live cargo-fuzz invocation runs on the self-hosted runner inside the
+# HarnessGen sandbox image.
+harnessgen-rust:
+	@if [ -z "$(PATH_ID)" ]; then echo "PATH_ID is required (e.g. make harnessgen-rust PATH_ID=matrix_rust_sdk_messagetype)"; exit 2; fi
+	$(PYTHON) -m aegisgraph.harnessgen.harnessgen generate-harness $(PATH_ID)
+	@echo "harnessgen-rust: artifacts emitted; live cargo-fuzz run deferred to self-hosted runner."
 
 # polydiff-regression: deterministic regression run across the URL-parser
 # fact-vector corpus. Always part of `reproduce`.

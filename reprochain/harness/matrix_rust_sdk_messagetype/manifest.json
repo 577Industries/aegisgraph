@@ -1,0 +1,23 @@
+{
+  "cargo_toml_sha256": "23f91bbd4b8bb7764597b6912e60b324717e981dca1187375e4c1ca5cd8fffe2",
+  "edition": "2021",
+  "fuzz_cargo_toml_sha256": "abca5ad8048d9a95b56f4c74fa111010a9df33ba760163a09f563f027397e878",
+  "fuzzer_engine": "cargo-fuzz",
+  "generated_at": "2026-05-13T00:00:00Z",
+  "generated_by": "aegisgraph.harnessgen",
+  "harness_id": "matrix_rust_sdk_messagetype",
+  "harness_source_filename": "fuzz_target_message_type.rs",
+  "harness_source_sha256": "6c7bf68054f403db43821fe6bccc939e34b2631d69c0aa3088747f6d13f3d1b7",
+  "libfuzzer_sys_version": "0.4",
+  "notes": "Hash-only manifest. Live cargo-fuzz runs happen on the self-hosted runner; this manifest does not embed crash bytes or stack traces. Dependency versions are PLACEHOLDERs awaiting M5.2.b pinning.",
+  "parse_call": "serde_json::from_slice::<MessageType>(data)",
+  "path_id": "matrix_rust_sdk_messagetype",
+  "private_by_default": true,
+  "rust_edition": "2021",
+  "sanitizers": [
+    "address"
+  ],
+  "target_crate": "matrix_sdk",
+  "target_crate_version": "PLACEHOLDER",
+  "target_use_path": "ruma::events::room::message::MessageType"
+}

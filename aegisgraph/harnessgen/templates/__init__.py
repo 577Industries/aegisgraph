@@ -1,6 +1,6 @@
 """Jinja2 templates for HarnessGen + render helpers.
 
-Four templates ship after M5.1:
+Five templates ship after M5.2:
   libfuzzer_native.cc.j2  : LLVMFuzzerTestOneInput wrapping a native entry
                             function (Asemarefactor.md lines 215-225 shape)
   build/native.Makefile.j2 : ASAN + UBSan + libfuzzer build recipe (native)
@@ -8,12 +8,14 @@ Four templates ship after M5.1:
                              (Asemarefactor.md lines 168-186 shape)
   build/jvm.gradle.j2      : Gradle build stub for the JVM harness (Jazzer
                              + parser module only; no full host app)
+  cargo_fuzz.rs.j2         : fuzz_target! wrapping a Rust target type
+                             (Asemarefactor.md lines 230-238 shape)
 
 `render_libfuzzer_native(context)`, `render_native_makefile(context)`,
-`render_jazzer_jvm(context)`, and `render_jvm_gradle(context)` return the
-rendered text. The templates are plain-text C++/Java/Makefile/Gradle —
-NOT HTML, so autoescape is off (same rationale as
-aegisgraph/disclosure/templates).
+`render_jazzer_jvm(context)`, `render_jvm_gradle(context)`, and
+`render_cargo_fuzz(context)` return the rendered text. The templates are
+plain-text C++/Java/Makefile/Gradle/Rust — NOT HTML, so autoescape is off
+(same rationale as aegisgraph/disclosure/templates).
 
 Each render output is screened for "raw bytes leakage" tokens by the
 caller; templates themselves are parameterized over names/paths/flags
@@ -35,6 +37,7 @@ LIBFUZZER_TEMPLATE_NAME = "libfuzzer_native.cc.j2"
 NATIVE_MAKEFILE_TEMPLATE_NAME = "build/native.Makefile.j2"
 JAZZER_JVM_TEMPLATE_NAME = "jazzer_jvm.java.j2"
 JVM_GRADLE_TEMPLATE_NAME = "build/jvm.gradle.j2"
+CARGO_FUZZ_TEMPLATE_NAME = "cargo_fuzz.rs.j2"
 
 
 def _env() -> jinja2.Environment:
@@ -131,7 +134,25 @@ def render_jvm_gradle(context: dict[str, Any]) -> str:
     return template.render(**context)
 
 
+def render_cargo_fuzz(context: dict[str, Any]) -> str:
+    """Render the cargo-fuzz Rust harness for `context`.
+
+    Required context keys:
+      harness_id       : str — also written into the generator comment
+      target_crate     : str — top-level Rust crate, e.g. "matrix_sdk"
+      target_use_path  : str — path within the crate to import,
+                          e.g. "ruma::events::room::message::MessageType"
+      parse_call       : str — the parser invocation inside fuzz_target!,
+                          e.g. "serde_json::from_slice::<MessageType>(data)"
+    """
+    env = _env()
+    template = env.get_template(CARGO_FUZZ_TEMPLATE_NAME)
+    # nosemgrep: direct-use-of-jinja2  # plain-text render; not user-supplied HTML
+    return template.render(**context)
+
+
 __all__ = [
+    "render_cargo_fuzz",
     "render_jazzer_jvm",
     "render_jvm_gradle",
     "render_libfuzzer_native",
