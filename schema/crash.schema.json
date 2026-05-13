@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/crash.schema.json",
+  "title": "AegisGraph Crash Record",
+  "description": "Hash-only crash record from HarnessGen or DynamicProbe. Per ADR-0013 and validator sanitize-check Rule 5/9: NEVER serialize raw payload bytes, NEVER serialize full stack traces. Only hashes, structural metadata, and triage classification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "crash_id",
+    "version",
+    "discovery_engine",
+    "harness_id",
+    "crash_sha256",
+    "stack_trace_hash",
+    "crash_class",
+    "minimized_input_size_bytes",
+    "novelty",
+    "provenance",
+    "hash_chain"
+  ],
+  "properties": {
+    "crash_id": {
+      "type": "string",
+      "pattern": "^AG-CRASH-[A-Z0-9-]+$"
+    },
+    "version": {"const": "v1.0"},
+    "discovery_engine": {
+      "enum": ["harnessgen", "dynamicprobe", "reprochain"]
+    },
+    "harness_id": {"type": "string", "minLength": 1},
+    "path_id": {"type": ["string", "null"], "default": null},
+    "discovery_run_id": {"type": ["string", "null"], "default": null},
+    "crash_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the minimized crash-triggering input. NEVER store the bytes themselves."
+    },
+    "stack_trace_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of canonical stack trace string. NEVER store the full trace."
+    },
+    "crash_class": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Top-level exception or signal class (e.g., ArrayIndexOutOfBoundsException, SIGSEGV, ASAN heap-buffer-overflow). NO line numbers, NO source paths."
+    },
+    "minimized_input_size_bytes": {"type": "integer", "minimum": 0},
+    "novelty": {
+      "enum": ["appears_novel", "matches_known", "duplicate", "unknown"]
+    },
+    "novelty_evidence": {"type": ["string", "null"], "default": null},
+    "triage_class": {
+      "type": ["string", "null"],
+      "enum": [null, "HIGH", "MEDIUM-HIGH", "MEDIUM", "LOW", "NOISE"],
+      "default": null
+    },
+    "asan_summary": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Sanitizer summary line (top-level category only; NO addresses, NO register state)."
+    },
+    "confirmed_in_emulator": {
+      "type": ["boolean", "null"],
+      "default": null,
+      "description": "True only when DynamicProbe confirms reachability in an authorized emulated APK."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

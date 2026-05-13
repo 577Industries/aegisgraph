@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/discovery-run.schema.json",
+  "title": "AegisGraph Discovery Run Record",
+  "description": "Record of a single engine execution (PolyDiff family run, HarnessGen harness run, InvariantCheck SARIF pass, CrossSMA matrix run, DynamicProbe session). Introduced by ADR-0013 as part of the schema v2 additive discovery-graph extension.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "version",
+    "discovery_engine",
+    "engine_version",
+    "run_started_at",
+    "run_completed_at",
+    "exit_status",
+    "evidence_record_refs",
+    "provenance",
+    "hash_chain"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^AG-DR-[A-Z0-9-]+$"
+    },
+    "version": {"const": "v1.0"},
+    "discovery_engine": {
+      "enum": [
+        "polydiff",
+        "harnessgen",
+        "invariantcheck",
+        "crosssma",
+        "dynamicprobe",
+        "reprochain",
+        "disclosure"
+      ]
+    },
+    "engine_version": {"type": "string", "minLength": 1},
+    "engine_subcommand": {"type": ["string", "null"], "default": null},
+    "target_id": {"type": ["string", "null"], "default": null},
+    "path_class": {"type": ["string", "null"], "default": null},
+    "run_started_at": {"type": "string", "format": "date-time"},
+    "run_completed_at": {"type": "string", "format": "date-time"},
+    "duration_seconds": {"type": ["number", "null"], "minimum": 0, "default": null},
+    "exit_status": {
+      "enum": ["success", "partial", "timeout", "blocked", "failed"]
+    },
+    "input_corpus_size": {"type": ["integer", "null"], "minimum": 0, "default": null},
+    "findings_summary": {
+      "type": ["object", "null"],
+      "default": null,
+      "description": "Engine-specific summary; e.g., {'disagreements': 5, 'novel': 2} for polydiff.",
+      "additionalProperties": true
+    },
+    "evidence_record_refs": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

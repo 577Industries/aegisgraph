@@ -6,6 +6,8 @@ CLAIM_STATES = (
     "scored",
     "validation_tasked",
     "reviewed",
+    "reviewed_embargoed",
+    "disclosed_public",
     "accepted",
     "limited",
     "retired",

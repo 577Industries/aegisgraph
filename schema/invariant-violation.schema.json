@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/invariant-violation.schema.json",
+  "title": "AegisGraph InvariantCheck Violation Record",
+  "description": "Single invariant-violation finding from an InvariantCheck CodeQL or Semgrep run. Wraps a SARIF result with the AegisGraph evidence envelope. Per sanitize-check Rule 8: source location is repo_url + commit + path + line, NEVER multi-line code snippets.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "violation_id",
+    "version",
+    "discovery_engine",
+    "invariant_id",
+    "target_id",
+    "rule_id",
+    "severity",
+    "location",
+    "sarif_result_uri",
+    "provenance",
+    "hash_chain"
+  ],
+  "properties": {
+    "violation_id": {
+      "type": "string",
+      "pattern": "^AG-IV-[A-Z0-9-]+$"
+    },
+    "version": {"const": "v1.0"},
+    "discovery_engine": {"const": "invariantcheck"},
+    "invariant_id": {
+      "type": "string",
+      "pattern": "^INV-[0-9]{2,3}$"
+    },
+    "target_id": {"type": "string", "minLength": 1},
+    "discovery_run_id": {"type": ["string", "null"], "default": null},
+    "rule_id": {"type": "string", "minLength": 1},
+    "rule_engine": {
+      "enum": ["codeql", "semgrep", "frida_dynamic"],
+      "default": "codeql"
+    },
+    "severity": {
+      "enum": ["error", "warning", "note", "none"]
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo_url", "commit", "path", "start_line"],
+      "properties": {
+        "repo_url": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "minLength": 4},
+        "path": {"type": "string", "minLength": 1},
+        "start_line": {"type": "integer", "minimum": 1},
+        "end_line": {"type": ["integer", "null"], "minimum": 1, "default": null},
+        "start_column": {"type": ["integer", "null"], "minimum": 1, "default": null}
+      }
+    },
+    "sarif_result_uri": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path relative to repo root pointing to the SARIF file containing the full machine-readable result. SARIF lives engineering-private; only the AG-IV-* record is exported publicly."
+    },
+    "message": {"type": ["string", "null"], "default": null},
+    "mastg_mapping": {"type": ["string", "null"], "default": null},
+    "ssdf_mapping": {"type": ["string", "null"], "default": null},
+    "applicable_path_classes": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": []
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

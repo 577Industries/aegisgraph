@@ -67,10 +67,56 @@
         "scored",
         "validation_tasked",
         "reviewed",
+        "reviewed_embargoed",
+        "disclosed_public",
         "accepted",
         "limited",
         "retired"
       ]
+    },
+    "disclosure_status": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "public_historical",
+        "patched_public",
+        "not_applicable",
+        "private_review",
+        "disclosed_pending_patch",
+        "embargoed",
+        "disclosed_public",
+        "disclosed_patched"
+      ],
+      "default": null
+    },
+    "discovery_engine": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "polydiff",
+        "harnessgen",
+        "invariantcheck",
+        "crosssma",
+        "dynamicprobe",
+        "reprochain",
+        "disclosure",
+        "manual"
+      ],
+      "default": null
+    },
+    "finding_type": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "reachability_observation",
+        "differential_disagreement",
+        "invariant_violation",
+        "harness_crash",
+        "cross_target_candidate",
+        "disclosure_event",
+        "novel_private_candidate"
+      ],
+      "default": null
     },
     "validation_task": {
       "$ref": "#/$defs/validation_task"
@@ -147,7 +193,13 @@
             "control",
             "validation_task",
             "parser_profile",
-            "fact_vector"
+            "fact_vector",
+            "discovery_run",
+            "crash",
+            "disagreement",
+            "invariant_violation",
+            "cross_target_candidate",
+            "disclosure_event"
           ]
         },
         "label": {
@@ -208,7 +260,9 @@
         "mitigation_strength": {"type": "number", "minimum": 0, "maximum": 1},
         "observability": {"type": "number", "minimum": 0, "maximum": 1},
         "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-        "total": {"type": "number", "minimum": 0, "maximum": 10}
+        "total": {"type": "number", "minimum": 0, "maximum": 10},
+        "engine_corroboration": {"type": ["number", "null"], "minimum": 0, "maximum": 1, "default": null},
+        "exploitability_evidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1, "default": null}
       }
     },
     "validation_task": {

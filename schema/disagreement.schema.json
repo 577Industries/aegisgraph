@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/disagreement.schema.json",
+  "title": "AegisGraph PolyDiff Disagreement Record",
+  "description": "Structured PolyDiff differential-fuzzing disagreement. Witness is referenced by SHA-256 only; raw bytes live in engineering-private corpora and never enter evidence records.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "disagreement_id",
+    "version",
+    "discovery_engine",
+    "family",
+    "witness_sha256",
+    "witness_size_bytes",
+    "implementations_disagreeing",
+    "fact_vector_diff",
+    "triage_class",
+    "provenance",
+    "hash_chain"
+  ],
+  "properties": {
+    "disagreement_id": {
+      "type": "string",
+      "pattern": "^AG-DIS-[A-Z0-9-]+$"
+    },
+    "version": {"const": "v1.0"},
+    "discovery_engine": {"const": "polydiff"},
+    "family": {
+      "enum": ["url", "deeplink", "image", "opengraph", "qr", "proto"]
+    },
+    "discovery_run_id": {"type": ["string", "null"], "default": null},
+    "witness_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "witness_size_bytes": {"type": "integer", "minimum": 0},
+    "implementations_disagreeing": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Implementation@version (e.g., 'libwebp@v1.3.2', 'java.net.URI@jdk-21')"
+      }
+    },
+    "fact_vector_diff": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Per-axis divergence; per-family axes vary. Each key is an axis name, value is an array of [impl_1_value, impl_2_value, ...] aligned with implementations_disagreeing."
+    },
+    "triage_class": {
+      "enum": ["HIGH", "MEDIUM-HIGH", "MEDIUM", "LOW", "NOISE"]
+    },
+    "triage_rationale": {"type": ["string", "null"], "default": null},
+    "reachability": {
+      "type": ["object", "null"],
+      "default": null,
+      "additionalProperties": true,
+      "description": "Map of target_id -> list of code paths (anchors) reaching this disagreement."
+    },
+    "historical_cve_reference": {"type": ["string", "null"], "default": null},
+    "novelty": {
+      "type": ["string", "null"],
+      "enum": [null, "appears_novel", "matches_known", "rediscovery"],
+      "default": null
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/disclosure-event.schema.json",
+  "title": "AegisGraph Disclosure Ledger Event",
+  "description": "Single hash-chained event in the coordinated-disclosure ledger. Append-only JSONL at aegisgraph/disclosure/ledger.jsonl. Each entry uses the same json-v1-sorted-no-hash-chain canonicalization as evidence records (see ADR-0014).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "entry_id",
+    "version",
+    "finding_id",
+    "engine_origin",
+    "event_type",
+    "timestamp",
+    "actor",
+    "payload_hash_only",
+    "provenance",
+    "safety_flags",
+    "hash_chain"
+  ],
+  "properties": {
+    "entry_id": {
+      "type": "string",
+      "pattern": "^AG-DISC-[0-9]{8}-[A-Z0-9]{4}$",
+      "description": "Format: AG-DISC-YYYYMMDD-XXXX where XXXX is a per-day sequence."
+    },
+    "version": {"const": "v1.0"},
+    "finding_id": {
+      "type": "string",
+      "pattern": "^AG-(EV|CRASH|DIS|IV|XSMA)-[A-Z0-9-]+$"
+    },
+    "engine_origin": {
+      "enum": [
+        "polydiff",
+        "harnessgen",
+        "invariantcheck",
+        "crosssma",
+        "dynamicprobe",
+        "reprochain",
+        "manual"
+      ]
+    },
+    "event_type": {
+      "enum": [
+        "vendor_contacted",
+        "vendor_acknowledged",
+        "embargo_set",
+        "embargo_extended",
+        "vendor_patched",
+        "cve_requested",
+        "cve_assigned",
+        "cve_published",
+        "embargo_expired",
+        "disclosure_public",
+        "escalated_cert_cc",
+        "retired",
+        "vendor_no_response_30d"
+      ]
+    },
+    "timestamp": {"type": "string", "format": "date-time"},
+    "actor": {
+      "enum": [
+        "577_industries_pi",
+        "577_industries_eng",
+        "vendor_security_team",
+        "cert_cc",
+        "mitre",
+        "public",
+        "embargo_timer"
+      ]
+    },
+    "vendor_contact": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Vendor security contact email or org id. REDACTED in public exports per sanitize-check Rule 7."
+    },
+    "embargo_until": {
+      "type": ["string", "null"],
+      "format": "date",
+      "default": null
+    },
+    "embargo_days": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 365,
+      "default": null
+    },
+    "cve_id": {
+      "type": ["string", "null"],
+      "pattern": "^CVE-[0-9]{4}-[0-9]{4,}$",
+      "default": null
+    },
+    "public_disclosure_url": {
+      "type": ["string", "null"],
+      "default": null
+    },
+    "payload_hash_only": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of associated finding payload. NEVER store the payload itself."
+    },
+    "notes_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "default": null,
+      "description": "SHA-256 of private notes stored outside the ledger (e.g., counsel review notes)."
+    },
+    "signature": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Cryptographic signature deferred to v1.0 PKI integration; null in v0.4."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "safety_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule", "level", "message", "decision"],
+        "properties": {
+          "rule": {"type": "string", "minLength": 1},
+          "level": {"enum": ["info", "warning", "blocking"]},
+          "message": {"type": "string", "minLength": 1},
+          "decision": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

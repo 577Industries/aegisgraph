@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/cross-target-candidate.schema.json",
+  "title": "AegisGraph CrossSMA Cross-Target Candidate",
+  "description": "Structural-pattern match from CrossSMA: a finding in one SMA hypothesized to apply analogously in others. Each candidate target cell carries a status (confirmed_reachable | candidate_path | dependency_absent | parser_differs | not_applicable).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "version",
+    "discovery_engine",
+    "source_finding_id",
+    "pattern_type",
+    "structural_signature",
+    "target_findings",
+    "provenance",
+    "hash_chain"
+  ],
+  "properties": {
+    "candidate_id": {
+      "type": "string",
+      "pattern": "^AG-XSMA-[A-Z0-9-]+$"
+    },
+    "version": {"const": "v1.0"},
+    "discovery_engine": {"const": "crosssma"},
+    "discovery_run_id": {"type": ["string", "null"], "default": null},
+    "source_finding_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Evidence record ID of the originating finding (typically an AG-DIS-*, AG-IV-*, or AG-CRASH-*)."
+    },
+    "pattern_type": {
+      "enum": [
+        "parser_disagreement",
+        "invariant_violation",
+        "harness_crash",
+        "dependency_vulnerability",
+        "structural_code_pattern"
+      ]
+    },
+    "family": {"type": ["string", "null"], "default": null},
+    "structural_signature": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of canonical pattern description string; identical structurally-matching candidates dedupe via this signature."
+    },
+    "structural_description": {"type": ["string", "null"], "default": null},
+    "target_findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "status"],
+        "properties": {
+          "target": {"type": "string", "minLength": 1},
+          "status": {
+            "enum": [
+              "confirmed_reachable",
+              "candidate_path",
+              "dependency_absent",
+              "parser_differs",
+              "not_applicable",
+              "unknown"
+            ]
+          },
+          "finding_id": {"type": ["string", "null"], "default": null},
+          "path_id": {"type": ["string", "null"], "default": null},
+          "evidence_note": {"type": ["string", "null"], "default": null}
+        }
+      }
+    },
+    "validation_state": {
+      "type": ["string", "null"],
+      "enum": [null, "structural_only", "harness_validated", "dynamic_validated"],
+      "default": null
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "generated_at", "source", "private_by_default"],
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "private_by_default": {"type": "boolean"}
+      }
+    },
+    "hash_chain": {"$ref": "hash-chain.schema.json"}
+  }
+}

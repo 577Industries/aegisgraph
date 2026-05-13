@@ -1,0 +1,133 @@
+# Coordinated-Disclosure Vendor Registry
+#
+# Per ADR-0006 (disclosure ownership): per-vendor contacts live as DATA
+# here, not code. Updates do not require code review. Per ADR-0014: this
+# file is read by aegisgraph/disclosure/pipeline/vendor_contact_router.py
+# to route findings to the right vendor security inbox.
+#
+# Fields per vendor:
+#   primary_contact   : security inbox (email or URL)
+#   cna_status        : "vendor_cna" | "third_party_cna" | "none"
+#   cna_path          : how to request a CVE for this vendor
+#   default_embargo_days : per-vendor override of the 90-day CERT/CC default
+#   prior_response_days  : empirical typical-response time (informational)
+#   notes             : free-form
+#
+# NOTE: This file is engineering-PRIVATE in v0.4 (lives under aegisgraph/,
+# included in private exports only). The redacted public projection
+# strips primary_contact and replaces with organization id only.
+
+version: v1.0
+generated_by: aegisgraph/disclosure/vendor_registry.yaml
+last_reviewed: 2026-05-12
+
+vendors:
+
+  signal_foundation:
+    name: Signal Foundation
+    primary_contact: signal-security@signal.org
+    cna_status: none
+    cna_path: mitre_direct  # https://cveform.mitre.org/
+    default_embargo_days: 90
+    prior_response_days_typical: 60
+    prior_response_days_p95: 120
+    notes: |
+      Signal is historically slow on third-party reports. Submit CVE
+      request to MITRE direct on Day 7, not Day 90. Per Asemarefactor
+      Option B, Signal is reserved as second-priority first-disclosure
+      target after libwebp upstream Option A.
+    fallback_contacts:
+      - cert_cc
+
+  element_hq:
+    name: Element / matrix.org
+    primary_contact: security@element.io
+    secondary_contact: security@matrix.org
+    cna_status: third_party_cna  # GitHub Security Advisories
+    cna_path: github_security_advisory
+    default_embargo_days: 90
+    prior_response_days_typical: 14
+    prior_response_days_p95: 30
+    notes: |
+      Element-hq is responsive. GH Security Advisories path is reliable
+      for matrix-rust-sdk components. Per Asemarefactor Option C.
+    fallback_contacts:
+      - cert_cc
+
+  libwebp_upstream:
+    name: libwebp upstream (Google webmproject)
+    primary_contact: security@chromium.org
+    secondary_contact: chromium-security@chromium.org
+    cna_status: vendor_cna  # Chrome CNA
+    cna_path: chrome_cna
+    default_embargo_days: 90
+    prior_response_days_typical: 14
+    prior_response_days_p95: 30
+    notes: |
+      Recommended FIRST real-disclosure target per Phase II plan
+      (Option A). Chrome CNA reliably assigns CVEs. libwebp typically
+      patches within 30 days. CVE-2023-4863 was the ReproChain
+      anchored bug; this vendor relationship is the most documented
+      and lowest-PR-risk path for the first disclosure.
+    fallback_contacts:
+      - cert_cc
+
+  libavif_upstream:
+    name: libavif (AOMediaCodec)
+    primary_contact: security@aomedia.org
+    cna_status: none
+    cna_path: mitre_direct
+    default_embargo_days: 90
+    prior_response_days_typical: 30
+    notes: |
+      Smaller upstream; coordinated disclosure usually via GitHub issue
+      + private email. AOMedia security workflow less formalized.
+
+  libheif_upstream:
+    name: libheif (strukturag)
+    primary_contact: security@strukturag.com
+    cna_status: third_party_cna  # via GitHub Security Advisories
+    cna_path: github_security_advisory
+    default_embargo_days: 90
+    prior_response_days_typical: 21
+    notes: |
+      Open-source upstream; GH Security Advisories supported.
+
+  wire_swiss:
+    name: Wire Swiss
+    primary_contact: security@wire.com
+    cna_status: none
+    cna_path: mitre_direct
+    default_embargo_days: 90
+    notes: |
+      Wire is added to the CrossSMA registry at M11 per plan §5;
+      first contact deferred to that timeline if CrossSMA produces a
+      cross-target propagation candidate.
+
+  telegram:
+    name: Telegram
+    primary_contact: security@telegram.org
+    cna_status: none
+    cna_path: mitre_direct
+    default_embargo_days: 90
+    notes: |
+      Telegram added to CrossSMA registry at M11 per plan §5.
+
+cna_paths:
+  mitre_direct:
+    url: https://cveform.mitre.org/
+    typical_backlog_days_p50: 30
+    typical_backlog_days_p95: 90
+    notes: Submit on Day 7 of embargo, not Day 90.
+  chrome_cna:
+    url: https://www.chromium.org/Home/chromium-security/reporting-security-bugs/
+    typical_backlog_days_p50: 14
+    notes: Reliable CVE assignment for libwebp / libavif / libheif when going via Chromium.
+  github_security_advisory:
+    url: https://docs.github.com/en/code-security/security-advisories
+    typical_backlog_days_p50: 7
+    notes: Best path for open-source projects with security@<vendor> contacts.
+  cert_cc:
+    url: https://www.kb.cert.org/vuls/report/
+    typical_backlog_days_p50: 7
+    notes: Day-14 fallback for unresponsive vendors per ADR-0006.
