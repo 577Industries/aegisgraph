@@ -1,7 +1,7 @@
 PYTHON ?= python3
 AEGISGRAPH := $(PYTHON) -m aegisgraph.cli
 
-.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm harnessgen-rust
+.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm harnessgen-rust reviewer-packet
 
 # tooling: probe every tool and write tooling-versions.json without enforcing
 # minimum versions. Safe to run in any environment; useful diagnostic.
@@ -150,3 +150,9 @@ export-private:
 # validator-export stream. See docs/decision-log/0011-public-export-human-gate.md.
 export-public-sanitized:
 	$(AEGISGRAPH) export public-sanitized
+
+# reviewer-packet: emit the Wave 8B reviewer hand-off packet. Strictly
+# CLI-only (no web/TUI). Runs sanitize-check (Rules 1-9 + BLOCKING_PATTERNS)
+# against the emitted findings/ tree as a final fail-closed gate.
+reviewer-packet:
+	$(AEGISGRAPH) workbench packet --top 10 --out exports/reviewer-packet

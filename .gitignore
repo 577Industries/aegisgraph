@@ -42,6 +42,14 @@ exports/private-submission/*
 !exports/private-submission/README.md
 exports/public-sanitized/*
 !exports/public-sanitized/README.md
+# Reviewer packets are reproducible from `make reviewer-packet`; the per-ISO
+# date subdirectories are not committed (the manifest is byte-stable enough
+# that committing the bundle would only grow with each rebuild).
+exports/reviewer-packet/
+# Reviewer claim-state promotions are session-local; the workbench writes a
+# new file per promotion. They're additive (ADR-0010) and reproducible from
+# the parent record_hash + the claim-state delta. Not source-of-truth.
+aegisgraph/workbench/promotions/
 
 smabench/results/latest/
 # Also ignore the symlink form (trailing slash above only matches dirs).
