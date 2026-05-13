@@ -1,0 +1,18 @@
+{
+  "entry_function": "WebPDecodeRGB",
+  "fuzzer_engine": "libfuzzer",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph.harnessgen",
+  "harness_id": "WebPDecodeRGB",
+  "harness_source_filename": "WebPDecodeRGB.harness.cc",
+  "harness_source_sha256": "0bfdb4a93ee9e91b50705f31180ea86460525bfd9c8f80f5b6643595aea41643",
+  "header": "webp/decode.h",
+  "makefile_sha256": "29c5450138163a419dd158eef45a0f02d031e5f66029fe0ddd20d1830f2fe80f",
+  "notes": "Hash-only manifest. Live fuzz runs happen on the self-hosted runner; this manifest does not embed crash bytes or stack traces.",
+  "path_id": "libwebp",
+  "private_by_default": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ]
+}
