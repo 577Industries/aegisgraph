@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector-proto.schema.json",
+  "title": "PolyDiff Proto-Family Fact Vector",
+  "description": "Per-implementation fact vector for the proto family. Sibling of fact-vector.schema.json (URL family), fact-vector-image.schema.json (image family), fact-vector-opengraph.schema.json (opengraph family), fact-vector-deeplink.schema.json (deeplink family), and fact-vector-qr.schema.json (qr family); all share input_id + parser_profile as the cross-family identity keys that the diff engine pairs vectors on. Axes follow the T-M2.6 spec (9 axes): format_kind, declared_schema_version, message_type_name, field_count, field_unknown_count, oneof_active_field, decoded_field_summary, parser_warnings, decode_outcome. When a wrapper binary/package is absent (e.g. protoc, flatc, or msgpack toolchain is not installed in the devcontainer; gogo-protobuf is bundled as a stub) the wrapper emits a crash envelope with binary_missing=true and decode_outcome.status='parse_error'; that envelope still validates so the missing parser stays auditable in the diff report.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "format_kind",
+    "declared_schema_version",
+    "message_type_name",
+    "field_count",
+    "field_unknown_count",
+    "oneof_active_field",
+    "decoded_field_summary",
+    "parser_warnings",
+    "decode_outcome"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wrapper id (protoc_python, flatc_runner, msgpack_python, protoc_gogofaster_stub)."
+    },
+    "schema_version": {"type": "string"},
+    "binary_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set by the wrapper when the underlying parser binary/package is not available. The proto axes are then null and decode_outcome.status MUST be 'parse_error'."
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "format_kind": {
+      "type": "string",
+      "enum": ["protobuf", "flatbuffer", "msgpack"],
+      "description": "Wire-format family. Always reported by the wrapper so the diff engine can pair like-with-like in the multi-format common-payload anchors. binary_missing envelopes still set this to the format the wrapper would have decoded."
+    },
+    "declared_schema_version": {
+      "type": ["string", "null"],
+      "description": "Schema-version field declared by the payload's well-known wrapper message (e.g. 'v2', 'v3' for protobuf editions; or null when the format doesn't carry a schema-version axis). Divergence here is cosmetic (LOW)."
+    },
+    "message_type_name": {
+      "type": ["string", "null"],
+      "description": "Fully-qualified message type name as resolved by the decoder (e.g. 'com.example.Message'). null when the wrapper cannot resolve the type (unknown / out-of-schema)."
+    },
+    "field_count": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of fields the decoder recognized in the payload. Divergence indicates decoded-summary disagreement."
+    },
+    "field_unknown_count": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of fields present in the wire-format payload but unknown to the decoder's schema. gogo-protobuf vs google-protobuf typically disagree here on extra fields; divergence triggers the unknown-field-handling bug class (MEDIUM-HIGH)."
+    },
+    "oneof_active_field": {
+      "type": ["string", "null"],
+      "description": "Name of the active field in a 'oneof' group, if applicable. Divergence indicates oneof-ambiguity (MEDIUM-HIGH); two decoders pick different fields from the same wire bytes."
+    },
+    "decoded_field_summary": {
+      "type": ["object", "null"],
+      "additionalProperties": true,
+      "description": "Sparse summary of decoded field values (key = field name, value = decoded representation). Used for cross-impl decoded-value comparison. null for binary_missing / parse_error envelopes."
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Implementation-emitted warnings (e.g. 'unknown field tag', 'oversized field', 'oneof collision'). Empty array on a clean parse."
+    },
+    "decode_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "bytes_out"],
+      "description": "Implementation-reported decode outcome. 'parse_error' covers wrapper crash / FileNotFoundError (binary missing) / parser exception; 'decode_error' is a clean rejection by the decoder (malformed wire bytes); 'schema_mismatch' is a recognized payload with a type the wrapper's schema doesn't know; 'ok' is a clean decode.",
+      "properties": {
+        "status": {"enum": ["ok", "parse_error", "decode_error", "schema_mismatch"]},
+        "bytes_out": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+# PolyDiff qr-family manifest (Engine 1, T-M2.5).
+#
+# Per Asemarefactor.md §"Engine 1: PolyDiff Extended" module layout, this
+# file is the single source of truth for:
+#   - Which implementations the diff engine dispatches to.
+#   - The per-family fact-vector axes the diff engine compares.
+#   - Reachability mappings (witness -> SMA codepath via evidence graph).
+#
+# Edits MUST keep this file in sync with:
+#   - schema/fact-vector-qr.schema.json (axes + required fields)
+#   - aegisgraph/polydiff/families/qr/wrappers/* (one module per impl)
+#   - polydiff/families/qr/regression/corpus.json (anchored cases)
+
+family: qr
+schema_version: v1.0
+
+implementations:
+  - id: zxing_cli
+    bindings: python
+    wrapper: wrappers/zxing_cli.py
+    binary_hint: zxing_cli
+    version_pin: "zxing-cli@v3.5.2"  # synthetic pin; the actual ZXing
+                                     # binary may be unavailable in the
+                                     # devcontainer — wrapper emits
+                                     # binary_missing=true.
+  - id: zbar_cli
+    bindings: python
+    wrapper: wrappers/zbar_cli.py
+    binary_hint: zbarimg
+    version_pin: "zbar-cli@v0.23.93"
+  - id: apple_vision_stub
+    bindings: python
+    wrapper: wrappers/apple_vision_stub.py
+    binary_hint: apple_vision_qr
+    version_pin: "apple-vision-qr-stub@v0.1.0"  # macOS-only;
+                                                # binary_missing on
+                                                # non-macOS.
+  - id: ios_detector_stub
+    bindings: python
+    wrapper: wrappers/ios_detector_stub.py
+    binary_hint: ios_qr_detector
+    version_pin: "ios-camera-qr-stub@v0.1.0"  # iOS-only; binary_missing
+                                              # everywhere off-device.
+
+fact_vector_schema:
+  schema_path: schema/fact-vector-qr.schema.json
+  # Axes per the T-M2.5 spec: 10 axes covering decoded text, error
+  # correction, version, data mode, charset, structured-append, FNC1,
+  # parser warnings, decode outcome.
+  axes:
+    - detected_text: "string|null"
+    - ecc_level: "enum[L,M,Q,H]|null"
+    - version: "integer|null"
+    - mode: "enum[numeric,alphanumeric,byte,kanji]|null"
+    - encoding_charset: "string|null"
+    - structured_append_index: "integer|null"
+    - structured_append_total: "integer|null"
+    - fnc1_present: "boolean|null"
+    - parser_warnings: "list[string]"
+    - decode_outcome: {status: "enum[ok, parse_error, decode_error, no_qr_found]", bytes_out: int}
+
+# Triage classifier rules. Encoded as additive logic in
+# aegisgraph/polydiff/core/triage.py (function
+# `classify_qr_disagreement`). Listed here for cross-reference; the
+# code is the executable source of truth.
+triage_rules:
+  - axis: decode_outcome
+    when: one_ok_one_parse_error
+    triage_class: HIGH
+    rationale: parser crash potential — one impl decoded cleanly while another crashed/rejected
+  - axis: detected_text
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: URL-in-QR phishing surface — same symbol, different decoded text (e.g. URL host differs)
+  - axis: mode
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: charset-confusion class — same symbol, different data mode (e.g. byte vs kanji)
+  - axis: encoding_charset
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: charset-confusion class — ECI-tagged vs default charset diverges
+  - axis: structured_append_index
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: structured-append ordering bug class — multi-QR pieces out of order
+  - axis: structured_append_total
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: structured-append count divergence — multi-QR sequence size disagreement
+  - axis: ecc_level
+    when: any-mismatch
+    triage_class: LOW
+    rationale: cosmetic — error-correction level reporting differs
+  - axis: version
+    when: any-mismatch
+    triage_class: LOW
+    rationale: cosmetic — QR version reporting differs
+
+reachability:
+  signal_android:
+    - path_class: qr_scanner
+      entry: "QrScannerActivity.onPreviewFrame"
+      sink: "QrCodeHandler.handleScan"
+  element_x_android:
+    - path_class: qr_scanner
+      entry: "QrScannerFragment.onScan"
+      sink: "QrCodeHandler.dispatchUrl"
+  signal_ios:
+    - path_class: qr_scanner
+      entry: "QrScannerViewController.captureOutput"
+      sink: "URLOpenerImpl.openURL"

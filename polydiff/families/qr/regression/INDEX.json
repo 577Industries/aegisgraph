@@ -1,0 +1,48 @@
+{
+  "tool_output_type": "polydiff_qr_rediscovery_manifest",
+  "version": "v1.0",
+  "family": "qr",
+  "description": "QR-family rediscovery manifest. Per Asemarefactor.md §'Engine 1: PolyDiff Extended', each anchored case is pinned by SHA-256 + size so that the regression run reproduces the documented disagreement deterministically. Payload bytes live engineering-private at reprochain/corpora-private/; this manifest carries only hashes.",
+  "anchors": [
+    {
+      "case_id": "anchor_qr_apple_camera_url_handler",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e1",
+      "witness_size_bytes": 320,
+      "expected_disagreement_axes": ["detected_text"],
+      "expected_triage_class": "MEDIUM-HIGH",
+      "private_corpus_path": "reprochain/corpora-private/qr_apple_camera_url_handler.png",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_qr_structured_append_misorder",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e2",
+      "witness_size_bytes": 512,
+      "expected_disagreement_axes": ["structured_append_index", "structured_append_total"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/qr_structured_append_misorder.png",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_qr_eci_unicode_confusion",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e3",
+      "witness_size_bytes": 256,
+      "expected_disagreement_axes": ["encoding_charset"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/qr_eci_unicode_confusion.png",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_qr_kanji_mode_ambiguity",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e4",
+      "witness_size_bytes": 128,
+      "expected_disagreement_axes": ["mode"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/qr_kanji_mode_ambiguity.png",
+      "cve_reference": null
+    }
+  ]
+}

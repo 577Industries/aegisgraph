@@ -1,0 +1,93 @@
+{
+  "tool_output_type": "polydiff_qr_corpus",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "family": "qr",
+  "notes": [
+    "Anchored corpus for PolyDiff qr-family rediscovery + synthetic regressions.",
+    "Witnesses are pinned by SHA-256 ONLY. NO payload bytes appear in this repo.",
+    "Anchors cover four canonical qr divergence shapes: detected_text divergence (MEDIUM-HIGH; URL-in-QR phishing surface from iOS Camera URL handler vs ZXing extraction), structured-append index/total divergence (MEDIUM; multi-QR ordering bug class), encoding_charset divergence (MEDIUM; ECI-tagged UTF-8 vs default Shift-JIS), and mode divergence (MEDIUM; kanji-mode ambiguity class).",
+    "Per-case `implementations` lists the two wrapper ids the case is designed to disagree on; the diff engine runs ALL declared wrappers and picks up these axes (plus any others that surface).",
+    "Per-case `expected_fact_vector_diff` is keyed by axis name; each value is a 2-element array of the two impls' observations (matches the `implementations` ordering)."
+  ],
+  "cases": [
+    {
+      "case_id": "anchor_qr_apple_camera_url_handler",
+      "historical_cve_reference": null,
+      "summary": "A QR symbol encoding a URL where the iOS Camera URL handler extracts the URL differently than ZXing. Same symbol, different decoded text — when the SMA hands the decoded text to a link router without validating the originator, a phishing surface opens. SHA-256-pinned synthetic representation of the URL-in-QR phishing bug class.",
+      "bug_class": "qr-url-handler-extraction-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e1",
+      "witness_size_bytes": 320,
+      "implementations": ["zxing_cli", "ios_detector_stub"],
+      "expected_fact_vector_diff": {
+        "detected_text": [
+          "https://trusted.example/path",
+          "https://attacker.example/path"
+        ]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "phishing",
+      "reachability_targets": ["signal_ios", "element_x_android"],
+      "reference_url": null,
+      "limitations": "witness bytes are NOT in this repo; pinned-hash anchor only. The expected fact-vector diff documents the canonical disagreement shape — actual decoder outputs depend on the pinned wrapper versions and on whether the iOS Camera detector is available (the stub returns binary_missing off-device, which the diff engine treats as a parse_error divergence)."
+    },
+    {
+      "case_id": "anchor_qr_structured_append_misorder",
+      "historical_cve_reference": null,
+      "summary": "A multi-QR structured-append sequence (e.g. a payload split across 3 symbols) where two decoders disagree on the index/total reported for one of the symbols. ZXing and ZBar have historically diverged here. When the SMA concatenates parts in the wrong order, downstream consumers see a corrupted payload. SHA-256-pinned synthetic representation.",
+      "bug_class": "qr-structured-append-ordering-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e2",
+      "witness_size_bytes": 512,
+      "implementations": ["zxing_cli", "zbar_cli"],
+      "expected_fact_vector_diff": {
+        "structured_append_index": [0, 1],
+        "structured_append_total": [3, 3]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "structured",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the structured-append divergence triage rule; multi-QR ordering bugs have been documented in QR-decoder research."
+    },
+    {
+      "case_id": "anchor_qr_eci_unicode_confusion",
+      "historical_cve_reference": null,
+      "summary": "A QR symbol with an ECI (Extended Channel Interpretation) header tagging UTF-8, but a decoder defaulting to Shift-JIS interprets the bytes differently. Same symbol, different decoded text + encoding_charset. Maps to a documented charset-confusion bug class. SHA-256-pinned synthetic representation.",
+      "bug_class": "qr-eci-charset-confusion",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e3",
+      "witness_size_bytes": 256,
+      "implementations": ["zxing_cli", "zbar_cli"],
+      "expected_fact_vector_diff": {
+        "encoding_charset": ["UTF-8", "Shift-JIS"],
+        "mode": ["byte", "byte"]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "charset",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the encoding_charset divergence triage rule; ECI vs default-charset interpretation differences have been documented in QR decoder research."
+    },
+    {
+      "case_id": "anchor_qr_kanji_mode_ambiguity",
+      "historical_cve_reference": null,
+      "summary": "A QR symbol whose data fits both byte and kanji modes; two decoders disagree on which mode was used. Same symbol, different mode + (downstream) different decoded text when the kanji mode is mis-applied to byte data. SHA-256-pinned synthetic representation.",
+      "bug_class": "qr-kanji-mode-ambiguity",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000e4",
+      "witness_size_bytes": 128,
+      "implementations": ["zxing_cli", "zbar_cli"],
+      "expected_fact_vector_diff": {
+        "mode": ["byte", "kanji"]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "charset",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the mode divergence triage rule; kanji-mode ambiguity has been documented in QR decoder research."
+    }
+  ]
+}
