@@ -1,0 +1,24 @@
+{
+  "build_gradle_sha256": "cff07b18dec329f398a11b9f9ed5fe916a680e02c40abb4d47932e463757634e",
+  "entry_method": "findValidPreviewUrls",
+  "expected_exceptions": [
+    "IllegalArgumentException",
+    "StringIndexOutOfBoundsException"
+  ],
+  "fuzzer_engine": "jazzer",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "generated_by": "aegisgraph.harnessgen",
+  "harness_id": "LinkPreviewUtilFuzzer",
+  "harness_source_filename": "LinkPreviewUtilFuzzer.java",
+  "harness_source_sha256": "b13dc0ced94343e400b1718d2c387604118bdbce52ae4531a944ac900943df33",
+  "java_version": "17",
+  "jazzer_version": "0.22.1",
+  "notes": "Hash-only manifest. Live Jazzer runs happen on the self-hosted runner; this manifest does not embed crash bytes or stack traces. Dependency versions are PLACEHOLDERs awaiting M5.1.b pinning.",
+  "package": "org.aegisgraph.fuzz",
+  "path_id": "signal_linkpreview",
+  "private_by_default": true,
+  "sanitizers": [],
+  "target_class": "org.thoughtcrime.securesms.linkpreview.LinkPreviewUtil",
+  "target_module": "org.thoughtcrime.securesms:link-preview-parser",
+  "target_module_version": "PLACEHOLDER"
+}

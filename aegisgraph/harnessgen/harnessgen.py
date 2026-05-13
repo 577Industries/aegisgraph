@@ -36,12 +36,23 @@ from aegisgraph.constants import STATIC_GENERATED_AT
 from aegisgraph.hashchain import attach_hash_chain
 from aegisgraph.io import sha256_bytes, sha256_text, write_json, write_text
 
+from .extractors.jvm_entrypoint import (
+    JvmEntryPoint,
+    JvmEntryPointNotFoundError,
+    JvmParam,
+    extract_from_source_text,
+)
 from .extractors.native_entrypoint import (
     EntryPoint,
     Param,
     extract_from_header_text,
 )
-from .templates import render_libfuzzer_native, render_native_makefile
+from .templates import (
+    render_jazzer_jvm,
+    render_jvm_gradle,
+    render_libfuzzer_native,
+    render_native_makefile,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -187,8 +198,30 @@ WEBP_EXTERN void WebPFree(void* ptr);
 """
 
 
+# Synthetic excerpt of Signal Android LinkPreviewUtil.java for the M5.1 JVM
+# extractor smoke. The real Signal source is GPL-3.0 — we re-derive only the
+# public method signature, not the implementation, so the extractor can be
+# exercised offline without pulling the Signal tree.
+_SIGNAL_LINK_PREVIEW_SOURCE = """\
+// derived signature from Signal Android LinkPreviewUtil.java (GPL-3.0)
+package org.thoughtcrime.securesms.linkpreview;
+
+import java.util.List;
+
+public class LinkPreviewUtil {
+    public static List<Link> findValidPreviewUrls(String text) {
+        // implementation omitted; aegisgraph extracts only the signature.
+        return null;
+    }
+
+    public static class Link { }
+}
+"""
+
+
 _PATH_SPECS = {
     "libwebp": {
+        "engine": "native",
         "harness_id": "WebPDecodeRGB",
         "entry_function": "WebPDecodeRGB",
         "free_function": "WebPFree",
@@ -199,6 +232,32 @@ _PATH_SPECS = {
         "header_include_dirs": ["/usr/include/webp"],
         "compiler": "clang++",
         "sanitizers": ["address", "undefined"],
+    },
+    "signal_linkpreview": {
+        "engine": "jvm",
+        "harness_id": "LinkPreviewUtilFuzzer",
+        "fuzzer_class_name": "LinkPreviewUtilFuzzer",
+        "package": "org.aegisgraph.fuzz",
+        "target_class": "org.thoughtcrime.securesms.linkpreview.LinkPreviewUtil",
+        "target_class_simple": "LinkPreviewUtil",
+        "entry_method": "findValidPreviewUrls",
+        "source_text": _SIGNAL_LINK_PREVIEW_SOURCE,
+        "source_path": "LinkPreviewUtil.java",
+        # `target_call` mirrors Asemarefactor.md line 180 verbatim.
+        "target_call": (
+            "LinkPreviewUtil.findValidPreviewUrls(input)"
+        ),
+        "expected_exceptions": [
+            "IllegalArgumentException",
+            "StringIndexOutOfBoundsException",
+        ],
+        # Gradle stub: parser module only (no full Signal Android app).
+        "target_module": "org.thoughtcrime.securesms:link-preview-parser",
+        "target_module_version": "PLACEHOLDER",
+        "jazzer_version": "0.22.1",
+        "java_version": "17",
+        "fuzzer_engine": "jazzer",
+        "sanitizers": [],
     },
 }
 
@@ -242,23 +301,13 @@ def _context_for_entry(entry: EntryPoint, spec: dict[str, Any]) -> dict[str, Any
     }
 
 
-def generate_harness_for_path(
+def _generate_native_harness(
     path_id: str,
+    spec: dict[str, Any],
     output_dir: Path,
 ) -> dict[str, Any]:
-    """Generate the harness artifacts for `path_id` into `output_dir`.
-
-    Writes three files:
-      <harness_id>.harness.cc   the libFuzzer C++ entrypoint
-      Makefile                   the ASAN + UBSan + libfuzzer build recipe
-      manifest.json              hash-only metadata
-
-    Returns the manifest dict.
-    """
-    spec = _spec_for_path(path_id)
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
+    """Native-engine flow: extract C/C++ header signature, render
+    libfuzzer template + Makefile, emit hash-only manifest."""
     entry = extract_from_header_text(
         header_text=spec["header_text"],
         function_name=spec["entry_function"],
@@ -302,6 +351,107 @@ def generate_harness_for_path(
     return manifest
 
 
+def _generate_jvm_harness(
+    path_id: str,
+    spec: dict[str, Any],
+    output_dir: Path,
+) -> dict[str, Any]:
+    """JVM-engine flow: extract Java/Kotlin method signature, render
+    Jazzer template + Gradle stub, emit hash-only manifest.
+
+    The extracted signature is used only for sanity validation at M5.1 —
+    the rendered call expression comes from the spec's `target_call`
+    (kept in sync with the Asemarefactor.md canonical shape). At M5.1.b
+    the extractor will drive the call composition end-to-end.
+    """
+    # Validate the target method exists in the supplied source text. If
+    # the extractor can't find it, fail closed -- we'd otherwise render
+    # a harness that doesn't compile against the target.
+    extract_from_source_text(
+        source_text=spec["source_text"],
+        method_name=spec["entry_method"],
+        source_path=spec["source_path"],
+    )
+
+    harness_context = {
+        "harness_id": spec["harness_id"],
+        "package": spec["package"],
+        "target_import": spec["target_class"],
+        "fuzzer_class_name": spec["fuzzer_class_name"],
+        "target_call": spec["target_call"],
+        "expected_exceptions": spec["expected_exceptions"],
+    }
+    harness_source = render_jazzer_jvm(harness_context)
+    source_filename = f"{spec['fuzzer_class_name']}.java"
+    write_text(output_dir / source_filename, harness_source)
+
+    gradle_context = {
+        "harness_id": spec["harness_id"],
+        "target_module": spec["target_module"],
+        "target_module_version": spec["target_module_version"],
+        "jazzer_version": spec["jazzer_version"],
+        "java_version": spec["java_version"],
+        "fuzzer_main_class": f"{spec['package']}.{spec['fuzzer_class_name']}",
+        "harness_source": source_filename,
+    }
+    gradle_text = render_jvm_gradle(gradle_context)
+    write_text(output_dir / "build.gradle", gradle_text)
+
+    manifest = {
+        "harness_id": spec["harness_id"],
+        "path_id": path_id,
+        "entry_method": spec["entry_method"],
+        "target_class": spec["target_class"],
+        "package": spec["package"],
+        "harness_source_filename": source_filename,
+        "harness_source_sha256": sha256_text(harness_source),
+        "build_gradle_sha256": sha256_text(gradle_text),
+        "expected_exceptions": list(spec["expected_exceptions"]),
+        "sanitizers": list(spec.get("sanitizers", [])),
+        "fuzzer_engine": spec["fuzzer_engine"],
+        "jazzer_version": spec["jazzer_version"],
+        "java_version": spec["java_version"],
+        "target_module": spec["target_module"],
+        "target_module_version": spec["target_module_version"],
+        "generated_by": "aegisgraph.harnessgen",
+        "generated_at": STATIC_GENERATED_AT,
+        "private_by_default": True,
+        "notes": (
+            "Hash-only manifest. Live Jazzer runs happen on the self-hosted "
+            "runner; this manifest does not embed crash bytes or stack traces. "
+            "Dependency versions are PLACEHOLDERs awaiting M5.1.b pinning."
+        ),
+    }
+    write_json(output_dir / "manifest.json", manifest)
+    return manifest
+
+
+def generate_harness_for_path(
+    path_id: str,
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Generate the harness artifacts for `path_id` into `output_dir`.
+
+    Dispatch by engine:
+      native -> libFuzzer C++ entrypoint + Makefile + manifest
+      jvm    -> Jazzer Java entrypoint + build.gradle + manifest
+
+    Returns the manifest dict.
+    """
+    spec = _spec_for_path(path_id)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    engine = spec.get("engine", "native")
+    if engine == "native":
+        return _generate_native_harness(path_id, spec, output_dir)
+    if engine == "jvm":
+        return _generate_jvm_harness(path_id, spec, output_dir)
+    raise ValueError(
+        f"unknown engine {engine!r} for path_id {path_id!r}; "
+        "expected one of: native, jvm"
+    )
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -334,8 +484,9 @@ def build_parser() -> argparse.ArgumentParser:
         prog="harnessgen",
         description=(
             "AegisGraph HarnessGen (Engine 2): graph-driven fuzz harness "
-            "generation. M3.1 wires the libwebp/WebPDecodeRGB path; live "
-            "fuzz runs are deferred to the self-hosted runner."
+            "generation. M3.1 wired libwebp/WebPDecodeRGB (native); M5.1 "
+            "adds signal_linkpreview/LinkPreviewUtilFuzzer (JVM/Jazzer). "
+            "Live fuzz runs are deferred to the self-hosted runner."
         ),
     )
     sub = parser.add_subparsers(dest="command", required=False)
@@ -343,7 +494,10 @@ def build_parser() -> argparse.ArgumentParser:
     gen = sub.add_parser(
         "generate-harness", help="emit harness artifacts for a path_id"
     )
-    gen.add_argument("path_id", help="path identifier (M3.1: libwebp)")
+    gen.add_argument(
+        "path_id",
+        help="path identifier (M3.1: libwebp; M5.1: signal_linkpreview)",
+    )
     gen.add_argument(
         "--output-dir",
         default=None,

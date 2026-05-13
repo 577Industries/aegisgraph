@@ -1,7 +1,7 @@
 PYTHON ?= python3
 AEGISGRAPH := $(PYTHON) -m aegisgraph.cli
 
-.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep
+.PHONY: tooling tooling-strict test validate extract reprochain-build reprochain-run reprochain-map polydiff-regression smabench reproduce export-private export-public-sanitized traceability sanitize-check reprochain-fuzz polydiff-fuzz extract-deep harnessgen-native harnessgen-jvm
 
 # tooling: probe every tool and write tooling-versions.json without enforcing
 # minimum versions. Safe to run in any environment; useful diagnostic.
@@ -50,6 +50,37 @@ reprochain-map:
 # this on a maintainer workstation while iterating on harness coverage.
 reprochain-fuzz:
 	$(AEGISGRAPH) reprochain fuzz --budget 600s
+
+# harnessgen-native: build + run a native libFuzzer harness on the
+# self-hosted runner. LOCAL/RUNNER ONLY -- requires clang + libfuzzer
+# support + sanitizer libs + target dev headers (e.g. libwebp-dev for
+# PATH_ID=libwebp). NOT in `reproduce` because fuzzing has no
+# deterministic budget. Override PATH_ID=<path> at invocation:
+#
+#     make harnessgen-native PATH_ID=libwebp
+#
+# At M5.1 the actual build/run wiring is deferred to the runner; this
+# target generates the harness artifacts and prints the next step. Live
+# fuzz invocation lands at M5.2 (sandbox + watchdog).
+PATH_ID ?=
+harnessgen-native:
+	@if [ -z "$(PATH_ID)" ]; then echo "PATH_ID is required (e.g. make harnessgen-native PATH_ID=libwebp)"; exit 2; fi
+	$(PYTHON) -m aegisgraph.harnessgen.harnessgen generate-harness $(PATH_ID)
+	@echo "harnessgen-native: artifacts emitted; live fuzz run deferred to self-hosted runner."
+
+# harnessgen-jvm: build + run a Jazzer JVM harness on the self-hosted
+# runner. LOCAL/RUNNER ONLY -- requires JDK 17 + Gradle + Jazzer driver.
+# NOT in `reproduce`. Override PATH_ID=<path> at invocation:
+#
+#     make harnessgen-jvm PATH_ID=signal_linkpreview
+#
+# At M5.1 this generates the harness artifacts (LinkPreviewUtilFuzzer.java
+# + build.gradle + manifest.json) and prints the next step. Live Jazzer
+# invocation lands at M5.2 alongside the sandbox + watchdog.
+harnessgen-jvm:
+	@if [ -z "$(PATH_ID)" ]; then echo "PATH_ID is required (e.g. make harnessgen-jvm PATH_ID=signal_linkpreview)"; exit 2; fi
+	$(PYTHON) -m aegisgraph.harnessgen.harnessgen generate-harness $(PATH_ID)
+	@echo "harnessgen-jvm: artifacts emitted; live Jazzer run deferred to self-hosted runner."
 
 # polydiff-regression: deterministic regression run across the URL-parser
 # fact-vector corpus. Always part of `reproduce`.
