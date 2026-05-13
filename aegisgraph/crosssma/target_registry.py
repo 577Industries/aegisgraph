@@ -20,6 +20,17 @@ confirmed against the upstream repository. Verified=False targets
 ship with `commit` set to a `TODO-` placeholder; downstream queries
 SHOULD render their cells as dependency_absent unless the dependency
 snapshot itself matches.
+
+Wave 9C additive fields (ADR-0010 compatible):
+
+  * ``deferred_to`` -- Optional milestone id (e.g. ``"M22.1"``) for
+    placeholder commit pins, naming when the pin will resolve.
+    ``None`` for verified entries and for unverified entries that
+    carry a real SHA but are pending review. Required for any
+    ``TODO-*-COMMIT`` placeholder; the guard tests under
+    ``tests/crosssma/test_targets_yaml_no_orphan_todo.py`` enforce
+    that contract on the raw YAML so loader bugs cannot hide it.
+  * ``deferral_note`` -- Optional human-readable rationale.
 """
 
 from __future__ import annotations
@@ -39,7 +50,13 @@ REGISTRY_REL_PATH = "aegisgraph/crosssma/registry/targets.yaml"
 
 @dataclass(frozen=True)
 class Target:
-    """Frozen target record. Mutation raises AttributeError."""
+    """Frozen target record. Mutation raises AttributeError.
+
+    The ``deferred_to`` / ``deferral_note`` fields are additive
+    (Wave 9C, ADR-0010 compatible). They default to ``None`` so
+    pre-9C callers that constructed Target() positionally without
+    them continue to work.
+    """
 
     target_id: str
     name: str
@@ -48,6 +65,8 @@ class Target:
     verified: bool
     path_classes: tuple[str, ...]
     dependency_snapshot: tuple[str, ...]
+    deferred_to: str | None = None
+    deferral_note: str | None = None
 
 
 class RegistryConsistencyError(ValueError):
@@ -78,6 +97,13 @@ def _entry_to_target(target_id: str, entry: dict[str, Any]) -> Target:
     verified = bool(entry.get("verified", False))
     path_classes = tuple(entry.get("path_classes") or ())
     dependency_snapshot = tuple(entry.get("dependency_snapshot") or ())
+    # Additive (Wave 9C, ADR-0010): optional deferral metadata for
+    # placeholder commit pins. Both fields are normalized to strings
+    # when present, or left as None for verified / unannotated entries.
+    deferred_to_raw = entry.get("deferred_to")
+    deferred_to = str(deferred_to_raw) if deferred_to_raw else None
+    deferral_note_raw = entry.get("deferral_note")
+    deferral_note = str(deferral_note_raw) if deferral_note_raw else None
     return Target(
         target_id=target_id,
         name=name,
@@ -86,6 +112,8 @@ def _entry_to_target(target_id: str, entry: dict[str, Any]) -> Target:
         verified=verified,
         path_classes=path_classes,
         dependency_snapshot=dependency_snapshot,
+        deferred_to=deferred_to,
+        deferral_note=deferral_note,
     )
 
 
