@@ -1,0 +1,67 @@
+{
+  "candidate_id": "AG-XSMA-SIG-GP-001",
+  "claim_state": "validation_tasked",
+  "discovery_engine": "crosssma",
+  "discovery_run_id": null,
+  "family": "url",
+  "hash_chain": {
+    "canonicalization": "json-v1-sorted-no-hash-chain",
+    "previous_hash": "e6cb0f34a2be35866dcbcf089135973f946782e2962e915254aa381e0fc0a19b",
+    "record_hash": "cfce6f6ee781de115413b6186dda8e41a7e508cdef00784a6c9c150706444a7b"
+  },
+  "pattern_signature": "0496ebb8b1f29a6edad3223808fd119188f75146528c3d7fcf4f3e8e9bdb4378",
+  "pattern_type": "parser_disagreement",
+  "provenance": {
+    "generated_at": "2026-05-05T00:00:00Z",
+    "generated_by": "aegisgraph.crosssma.validation.elementx_linkpreview_xsma",
+    "private_by_default": true,
+    "source": "Wave 9B promotion of AG-XSMA-SIG-GP-001 via reprochain/harness/element_x_media build evidence"
+  },
+  "record_id": "AG-XSMA-VALIDATED-SIG-GP-001-ELX",
+  "source_finding_id": "SIG-LINKPREVIEW",
+  "status": "confirmed_reachable",
+  "structural_description": "Remote URL in composer to link preview metadata and thumbnail fetch (family=url, axis=link_preview_fetch_pipeline)",
+  "structural_signature": "0496ebb8b1f29a6edad3223808fd119188f75146528c3d7fcf4f3e8e9bdb4378",
+  "supersedes": "AG-XSMA-SIG-GP-001",
+  "target_findings": [
+    {
+      "evidence_note": "Wave 9B promotion: HarnessGen JVM build evidence at reprochain/harness/element_x_media/MediaRepositoryFuzzer.java. fuzz_status remains not_run_runner_blocked (T-M4.1).",
+      "finding_id": "AG-XSMA-VALIDATED-SIG-GP-001-ELX",
+      "path_id": "elementx_linkpreview_xsma",
+      "status": "confirmed_reachable",
+      "target": "element-x-android"
+    },
+    {
+      "evidence_note": "source thread for SIG-GP-001 (origin SIG-LINKPREVIEW)",
+      "finding_id": "SIG-LINKPREVIEW",
+      "path_id": "SIG-GP-001",
+      "status": "confirmed_reachable",
+      "target": "signal-android"
+    },
+    {
+      "evidence_note": "dependency match: okhttp@4.12.0",
+      "finding_id": null,
+      "path_id": null,
+      "status": "candidate_path",
+      "target": "telegram-android"
+    },
+    {
+      "evidence_note": "dependency match: okhttp@4.12.0",
+      "finding_id": null,
+      "path_id": null,
+      "status": "candidate_path",
+      "target": "wire-android"
+    }
+  ],
+  "target_id": "element-x-android",
+  "validation_evidence": {
+    "build_evidence_ref": "tests/harnessgen/test_element_x_media_harness_artifact_present.py",
+    "build_status": "success",
+    "fuzz_status": "not_run_runner_blocked",
+    "harness_artifact_sha256": "fe037d729261694f74bc8420dabeb45a789739e84a0066629ad0993e172a0698",
+    "harness_path": "reprochain/harness/element_x_media/MediaRepositoryFuzzer.java",
+    "kind": "harnessgen_build"
+  },
+  "validation_state": "harness_validated",
+  "version": "v1.0"
+}

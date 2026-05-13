@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://577.industries/aegisgraph/schema/cross-target-candidate.schema.json",
   "title": "AegisGraph CrossSMA Cross-Target Candidate",
-  "description": "Structural-pattern match from CrossSMA: a finding in one SMA hypothesized to apply analogously in others. Each candidate target cell carries a status (confirmed_reachable | candidate_path | dependency_absent | parser_differs | not_applicable).",
+  "description": "Structural-pattern match from CrossSMA: a finding in one SMA hypothesized to apply analogously in others. Each candidate target cell carries a status (confirmed_reachable | candidate_path | dependency_absent | parser_differs | not_applicable). Wave 9B (M9.2) adds optional validation-overlay fields (record_id, supersedes, target_id, status, pattern_signature, validation_evidence, claim_state) so a downstream HarnessGen build can promote a single cell candidate_path -> confirmed_reachable without rewriting the original candidate record.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,6 +20,18 @@
     "candidate_id": {
       "type": "string",
       "pattern": "^AG-XSMA-[A-Z0-9-]+$"
+    },
+    "record_id": {
+      "type": ["string", "null"],
+      "pattern": "^AG-XSMA-(VALIDATED-)?[A-Z0-9-]+$",
+      "default": null,
+      "description": "Optional record-level identifier distinct from candidate_id. Validation-overlay records (AG-XSMA-VALIDATED-*) carry both record_id and candidate_id; the latter pins the prior candidate record being superseded."
+    },
+    "supersedes": {
+      "type": ["string", "null"],
+      "pattern": "^AG-XSMA-[A-Z0-9-]+$",
+      "default": null,
+      "description": "Optional pointer to the prior CrossSMA record this one supersedes (e.g. a candidate record whose status this validation record promotes)."
     },
     "version": {"const": "v1.0"},
     "discovery_engine": {"const": "crosssma"},
@@ -44,6 +56,12 @@
       "pattern": "^[a-f0-9]{64}$",
       "description": "SHA-256 of canonical pattern description string; identical structurally-matching candidates dedupe via this signature."
     },
+    "pattern_signature": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$",
+      "default": null,
+      "description": "Alias for structural_signature on validation-overlay records. Optional; when present MUST equal structural_signature."
+    },
     "structural_description": {"type": ["string", "null"], "default": null},
     "target_findings": {
       "type": "array",
@@ -57,6 +75,7 @@
           "status": {
             "enum": [
               "confirmed_reachable",
+              "confirmed_unreachable",
               "candidate_path",
               "dependency_absent",
               "parser_differs",
@@ -70,10 +89,77 @@
         }
       }
     },
+    "target_id": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Validation-overlay focus target (a target_id present in target_findings whose cell this record validates)."
+    },
+    "status": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "confirmed_reachable",
+        "confirmed_unreachable",
+        "candidate_path",
+        "dependency_absent",
+        "parser_differs",
+        "not_applicable",
+        "unknown"
+      ],
+      "default": null,
+      "description": "Validation-overlay record-level status mirroring the focus cell's status."
+    },
     "validation_state": {
       "type": ["string", "null"],
       "enum": [null, "structural_only", "harness_validated", "dynamic_validated"],
       "default": null
+    },
+    "claim_state": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "observed",
+        "anchored",
+        "scored",
+        "validation_tasked",
+        "reviewed",
+        "reviewed_embargoed",
+        "disclosed_public",
+        "accepted",
+        "limited",
+        "retired"
+      ],
+      "default": null
+    },
+    "validation_evidence": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "default": null,
+      "required": ["kind", "build_status", "fuzz_status"],
+      "properties": {
+        "kind": {
+          "enum": ["harnessgen_build", "harnessgen_fuzz", "dynamic_probe"]
+        },
+        "harness_path": {"type": ["string", "null"], "default": null},
+        "harness_artifact_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "default": null
+        },
+        "build_status": {
+          "enum": ["success", "failed", "not_run"]
+        },
+        "fuzz_status": {
+          "enum": [
+            "not_run_runner_blocked",
+            "not_run_scope",
+            "running",
+            "confirmed_crash",
+            "no_crash_window_elapsed"
+          ]
+        },
+        "build_evidence_ref": {"type": ["string", "null"], "default": null}
+      }
     },
     "provenance": {
       "type": "object",
