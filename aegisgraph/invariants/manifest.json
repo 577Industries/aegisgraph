@@ -3,19 +3,21 @@
   "version": "v1.0",
   "generated_by": "aegisgraph-tier3-research",
   "safety_posture": "private_by_default",
-  "library_version": "m7-inv-library-v2",
+  "library_version": "m7-gt-v3",
+  "production_count": 15,
   "notes": [
-    "M7-INV deliverable (May 2026): library v2 with 15 invariants total (count met at M5.3) and 12 of 15 graduated to production-encoded status.",
+    "M7-GT-v3 deliverable (May 2026, Wave 8A): library v3 with 15 invariants total and 15 of 15 graduated to production-encoded status (closing the M7 quality metric).",
     "M3.3 baseline (5): INV-01, INV-07, INV-09, INV-11, INV-13.",
     "M5.3 additions (10): INV-02, INV-03, INV-04, INV-05, INV-06, INV-08, INV-10, INV-12, INV-14, INV-15.",
     "M5.3 production-encoded (3): INV-02 notification leak, INV-05 key storage no keystore, INV-08 clipboard paste to send.",
     "M7-INV production-encoded (7 newly graduated): INV-03 group state unauth, INV-04 device link no kex, INV-06 pq downgrade, INV-10 attachment path traversal, INV-12 media decode unsanitized, INV-14 backup blob unauth, INV-15 metadata leak outside envelope.",
-    "Production CodeQL after M7-INV (10): INV-01, INV-02, INV-03, INV-04, INV-05, INV-06, INV-10, INV-12, INV-14, INV-15.",
-    "Production Semgrep after M7-INV (2): INV-07, INV-08.",
-    "Remaining stubs after M7-INV (3): INV-09 (Semgrep webview), INV-11 (CodeQL deeplink open redirect), INV-13 (CodeQL qr payload unverified binding). Each retains its rich-comment intent block and `where none()` stub body.",
-    "Each static (codeql / semgrep) encoding now carries a `status` field of either `production` or `stub`; the test_library_v2_production_count test asserts the production count is 12 (10 CodeQL + 2 Semgrep).",
+    "M7-GT-v3 production-encoded (3 newly graduated, Wave 8A): INV-09 webview JS interface (Semgrep, pattern-either), INV-11 deeplink open redirect (CodeQL, TaintTracking::Global), INV-13 QR payload unverified binding (CodeQL, TaintTracking::Global). All three closed via the demo-vulnerable-app ground-truth fixture and the new tests/invariants/test_ground_truth_pass.py harness.",
+    "Production CodeQL after M7-GT-v3 (12): INV-01, INV-02, INV-03, INV-04, INV-05, INV-06, INV-10, INV-11, INV-12, INV-13, INV-14, INV-15.",
+    "Production Semgrep after M7-GT-v3 (3): INV-07, INV-08, INV-09.",
+    "Remaining stubs after M7-GT-v3: 0 (all 15 invariants production-encoded).",
+    "Each static (codeql / semgrep) encoding carries a `status` field of either `production` or `stub`; test_library_v2_production_count asserts the production count is 15 (12 CodeQL + 3 Semgrep).",
     "Encoding `query` fields are paths relative to this manifest.json (i.e. relative to aegisgraph/invariants/).",
-    "Ground-truth expected_violations counts for the 7 newly-graduated invariants are derived from the demo-vulnerable-app intent blocks in each stub; the M7-GT pass will land the actual synthetic fixtures under tests/fixtures/demo-vulnerable-app/ and validate the counts.",
+    "Ground-truth expected_violations counts are validated by tests/fixtures/demo-vulnerable-app/ (synthetic Android+Kotlin+Java fixture) via tests/invariants/test_ground_truth_pass.py; the harness skips if codeql/semgrep binaries are absent and runs them on the self-hosted runner per T-M4.1.",
     "Full 25-30 invariants ship across M3-M11 per Phase II rollout plan (M8.2 adds invariants 16-20 as library v2; M11.1 adds 21-25 as library v3)."
   ],
   "invariants": [
@@ -102,8 +104,7 @@
       "ground_truth": [
         {
           "target": "demo-vulnerable-app",
-          "expected_violations": "unknown",
-          "notes": "TODO[ground-truth-pass]"
+          "expected_violations": 1
         },
         {
           "target": "signal_android@1043851",
@@ -287,13 +288,13 @@
         {
           "engine": "semgrep",
           "query": "library/semgrep/09_webview_jsinterface_addjavascript.yaml",
-          "status": "stub"
+          "status": "production"
         }
       ],
       "ground_truth": [
         {
           "target": "demo-vulnerable-app",
-          "expected_violations": "unknown"
+          "expected_violations": 2
         },
         {
           "target": "signal_android@1043851",
@@ -351,13 +352,13 @@
         {
           "engine": "codeql",
           "query": "library/codeql/11_deeplink_open_redirect.ql",
-          "status": "stub"
+          "status": "production"
         }
       ],
       "ground_truth": [
         {
           "target": "demo-vulnerable-app",
-          "expected_violations": "unknown"
+          "expected_violations": 3
         },
         {
           "target": "signal_android@1043851",
@@ -415,13 +416,13 @@
         {
           "engine": "codeql",
           "query": "library/codeql/13_qr_payload_unverified_binding.ql",
-          "status": "stub"
+          "status": "production"
         }
       ],
       "ground_truth": [
         {
           "target": "demo-vulnerable-app",
-          "expected_violations": "unknown"
+          "expected_violations": 2
         },
         {
           "target": "signal_android@1043851",
