@@ -1,0 +1,7 @@
+# This directory holds rendered .mbox and .cert-cc.txt files staged for
+# human dispatch. Per ADR-0014 the disclosure pipeline never auto-sends;
+# the operator reviews these files and dispatches via their own MUA.
+#
+# This directory is intentionally part of the engineering-private repo
+# tree. The public-sanitized export must NOT include anything under
+# this path (see sanitize-check Rule 7 forthcoming).

@@ -20,9 +20,16 @@ The Phase II plan recommends **libwebp upstream** as first target (Option A), re
 | `ledger.py` | append-only JSONL reader/writer/verifier; reuses `aegisgraph.hashchain` primitives |
 | `ledger.jsonl` | the chain itself (append-only) — starts empty |
 | `vendor_registry.yaml` | per-vendor contacts, CNA status, embargo defaults |
-| `pipeline/` | TODO: vendor_contact_router, embargo_timer, cert_cc_submission, reviewer_workbench_link |
-| `templates/` | TODO: vendor_initial_email.j2, reproduction_steps.j2, cve_request.j2 |
-| `claim_states/` | TODO: state-transition extensions (reviewed_embargoed, disclosed_public) |
+| `pipeline/vendor_contact_router.py` | finding -> vendor route via `vendor_registry.yaml` |
+| `pipeline/cert_cc_submission.py` | CERT/CC VINCE form filler (manual template; writes to `outgoing/`) |
+| `pipeline/embargo_timer.py` | 90d default + per-finding overrides; pure calculation, no ledger writes |
+| `pipeline/reviewer_workbench_link.py` | finding_id -> workbench URL placeholder |
+| `templates/vendor_initial_email.j2` | first-contact letter (passes `safety.scan_record`) |
+| `templates/reproduction_steps.j2` | sanitized reproduction notes (hashes only) |
+| `templates/cve_request.j2` | CVE request template (MITRE / Chrome CNA / GHSA variants) |
+| `claim_states/reviewed_embargoed.py` | requires prior `vendor_contacted` ledger event |
+| `claim_states/disclosed_public.py` | requires `embargo_expired` / `cve_published` / `disclosure_public` event |
+| `outgoing/` | rendered `.mbox` and `.cert-cc.txt` files for human dispatch (no SMTP) |
 
 ## Ledger usage (forward-looking)
 

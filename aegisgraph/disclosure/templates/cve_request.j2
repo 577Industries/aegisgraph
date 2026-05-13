@@ -1,0 +1,67 @@
+CVE Request — {{ finding_id }}
+{% if cna_variant == "chrome_cna" %}
+Submit to: Chrome CNA (via chromium-security@chromium.org)
+Path:      https://www.chromium.org/Home/chromium-security/reporting-security-bugs/
+{% elif cna_variant == "github_security_advisory" %}
+Submit to: GitHub Security Advisory (vendor repository)
+Path:      https://docs.github.com/en/code-security/security-advisories
+{% else %}
+Submit to: MITRE direct (CVE Request form)
+Path:      https://cveform.mitre.org/
+{% endif %}
+
+Reporter
+--------
+  Organization: {{ researcher_name }}
+  Contact:      {{ researcher_contact }}
+
+Affected
+--------
+  Vendor / component: {{ vendor_name }}
+  Triage class:       {{ triage_class }}
+
+Researcher tracking ID
+----------------------
+  {{ finding_id }}
+
+Summary (sanitized)
+-------------------
+{{ summary }}
+
+Reproducibility
+---------------
+A minimized witness reproduces the behavior deterministically in the
+environment noted below. The witness is shared out-of-band; it is
+referenced here only by content hash:
+
+  Content SHA-256:        {{ witness_sha256 }}
+  Minimized size (bytes): {{ witness_minimized_bytes }}
+  Reproduction host:      {{ reproduction_environment }}
+
+Coordination status
+-------------------
+  Vendor has been contacted under a {{ embargo_days }}-day embargo
+  ending {{ embargo_until }}. This CVE request is filed early in the
+  embargo window so that an identifier is available when the embargo
+  lifts (or when the vendor patches and authorizes earlier
+  disclosure).
+
+Notes for the CNA
+-----------------
+{% if cna_variant == "chrome_cna" %}
+  Chrome CNA is requested because the affected upstream component
+  falls within Chromium's coordination scope.
+{% elif cna_variant == "github_security_advisory" %}
+  GitHub Security Advisory is requested because the affected vendor
+  maintains the component on GitHub and uses GHSA for coordination.
+{% else %}
+  MITRE direct CVE assignment is requested because no vendor CNA
+  covers the affected component. CERT/CC may be looped in as a
+  neutral coordinator if helpful.
+{% endif %}
+
+Limitations
+-----------
+This request describes an observed differential decode outcome, not
+a confirmed exploit. We are not asserting any specific severity
+score in this filing; CVSS scoring will follow vendor / CNA triage.
