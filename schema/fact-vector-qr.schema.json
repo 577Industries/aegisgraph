@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://577.industries/aegisgraph/schema/fact-vector-qr.schema.json",
+  "title": "PolyDiff QR-Family Fact Vector",
+  "description": "Per-implementation fact vector for the qr family. Sibling of fact-vector.schema.json (URL family), fact-vector-image.schema.json (image family), fact-vector-opengraph.schema.json (opengraph family), and fact-vector-deeplink.schema.json (deeplink family); all share input_id + parser_profile as the cross-family identity keys that the diff engine pairs vectors on. Axes follow the T-M2.5 spec (10 axes): detected_text, ecc_level, version, mode, encoding_charset, structured_append_index, structured_append_total, fnc1_present, parser_warnings, decode_outcome. When a wrapper binary/package is absent (e.g. ZXing, ZBar, Apple Vision or iOS Camera detector toolchain is not installed in the devcontainer) the wrapper emits a crash envelope with binary_missing=true and decode_outcome.status='parse_error'; that envelope still validates so the missing parser stays auditable in the diff report.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "input_id",
+    "parser_profile",
+    "detected_text",
+    "ecc_level",
+    "version",
+    "mode",
+    "encoding_charset",
+    "structured_append_index",
+    "structured_append_total",
+    "fnc1_present",
+    "parser_warnings",
+    "decode_outcome"
+  ],
+  "properties": {
+    "input_id": {"type": "string", "minLength": 1},
+    "parser_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wrapper id (zxing_cli, zbar_cli, apple_vision_stub, ios_detector_stub)."
+    },
+    "schema_version": {"type": "string"},
+    "binary_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set by the wrapper when the underlying QR-decoder binary/package is not available. The qr axes are then null and decode_outcome.status MUST be 'parse_error'."
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "detected_text": {
+      "type": ["string", "null"],
+      "description": "The text payload decoded from the QR symbol. null when the wrapper produced no observable decoded text (parse_error / binary_missing / no_qr_found). Same-input divergence in detected_text is the URL-in-QR phishing-surface signal."
+    },
+    "ecc_level": {
+      "type": ["string", "null"],
+      "enum": [null, "L", "M", "Q", "H"],
+      "description": "QR error-correction level: L (~7%), M (~15%), Q (~25%), H (~30%). null when not observable."
+    },
+    "version": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 40,
+      "description": "QR version (1-40). Determines symbol size and capacity. null when not observable."
+    },
+    "mode": {
+      "type": ["string", "null"],
+      "enum": [null, "numeric", "alphanumeric", "byte", "kanji"],
+      "description": "QR data mode. Same-input divergence indicates charset-confusion class (e.g. mode picked as 'kanji' vs 'byte' for identical symbol input)."
+    },
+    "encoding_charset": {
+      "type": ["string", "null"],
+      "description": "Inferred byte-mode character set (e.g. 'UTF-8', 'ISO-8859-1', 'Shift-JIS'). null when the parser doesn't report charset or mode is non-byte. ECI-tagged vs default charset divergence surfaces here."
+    },
+    "structured_append_index": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Zero-based index in a multi-QR structured-append sequence. null when the symbol is standalone (no structured-append header)."
+    },
+    "structured_append_total": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Total number of symbols in the structured-append sequence. null when standalone."
+    },
+    "fnc1_present": {
+      "type": ["boolean", "null"],
+      "description": "Whether the QR symbol carries an FNC1 header (GS1 application identifiers). null when not observable."
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Implementation-emitted warnings (e.g. 'low-confidence decode', 'partial structured-append'). Empty array on a clean parse."
+    },
+    "decode_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "bytes_out"],
+      "description": "Implementation-reported decode outcome. 'parse_error' covers wrapper crash / FileNotFoundError (binary missing) / parser exception; 'decode_error' is a clean rejection by the decoder; 'no_qr_found' is the decoder cleanly reporting that no QR symbol was located in the image; 'ok' is a clean decode.",
+      "properties": {
+        "status": {"enum": ["ok", "parse_error", "decode_error", "no_qr_found"]},
+        "bytes_out": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

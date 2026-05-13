@@ -1,0 +1,98 @@
+{
+  "tool_output_type": "polydiff_proto_corpus",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "family": "proto",
+  "notes": [
+    "Anchored corpus for PolyDiff proto-family rediscovery + synthetic regressions.",
+    "Witnesses are pinned by SHA-256 ONLY. NO payload bytes appear in this repo.",
+    "Anchors cover four canonical proto divergence shapes: field_unknown_count divergence (MEDIUM-HIGH; gogo-protobuf vs google-protobuf unknown-field-handling class), oneof_active_field divergence (MEDIUM-HIGH; oneof-ambiguity class), decode_outcome divergence (HIGH; FlatBuffer offset overflow producing ok vs parse_error), and decoded_field_summary divergence (MEDIUM; msgpack ext-type collision class).",
+    "Per-case `implementations` lists the two wrapper ids the case is designed to disagree on; the diff engine runs ALL declared wrappers and picks up these axes (plus any others that surface).",
+    "Per-case `expected_fact_vector_diff` is keyed by axis name; each value is a 2-element array of the two impls' observations (matches the `implementations` ordering)."
+  ],
+  "cases": [
+    {
+      "case_id": "anchor_proto_unknown_field_handling",
+      "historical_cve_reference": null,
+      "summary": "A protobuf wire payload with extra fields not declared in the decoder's schema. google-protobuf and gogo-protobuf historically diverge on the field_unknown_count reported — google-protobuf preserves them in an unknown-fields buffer while gogo-protobuf with certain options strips them silently. When the SMA round-trips the payload, the extra fields may be lost. SHA-256-pinned synthetic representation.",
+      "bug_class": "proto-unknown-field-handling-divergence",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f1",
+      "witness_size_bytes": 192,
+      "implementations": ["protoc_python", "protoc_gogofaster_stub"],
+      "format_kind": "protobuf",
+      "expected_fact_vector_diff": {
+        "field_unknown_count": [0, 2]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "unknown",
+      "reachability_targets": ["signal_android", "element_x_android"],
+      "reference_url": null,
+      "limitations": "witness bytes are NOT in this repo; pinned-hash anchor only. The expected fact-vector diff documents the canonical disagreement shape — actual decoder outputs depend on the pinned wrapper versions and on whether gogo-protobuf is available (the stub returns binary_missing in the Python devcontainer, which the diff engine treats as a parse_error divergence rather than the documented unknown-field divergence)."
+    },
+    {
+      "case_id": "anchor_proto_oneof_ambiguity",
+      "historical_cve_reference": null,
+      "summary": "A protobuf wire payload where the same bytes resolve to different active fields in a `oneof` group depending on the decoder's interpretation order. Same payload, different oneof_active_field. Maps to a oneof-ambiguity bug class. SHA-256-pinned synthetic representation.",
+      "bug_class": "proto-oneof-ambiguity",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f2",
+      "witness_size_bytes": 96,
+      "implementations": ["protoc_python", "protoc_gogofaster_stub"],
+      "format_kind": "protobuf",
+      "expected_fact_vector_diff": {
+        "oneof_active_field": ["payload_a", "payload_b"]
+      },
+      "expected_triage_class": "MEDIUM-HIGH",
+      "expected_triage_rationale_contains": "oneof",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the oneof_active_field divergence triage rule; oneof-ambiguity has been documented in protobuf spec discussions."
+    },
+    {
+      "case_id": "anchor_flatbuffer_offset_overflow",
+      "historical_cve_reference": null,
+      "summary": "A FlatBuffer payload with an offset value that exceeds the buffer length. flatc with bounds-checking enabled rejects it (parse_error) while a more permissive decoder silently decodes garbage memory. Same payload, ok vs parse_error decode_outcome. Maps to a flatbuffer-offset-overflow bug class (HIGH triage). SHA-256-pinned synthetic representation.",
+      "bug_class": "flatbuffer-offset-overflow",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f3",
+      "witness_size_bytes": 64,
+      "implementations": ["flatc_runner", "protoc_python"],
+      "format_kind": "flatbuffer",
+      "expected_fact_vector_diff": {
+        "decode_outcome": [
+          {"status": "ok", "bytes_out": 64},
+          {"status": "parse_error", "bytes_out": 0}
+        ]
+      },
+      "expected_triage_class": "HIGH",
+      "expected_triage_rationale_contains": "parse",
+      "reachability_targets": ["signal_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the decode_outcome divergence (ok + parse_error) triage rule on a FlatBuffer offset-overflow shape; the FlatBuffer-cross-decoder pairing here is illustrative — in practice the second wrapper would be a different FlatBuffer impl, but flatc vs protoc_python suffices to surface the decode_outcome divergence axis."
+    },
+    {
+      "case_id": "anchor_msgpack_ext_type_collision",
+      "historical_cve_reference": null,
+      "summary": "An msgpack payload using an ext-type tag that two decoders interpret differently — e.g. as a timestamp vs raw bytes. Same payload, different decoded_field_summary. Maps to an msgpack-ext-type-collision bug class. SHA-256-pinned synthetic representation.",
+      "bug_class": "msgpack-ext-type-collision",
+      "publication_policy": "synthetic-public-candidate",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f4",
+      "witness_size_bytes": 32,
+      "implementations": ["msgpack_python", "protoc_python"],
+      "format_kind": "msgpack",
+      "expected_fact_vector_diff": {
+        "decoded_field_summary": [
+          {"ts": "2024-01-01T00:00:00Z"},
+          {"raw": "AAAAAAAAAAA="}
+        ]
+      },
+      "expected_triage_class": "MEDIUM",
+      "expected_triage_rationale_contains": "decoded",
+      "reachability_targets": ["element_x_android"],
+      "reference_url": null,
+      "limitations": "synthetic case of our design exercising the decoded_field_summary divergence triage rule on an msgpack ext-type collision shape; the cross-decoder pairing is illustrative (msgpack vs protobuf) — in practice the second wrapper would be a different msgpack impl."
+    }
+  ]
+}

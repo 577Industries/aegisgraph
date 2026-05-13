@@ -1,0 +1,48 @@
+{
+  "tool_output_type": "polydiff_proto_rediscovery_manifest",
+  "version": "v1.0",
+  "family": "proto",
+  "description": "Proto-family rediscovery manifest. Per Asemarefactor.md §'Engine 1: PolyDiff Extended', each anchored case is pinned by SHA-256 + size so that the regression run reproduces the documented disagreement deterministically. Payload bytes live engineering-private at reprochain/corpora-private/; this manifest carries only hashes.",
+  "anchors": [
+    {
+      "case_id": "anchor_proto_unknown_field_handling",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f1",
+      "witness_size_bytes": 192,
+      "expected_disagreement_axes": ["field_unknown_count"],
+      "expected_triage_class": "MEDIUM-HIGH",
+      "private_corpus_path": "reprochain/corpora-private/proto_unknown_field_handling.pb",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_proto_oneof_ambiguity",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f2",
+      "witness_size_bytes": 96,
+      "expected_disagreement_axes": ["oneof_active_field"],
+      "expected_triage_class": "MEDIUM-HIGH",
+      "private_corpus_path": "reprochain/corpora-private/proto_oneof_ambiguity.pb",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_flatbuffer_offset_overflow",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f3",
+      "witness_size_bytes": 64,
+      "expected_disagreement_axes": ["decode_outcome"],
+      "expected_triage_class": "HIGH",
+      "private_corpus_path": "reprochain/corpora-private/flatbuffer_offset_overflow.fbs",
+      "cve_reference": null
+    },
+    {
+      "case_id": "anchor_msgpack_ext_type_collision",
+      "kind": "synthetic",
+      "witness_sha256": "00000000000000000000000000000000000000000000000000000000000000f4",
+      "witness_size_bytes": 32,
+      "expected_disagreement_axes": ["decoded_field_summary"],
+      "expected_triage_class": "MEDIUM",
+      "private_corpus_path": "reprochain/corpora-private/msgpack_ext_type_collision.msgpack",
+      "cve_reference": null
+    }
+  ]
+}

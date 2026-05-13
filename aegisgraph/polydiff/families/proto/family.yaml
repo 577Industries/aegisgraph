@@ -1,0 +1,104 @@
+# PolyDiff proto-family manifest (Engine 1, T-M2.6).
+#
+# Per Asemarefactor.md §"Engine 1: PolyDiff Extended" module layout, this
+# file is the single source of truth for:
+#   - Which implementations the diff engine dispatches to.
+#   - The per-family fact-vector axes the diff engine compares.
+#   - Reachability mappings (witness -> SMA codepath via evidence graph).
+#
+# Edits MUST keep this file in sync with:
+#   - schema/fact-vector-proto.schema.json (axes + required fields)
+#   - aegisgraph/polydiff/families/proto/wrappers/* (one module per impl)
+#   - polydiff/families/proto/regression/corpus.json (anchored cases)
+
+family: proto
+schema_version: v1.0
+
+implementations:
+  - id: protoc_python
+    bindings: python
+    wrapper: wrappers/protoc_python.py
+    binary_hint: protoc_python_decode
+    version_pin: "protoc-python@v25.0"  # synthetic pin; the actual protoc
+                                        # + google.protobuf python may
+                                        # be unavailable in the
+                                        # devcontainer — wrapper emits
+                                        # binary_missing=true.
+  - id: flatc_runner
+    bindings: python
+    wrapper: wrappers/flatc_runner.py
+    binary_hint: flatc
+    version_pin: "flatc@v24.3.25"
+  - id: msgpack_python
+    bindings: python
+    wrapper: wrappers/msgpack_python.py
+    binary_hint: msgpack_python_decode
+    version_pin: "msgpack-python@v1.0.8"
+  - id: protoc_gogofaster_stub
+    bindings: python
+    wrapper: wrappers/protoc_gogofaster_stub.py
+    binary_hint: protoc_gogofaster
+    version_pin: "gogo-protobuf-stub@v0.1.0"  # gogo-protobuf is a Go
+                                              # codegen toolchain; the
+                                              # Python stub always
+                                              # emits binary_missing.
+
+fact_vector_schema:
+  schema_path: schema/fact-vector-proto.schema.json
+  # Axes per the T-M2.6 spec: 9 axes covering format_kind, schema
+  # version, message type name, field counts, oneof active field,
+  # decoded summary, parser warnings, decode outcome.
+  axes:
+    - format_kind: "enum[protobuf,flatbuffer,msgpack]"
+    - declared_schema_version: "string|null"
+    - message_type_name: "string|null"
+    - field_count: "integer|null"
+    - field_unknown_count: "integer|null"
+    - oneof_active_field: "string|null"
+    - decoded_field_summary: "object|null"
+    - parser_warnings: "list[string]"
+    - decode_outcome: {status: "enum[ok, parse_error, decode_error, schema_mismatch]", bytes_out: int}
+
+# Triage classifier rules. Encoded as additive logic in
+# aegisgraph/polydiff/core/triage.py (function
+# `classify_proto_disagreement`). Listed here for cross-reference; the
+# code is the executable source of truth.
+triage_rules:
+  - axis: decode_outcome
+    when: one_ok_one_parse_error
+    triage_class: HIGH
+    rationale: parser crash potential — one impl decoded cleanly while another crashed/rejected
+  - axis: field_unknown_count
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: unknown-field-handling bug class — gogo-protobuf vs google-protobuf class
+  - axis: oneof_active_field
+    when: any-mismatch
+    triage_class: MEDIUM-HIGH
+    rationale: oneof-ambiguity class — two decoders pick different fields from same wire bytes
+  - axis: field_count
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: field-count divergence — decoded summary disagreement
+  - axis: decoded_field_summary
+    when: any-mismatch
+    triage_class: MEDIUM
+    rationale: decoded-summary divergence — field values diverge across decoders
+  - axis: declared_schema_version
+    when: any-mismatch
+    triage_class: LOW
+    rationale: cosmetic — schema-version declaration differs
+
+reachability:
+  signal_android:
+    - path_class: rpc_handler
+      entry: "WebSocketHandler.onMessage"
+      sink: "ProtoMessageDispatcher.dispatch"
+  element_x_android:
+    - path_class: rpc_handler
+      entry: "MatrixApi.requestSync"
+      sink: "EventDecoder.decode"
+  signal_ios:
+    - path_class: rpc_handler
+      entry: "SocketManagerImpl.didReceive"
+      sink: "ProtoEventDispatcher.dispatch"

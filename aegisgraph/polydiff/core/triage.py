@@ -513,10 +513,356 @@ def _classify_deeplink_decode_outcome(values: Any) -> tuple[str, str]:
     return ("LOW", "decode_outcome divergence without ok pairing")
 
 
+# ---------------------------------------------------------------------------
+# QR-family triage (T-M2.5)
+# ---------------------------------------------------------------------------
+#
+# Per the T-M2.5 spec, the qr family classifies disagreements as:
+#
+#   decode_outcome divergence (one ok, one parse_error)        -> HIGH
+#       Parser crash potential — one impl decoded cleanly while another
+#       crashed/rejected the same input.
+#   detected_text divergence with same input                   -> MEDIUM-HIGH
+#       URL-in-QR phishing surface — same symbol, different decoded
+#       text (e.g. iOS Camera URL handler vs ZXing extract diverge).
+#   mode or encoding_charset divergence                        -> MEDIUM
+#       Charset-confusion class — same symbol, different data mode
+#       (byte vs kanji) or different charset (UTF-8 vs Shift-JIS).
+#   structured_append (index|total) divergence                 -> MEDIUM
+#       Multi-QR ordering bug class — structured-append pieces decoded
+#       out of order.
+#   ecc_level / version divergence                             -> LOW
+#       Cosmetic — error-correction level / QR version reporting differs.
+#
+# Rules are ADDITIVE — they do not touch URL, image, opengraph, or
+# deeplink family classifiers. The qr regression module calls
+# `classify_qr_disagreement(fact_vector_diff)` to stamp each emitted
+# AG-DIS-QR-* record with `triage_class` + rationale.
+
+
+def classify_qr_disagreement(fact_vector_diff: dict[str, Any]) -> dict[str, str]:
+    """Map a qr-family `fact_vector_diff` to triage class + rationale.
+
+    `fact_vector_diff` keys are axis names (e.g. "detected_text",
+    "decode_outcome", "mode"); values are arrays of per-implementation
+    observations. For each axis we evaluate the divergence shape and
+    assign a triage label. If the diff touches multiple axes the final
+    label is the most severe of the per-axis labels (priority HIGH >
+    MEDIUM-HIGH > MEDIUM > LOW > NOISE).
+
+    Returns: {"triage_class": str, "triage_rationale": str}
+
+    Raises: never. Unknown axes contribute NOISE and a generic rationale.
+    """
+    if not isinstance(fact_vector_diff, dict) or not fact_vector_diff:
+        return {
+            "triage_class": "NOISE",
+            "triage_rationale": "empty disagreement",
+        }
+
+    per_axis: list[tuple[str, str, str]] = []  # (axis, class, rationale)
+
+    for axis, values in fact_vector_diff.items():
+        cls, rationale = _classify_qr_axis(axis, values, fact_vector_diff)
+        per_axis.append((axis, cls, rationale))
+
+    # Pick the worst (highest-priority) per-axis label.
+    per_axis.sort(key=lambda t: _TRIAGE_PRIORITY.get(t[1], 0), reverse=True)
+    _top_axis, top_class, top_rationale = per_axis[0]
+    return {
+        "triage_class": top_class,
+        "triage_rationale": top_rationale,
+    }
+
+
+def _classify_qr_axis(
+    axis: str, values: Any, full_diff: dict[str, Any]
+) -> tuple[str, str]:
+    """Per-axis triage logic for the qr family.
+
+    Returns (triage_class, rationale).
+    """
+    if axis == "decode_outcome":
+        return _classify_qr_decode_outcome(values)
+    if axis == "detected_text":
+        return (
+            "MEDIUM-HIGH",
+            "detected_text divergence — URL-in-QR phishing surface "
+            "(same symbol, different decoded text)",
+        )
+    if axis == "mode":
+        return (
+            "MEDIUM",
+            "mode divergence — charset-confusion class "
+            "(same symbol, different QR data mode)",
+        )
+    if axis == "encoding_charset":
+        return (
+            "MEDIUM",
+            "encoding_charset divergence — charset-confusion class "
+            "(ECI-tagged vs default charset diverges)",
+        )
+    if axis == "structured_append_index":
+        return (
+            "MEDIUM",
+            "structured_append_index divergence — multi-QR ordering "
+            "bug class (structured-append pieces decoded out of order)",
+        )
+    if axis == "structured_append_total":
+        return (
+            "MEDIUM",
+            "structured_append_total divergence — multi-QR sequence "
+            "size disagreement",
+        )
+    if axis == "fnc1_present":
+        return (
+            "MEDIUM",
+            "fnc1_present divergence — GS1 FNC1 header recognition "
+            "differs",
+        )
+    if axis == "ecc_level":
+        return (
+            "LOW",
+            "ecc_level divergence — error-correction level reporting "
+            "differs (cosmetic)",
+        )
+    if axis == "version":
+        return (
+            "LOW",
+            "version divergence — QR version reporting differs (cosmetic)",
+        )
+    if axis == "parser_warnings":
+        return ("NOISE", "warnings-only divergence")
+    # Unknown axis: fall back to NOISE so a future schema addition cannot
+    # accidentally promote a benign axis to HIGH.
+    return ("NOISE", f"unknown qr-family axis {axis!r}")
+
+
+def _classify_qr_decode_outcome(values: Any) -> tuple[str, str]:
+    """Decode_outcome triage for the qr family.
+
+    The qr fact-vector schema uses the status enum
+    {ok, parse_error, decode_error, no_qr_found}. A one-ok-one-parse_error
+    pairing is the canonical HIGH signal (one impl decoded cleanly while
+    another crashed/rejected the same input — parser crash potential).
+    """
+    if not isinstance(values, list) or len(values) < 2:
+        return ("NOISE", "decode_outcome with <2 observations")
+
+    statuses: list[str] = []
+    for v in values:
+        if isinstance(v, dict):
+            statuses.append(str(v.get("status", "")))
+        else:
+            statuses.append(str(v))
+
+    has_ok = any(s == "ok" for s in statuses)
+    has_parse_error = any(s == "parse_error" for s in statuses)
+    has_decode_error = any(s == "decode_error" for s in statuses)
+    has_no_qr_found = any(s == "no_qr_found" for s in statuses)
+
+    if has_ok and has_parse_error:
+        return (
+            "HIGH",
+            "decode_outcome divergence (one ok, one parse_error) — parser "
+            "crash potential",
+        )
+    if has_ok and has_decode_error:
+        return (
+            "MEDIUM-HIGH",
+            "decode_outcome divergence (one ok, one decode_error) — parser "
+            "acceptance mismatch",
+        )
+    if has_ok and has_no_qr_found:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (one ok, one no_qr_found) — "
+            "detector-recognition disagreement",
+        )
+    if has_parse_error and has_decode_error:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (parse_error vs decode_error) — "
+            "parser robustness gap",
+        )
+    return ("LOW", "decode_outcome divergence without ok pairing")
+
+
+# ---------------------------------------------------------------------------
+# Proto-family triage (T-M2.6)
+# ---------------------------------------------------------------------------
+#
+# Per the T-M2.6 spec, the proto family classifies disagreements as:
+#
+#   decode_outcome divergence (one ok, one parse_error)        -> HIGH
+#       Parser crash potential — one impl decoded cleanly while another
+#       crashed/rejected the same input.
+#   field_unknown_count divergence                             -> MEDIUM-HIGH
+#       Unknown-field-handling bug class (gogo-protobuf vs
+#       google-protobuf class).
+#   oneof_active_field divergence                              -> MEDIUM-HIGH
+#       Oneof-ambiguity class — two decoders pick different fields from
+#       the same wire bytes.
+#   field_count / decoded_field_summary divergence             -> MEDIUM
+#       Decoded-summary disagreement.
+#   declared_schema_version divergence                         -> LOW
+#       Cosmetic — schema-version declaration differs.
+#
+# Rules are ADDITIVE — they do not touch URL, image, opengraph,
+# deeplink, or qr family classifiers. The proto regression module calls
+# `classify_proto_disagreement(fact_vector_diff)` to stamp each emitted
+# AG-DIS-PROTO-* record with `triage_class` + rationale.
+
+
+def classify_proto_disagreement(fact_vector_diff: dict[str, Any]) -> dict[str, str]:
+    """Map a proto-family `fact_vector_diff` to triage class + rationale.
+
+    `fact_vector_diff` keys are axis names (e.g. "field_unknown_count",
+    "decode_outcome", "oneof_active_field"); values are arrays of
+    per-implementation observations. For each axis we evaluate the
+    divergence shape and assign a triage label. If the diff touches
+    multiple axes the final label is the most severe of the per-axis
+    labels (priority HIGH > MEDIUM-HIGH > MEDIUM > LOW > NOISE).
+
+    Returns: {"triage_class": str, "triage_rationale": str}
+
+    Raises: never. Unknown axes contribute NOISE and a generic rationale.
+    """
+    if not isinstance(fact_vector_diff, dict) or not fact_vector_diff:
+        return {
+            "triage_class": "NOISE",
+            "triage_rationale": "empty disagreement",
+        }
+
+    per_axis: list[tuple[str, str, str]] = []  # (axis, class, rationale)
+
+    for axis, values in fact_vector_diff.items():
+        cls, rationale = _classify_proto_axis(axis, values, fact_vector_diff)
+        per_axis.append((axis, cls, rationale))
+
+    # Pick the worst (highest-priority) per-axis label.
+    per_axis.sort(key=lambda t: _TRIAGE_PRIORITY.get(t[1], 0), reverse=True)
+    _top_axis, top_class, top_rationale = per_axis[0]
+    return {
+        "triage_class": top_class,
+        "triage_rationale": top_rationale,
+    }
+
+
+def _classify_proto_axis(
+    axis: str, values: Any, full_diff: dict[str, Any]
+) -> tuple[str, str]:
+    """Per-axis triage logic for the proto family.
+
+    Returns (triage_class, rationale).
+    """
+    if axis == "decode_outcome":
+        return _classify_proto_decode_outcome(values)
+    if axis == "field_unknown_count":
+        return (
+            "MEDIUM-HIGH",
+            "field_unknown_count divergence — unknown-field-handling "
+            "bug class (gogo-protobuf vs google-protobuf)",
+        )
+    if axis == "oneof_active_field":
+        return (
+            "MEDIUM-HIGH",
+            "oneof_active_field divergence — oneof-ambiguity class "
+            "(same wire bytes resolve to different active fields)",
+        )
+    if axis == "field_count":
+        return (
+            "MEDIUM",
+            "field_count divergence — decoded-summary disagreement",
+        )
+    if axis == "decoded_field_summary":
+        return (
+            "MEDIUM",
+            "decoded_field_summary divergence — field values diverge "
+            "across decoders",
+        )
+    if axis == "message_type_name":
+        return (
+            "MEDIUM",
+            "message_type_name divergence — decoders resolved "
+            "different message types for the same payload",
+        )
+    if axis == "format_kind":
+        return (
+            "MEDIUM",
+            "format_kind divergence — decoders disagree on the wire-"
+            "format family (protobuf vs flatbuffer vs msgpack)",
+        )
+    if axis == "declared_schema_version":
+        return (
+            "LOW",
+            "declared_schema_version divergence — cosmetic schema-"
+            "version declaration difference",
+        )
+    if axis == "parser_warnings":
+        return ("NOISE", "warnings-only divergence")
+    # Unknown axis: fall back to NOISE so a future schema addition cannot
+    # accidentally promote a benign axis to HIGH.
+    return ("NOISE", f"unknown proto-family axis {axis!r}")
+
+
+def _classify_proto_decode_outcome(values: Any) -> tuple[str, str]:
+    """Decode_outcome triage for the proto family.
+
+    The proto fact-vector schema uses the status enum
+    {ok, parse_error, decode_error, schema_mismatch}. A one-ok-one-
+    parse_error pairing is the canonical HIGH signal (one impl decoded
+    cleanly while another crashed/rejected the same input — parser
+    crash potential).
+    """
+    if not isinstance(values, list) or len(values) < 2:
+        return ("NOISE", "decode_outcome with <2 observations")
+
+    statuses: list[str] = []
+    for v in values:
+        if isinstance(v, dict):
+            statuses.append(str(v.get("status", "")))
+        else:
+            statuses.append(str(v))
+
+    has_ok = any(s == "ok" for s in statuses)
+    has_parse_error = any(s == "parse_error" for s in statuses)
+    has_decode_error = any(s == "decode_error" for s in statuses)
+    has_schema_mismatch = any(s == "schema_mismatch" for s in statuses)
+
+    if has_ok and has_parse_error:
+        return (
+            "HIGH",
+            "decode_outcome divergence (one ok, one parse_error) — parser "
+            "crash potential",
+        )
+    if has_ok and has_decode_error:
+        return (
+            "MEDIUM-HIGH",
+            "decode_outcome divergence (one ok, one decode_error) — parser "
+            "acceptance mismatch on syntactically-broken input",
+        )
+    if has_ok and has_schema_mismatch:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (one ok, one schema_mismatch) — "
+            "schema-recognition disagreement",
+        )
+    if has_parse_error and has_decode_error:
+        return (
+            "MEDIUM",
+            "decode_outcome divergence (parse_error vs decode_error) — "
+            "parser robustness gap on the same input",
+        )
+    return ("LOW", "decode_outcome divergence without ok pairing")
+
+
 __all__ = [
     "Disagreement",
     "detect_disagreements",
     "classify_image_disagreement",
     "classify_opengraph_disagreement",
     "classify_deeplink_disagreement",
+    "classify_qr_disagreement",
+    "classify_proto_disagreement",
 ]
