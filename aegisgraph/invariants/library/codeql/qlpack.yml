@@ -1,0 +1,23 @@
+name: aegisgraph/invariantcheck
+version: 0.3.0
+library: false
+extractor: java
+description: |
+  AegisGraph Tier 3 InvariantCheck (Engine 3) CodeQL pack.
+
+  Encodes 25-30 SMA-specific security invariants as CodeQL queries.
+  Each query in this pack has a corresponding manifest entry in
+  `aegisgraph/invariants/manifest.json` carrying the natural-language
+  statement, rationale, ground-truth fixtures, and MASTG / SSDF mappings.
+
+  M3.3 deliverable: scaffold + 5 invariants (INV-01, INV-07, INV-09,
+  INV-11, INV-13). INV-01 is fully encoded; INV-11 and INV-13 ship as
+  stubs (comment-only) and are fully encoded at M3.4. Semgrep encodings
+  (INV-07, INV-09) live under `library/semgrep/`.
+
+  The pack is reproducible inside the AegisGraph devcontainer; CodeQL
+  CLI ≥ 2.20.6 is pinned in devcontainer/Dockerfile and verified by
+  `aegisgraph.tooling.REQUIRED_TOOLS`.
+
+dependencies:
+  codeql/java-all: "*"

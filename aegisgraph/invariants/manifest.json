@@ -1,0 +1,131 @@
+{
+  "tool_output_type": "invariantcheck_library_manifest",
+  "version": "v1.0",
+  "generated_by": "aegisgraph-tier3-research",
+  "safety_posture": "private_by_default",
+  "library_version": "m3.3-scaffold-v0",
+  "notes": [
+    "M3.3 deliverable: scaffold + 5 invariants (INV-01, INV-07, INV-09, INV-11, INV-13).",
+    "Encoding `query` fields are paths relative to this manifest.json (i.e. relative to aegisgraph/invariants/).",
+    "`expected_violations: \"unknown\"` is the honest baseline for real SMA targets we have not yet ground-truthed; demo-vulnerable-app fixtures land in M3.4.",
+    "Full 25-30 invariants ship across M3-M11 per Phase II rollout plan; manifest entries are additive and the schema permits future fields."
+  ],
+  "invariants": [
+    {
+      "invariant_id": "INV-01",
+      "statement": "Attacker-controlled URL strings shall not reach outbound network calls (OkHttp newCall, HttpURLConnection, Ktor, Retrofit) without passing through an allowlist or policy checker.",
+      "rationale": "Unchecked URL fetches enable SSRF, internal-network probing, private-IP exfiltration, and exploitation of redirect-following parsers. The CodeQL taint analysis detects URL strings from message bodies, deep-link URIs, push payloads, and QR-encoded URLs flowing to HTTP-client invocations without traversing a recognized policy barrier.",
+      "encodings": [
+        {
+          "engine": "codeql",
+          "query": "library/codeql/01_url_fetch_without_policy.ql"
+        },
+        {
+          "engine": "frida_dynamic",
+          "hook": "dynamic/01_url_fetch_hook.js",
+          "option_only": true
+        }
+      ],
+      "ground_truth": [
+        {"target": "demo-vulnerable-app", "expected_violations": 3},
+        {"target": "signal_android@1043851", "expected_violations": "unknown"},
+        {"target": "elementx_android@91d265e6", "expected_violations": "unknown"}
+      ],
+      "applicable_path_classes": [
+        "link_preview",
+        "deeplink",
+        "media_decode"
+      ],
+      "mastg_mapping": "MSTG-NETWORK-2",
+      "ssdf_mapping": "PW.5.1"
+    },
+    {
+      "invariant_id": "INV-07",
+      "statement": "AndroidManifest <intent-filter> elements declared on an exported component shall not omit a guarding android:permission (or signature-level permission) when the component handles attacker-reachable actions or data schemes.",
+      "rationale": "An exported activity, service, or receiver with an open intent-filter and no permission gate is reachable from any installed app. Combined with weak input validation in the handler, this is a textbook lateral-movement path. The Semgrep rule detects AndroidManifest XML patterns where android:exported=\"true\" (or implicit-exported via intent-filter on pre-Android-12 components) appears without a matching android:permission attribute.",
+      "encodings": [
+        {
+          "engine": "semgrep",
+          "query": "library/semgrep/07_intent_filter_implicit_export.yaml"
+        }
+      ],
+      "ground_truth": [
+        {"target": "demo-vulnerable-app", "expected_violations": 2},
+        {"target": "signal_android@1043851", "expected_violations": "unknown"},
+        {"target": "elementx_android@91d265e6", "expected_violations": "unknown"}
+      ],
+      "applicable_path_classes": [
+        "deeplink",
+        "inbound_message"
+      ],
+      "mastg_mapping": "MSTG-PLATFORM-1",
+      "ssdf_mapping": "PW.4.1"
+    },
+    {
+      "invariant_id": "INV-09",
+      "statement": "Android WebView instances shall not call addJavascriptInterface() on user-controlled content without setting setAllowFileAccess(false), setAllowContentAccess(false), and a same-origin guard on the bound object.",
+      "rationale": "addJavascriptInterface bridges the JS execution context into the host app, exposing reflectively-callable Java methods. When the WebView loads attacker-influenced HTML (link preview, federated room content, oEmbed) without origin restrictions, the bridge becomes a remote code execution surface. The Semgrep rule (stub at M3.3, fully encoded at M5.3) detects addJavascriptInterface call sites without preceding hardening calls.",
+      "encodings": [
+        {
+          "engine": "semgrep",
+          "query": "library/semgrep/09_webview_jsinterface_addjavascript.yaml"
+        }
+      ],
+      "ground_truth": [
+        {"target": "demo-vulnerable-app", "expected_violations": "unknown"},
+        {"target": "signal_android@1043851", "expected_violations": "unknown"},
+        {"target": "elementx_android@91d265e6", "expected_violations": "unknown"}
+      ],
+      "applicable_path_classes": [
+        "link_preview",
+        "native_boundary"
+      ],
+      "mastg_mapping": "MSTG-PLATFORM-7",
+      "ssdf_mapping": "PW.5.1"
+    },
+    {
+      "invariant_id": "INV-11",
+      "statement": "Deep-link handlers shall not invoke startActivity / Custom Tabs / WebView.loadUrl with a URL parsed from an inbound intent (Intent.getData, intent.getDataString) unless the URL passed through a host/scheme allowlist.",
+      "rationale": "Open-redirect-style abuse of deep links lets an attacker get the messenger app to load a URL of their choosing — useful for phishing, OAuth-flow hijacking, and as a SSRF amplifier when combined with INV-01. The CodeQL query (stub at M3.3, fully encoded at M3.4) tracks intent.getData/getDataString through host activities to the first outbound load without an intervening allowlist check.",
+      "encodings": [
+        {
+          "engine": "codeql",
+          "query": "library/codeql/11_deeplink_open_redirect.ql"
+        }
+      ],
+      "ground_truth": [
+        {"target": "demo-vulnerable-app", "expected_violations": "unknown"},
+        {"target": "signal_android@1043851", "expected_violations": "unknown"},
+        {"target": "elementx_android@91d265e6", "expected_violations": "unknown"}
+      ],
+      "applicable_path_classes": [
+        "deeplink",
+        "link_preview"
+      ],
+      "mastg_mapping": "MSTG-PLATFORM-3",
+      "ssdf_mapping": "PW.5.1"
+    },
+    {
+      "invariant_id": "INV-13",
+      "statement": "QR-code-initiated device linking flows shall bind the QR payload to a verified key-exchange round-trip (X3DH, Noise, MLS keypair confirmation) before any session key, identity claim, or sync token is provisioned.",
+      "rationale": "Provisioning a session from an unverified QR payload allows a tampered QR (printed, shoulder-surfed, MITM-relayed) to silently link an attacker device into a victim's account. The CodeQL query (stub at M3.3, fully encoded at M3.4) detects QR-payload data sources (camera intent results, image-decoded QR strings) reaching a device-link provisioning sink (session keystore, identity key registration, sync-state initializer) without a KEX-completion barrier.",
+      "encodings": [
+        {
+          "engine": "codeql",
+          "query": "library/codeql/13_qr_payload_unverified_binding.ql"
+        }
+      ],
+      "ground_truth": [
+        {"target": "demo-vulnerable-app", "expected_violations": "unknown"},
+        {"target": "signal_android@1043851", "expected_violations": "unknown"},
+        {"target": "elementx_android@91d265e6", "expected_violations": "unknown"}
+      ],
+      "applicable_path_classes": [
+        "qr_device_link",
+        "crypto_key_lifecycle"
+      ],
+      "mastg_mapping": "MSTG-AUTH-9",
+      "ssdf_mapping": "PW.4.4"
+    }
+  ]
+}
