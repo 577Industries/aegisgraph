@@ -1,0 +1,98 @@
+# AegisGraph InvariantCheck INV-08
+# Statement: Clipboard content flowing into a message-send pipeline shall
+# pass through an explicit user-confirmation barrier (confirmation dialog,
+# paste-preview UI, or share-sheet acknowledgment).
+#
+# Rationale: Automatic auto-paste-to-send (e.g. on focus, or via
+# deep-link-triggered share-intent into a hidden conversation) bypasses
+# user intent and is exploitable by malicious-app clipboard poisoning
+# combined with deeplink hijacking.
+#
+# See aegisgraph/invariants/manifest.json :: INV-08 for the canonical
+# statement, rationale, MASTG-STORAGE-10 / SSDF PW.5.1 mappings, and the
+# demo-vulnerable-app ground-truth expectation (1 violation).
+#
+# Pattern strategy:
+#   * Source: ClipboardManager.getPrimaryClip() and its accessor chain,
+#     plus ClipboardManager.getText() and ClipData.Item.getText().
+#   * Sink: message-send call sites named *.sendMessage / *.sendText /
+#     *.send / MessageSender.send (heuristic name match).
+#   * Barrier: an AlertDialog / MaterialAlertDialog / ConfirmSendDialog
+#     reference appearing in the same enclosing method.
+#
+# This rule covers both Kotlin and Java surface; Semgrep generic mode
+# is used for the file-level scan, with explicit Java/Kotlin
+# pattern-eithers for the source+sink shapes.
+
+rules:
+  - id: aegisgraph.inv-08-clipboard-paste-to-send
+    languages:
+      - java
+      - kotlin
+    severity: WARNING
+    message: |
+      INV-08: Clipboard content flows into a message-send pipeline without
+      an explicit user-confirmation barrier in the same enclosing
+      function. Either show an AlertDialog / MaterialAlertDialog /
+      ConfirmSendDialog before the send, or route the paste through a
+      preview UI that the user must acknowledge.
+    metadata:
+      category: security
+      invariant_id: INV-08
+      cwe: CWE-200
+      mastg: MSTG-STORAGE-10
+      ssdf: PW.5.1
+      aegisgraph_path_class:
+        - inbound_message
+        - deeplink
+      references:
+        - https://developer.android.com/reference/android/content/ClipboardManager
+        - https://owasp.org/www-project-mobile-app-security/MASTG/0x05d-Testing-Data-Storage
+    patterns:
+      # The function must contain a clipboard-read flowing into a send call.
+      - pattern-either:
+          # Java shape: clipboard.getPrimaryClip().getItemAt(0).getText()
+          # → string → send(...).
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      $CM.getPrimaryClip().getItemAt(...).getText()
+                  - pattern: |
+                      $CM.getText()
+                  - pattern: |
+                      $CLIP.getItemAt(...).getText()
+              - pattern-inside: |
+                  $TYPE $FN(...) {
+                    ...
+                    $SEND_TARGET.$SEND(...);
+                    ...
+                  }
+              - metavariable-regex:
+                  metavariable: $SEND
+                  regex: ^(send|sendMessage|sendText|sendChat|postMessage|enqueueSend)$
+          # Kotlin shape: clipboard.primaryClip?.getItemAt(0)?.text → send().
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      $CM.primaryClip?.getItemAt(...)?.text
+                  - pattern: |
+                      $CM.primaryClip!!.getItemAt(...).text
+                  - pattern: |
+                      $CM.getPrimaryClip()?.getItemAt(...)?.text
+              - pattern-inside: |
+                  fun $FN(...) {
+                    ...
+                    $SEND_TARGET.$SEND(...)
+                    ...
+                  }
+              - metavariable-regex:
+                  metavariable: $SEND
+                  regex: ^(send|sendMessage|sendText|sendChat|postMessage|enqueueSend)$
+      # Barrier: a confirmation-dialog reference must NOT appear in the
+      # same function. If any of these dialog patterns shows up, the
+      # function is considered safe.
+      - pattern-not-regex: |
+          (?:AlertDialog|MaterialAlertDialog(?:Builder)?|ConfirmSendDialog|ShareConfirmationDialog|PasteConfirmDialog|AlertDialog\.Builder)
+      # Barrier: a paste-preview UI inflate / show is also acceptable.
+      - pattern-not-regex: |
+          (?:showPasteConfirmation|showSendPreview|requireUserConsent|confirmPaste|showConfirmSendDialog)
