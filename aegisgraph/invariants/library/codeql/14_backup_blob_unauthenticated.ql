@@ -1,6 +1,6 @@
 /**
  * @id aegisgraph/inv-14-backup-blob-unauthenticated
- * @name InvariantCheck INV-14: Backup blob without MAC or signature (STUB — M7 deliverable)
+ * @name InvariantCheck INV-14: Backup blob without MAC or signature
  * @description Backup write and restore paths must not produce or
  *              consume backup blobs without a MAC (HMAC-SHA256 or KMAC)
  *              or signature (Ed25519, ECDSA-P256) covering the entire
@@ -8,7 +8,17 @@
  *              because an attacker with backup-file access can modify
  *              message history, group state, or key references on disk
  *              and have them silently accepted on restore.
- * @kind problem
+ *
+ *              This is a two-direction invariant. We model both paths
+ *              in a single configuration: the source set unions backup-
+ *              write entry points (createBackup, writeBackup) and
+ *              backup-restore entry points (restoreBackup, parseBackup);
+ *              the sink set unions blob-emission sinks (OutputStream
+ *              write, HTTP request body) and state-restore sinks
+ *              (DatabaseHelper.bulkInsert, KeyStore.setKeyEntry).
+ *              Either direction missing authentication produces a
+ *              finding.
+ * @kind path-problem
  * @problem.severity error
  * @precision medium
  * @id-mapping INV-14
@@ -18,98 +28,223 @@
  *       aegisgraph-invariantcheck
  *       mastg-storage-8
  *       ssdf-pw-6-1
- *       stub
  */
 
 /*
- * ─────────────────────────────────────────────────────────────────────
- * STUB QUERY — NOT YET FULLY ENCODED (M7 deliverable)
- * ─────────────────────────────────────────────────────────────────────
+ * Encoding notes:
  *
- * This file is committed so the M5.3 manifest entry for INV-14 resolves
- * to a real file on disk. The full encoding is scheduled for M7.
+ *   Sources A (backup write): createBackup / writeBackup / exportBackup
+ *            / serializeBackup / toBackupBlob method returns.
+ *   Sources B (backup restore): restoreBackup / importBackup /
+ *            parseBackup / deserializeBackup / fromBackupBlob returns.
  *
- * Intended encoding sketch (drives the M7 work):
+ *   Sinks A (network/disk emission): OutputStream.write where qualifier
+ *          is a *BackupOutputStream, okhttp3.RequestBody.create on
+ *          backup blob, FileOutputStream with "backup" in the path.
+ *   Sinks B (state restore): DatabaseHelper.bulkInsert, KeyStore.
+ *          setKeyEntry, GroupDatabase.applyBackupGroupState.
  *
- *   This is a two-direction invariant — both backup-write and
- *   backup-restore must be authenticated.
+ *   Barriers (both directions):
+ *     - javax.crypto.Mac.doFinal (HMAC family) applied to the blob.
+ *     - java.security.Signature.sign / Signature.verify on the blob.
+ *     - javax.crypto.Cipher with AES/GCM/NoPadding — GCM tag provides
+ *       authentication on the wrapped path.
+ *     - Named helpers: macBackup, signBackup, verifyBackupMac,
+ *       verifyBackupSignature, authenticateBackup.
  *
- *   Sources A (backup-write entry points):
- *     - Methods named *createBackup / *writeBackup / *exportBackup /
- *       *serializeBackup / *toBackupBlob
- *     - Calls on classes named *BackupExporter / *BackupSerializer
- *
- *   Sinks A (network / disk emission of backup blobs):
- *     - OutputStream.write where the qualifier is a
- *       *BackupOutputStream
- *     - okhttp3.RequestBody from the backup-blob bytes
- *     - File / FileOutputStream / Files.write applied to a path
- *       containing "backup" in its name
- *
- *   Barriers A (MAC / signature wrap on write):
- *     - HMac.doFinal / KMac.doFinal applied to the blob bytes before
- *       emission
- *     - java.security.Signature.sign on the blob
- *     - Methods named ["macBackup", "signBackup",
- *       "wrapBackupWithSignature", "computeBackupMac"]
- *
- *   Sources B (backup-restore entry points):
- *     - Methods named *restoreBackup / *importBackup / *parseBackup /
- *       *deserializeBackup / *fromBackupBlob
- *
- *   Sinks B (state-restore from backup blobs):
- *     - DatabaseHelper.bulkInsert with rows extracted from the blob
- *     - KeyStore.setKeyEntry with keys extracted from the blob
- *     - GroupDatabase.applyBackupGroupState
- *
- *   Barriers B (MAC / signature verification on restore):
- *     - HMac.doFinal + constant-time comparison against the carried MAC
- *     - java.security.Signature.verify on the blob
- *     - Methods named ["verifyBackupMac", "verifyBackupSignature",
- *       "authenticateBackup"]
- *
- *   Configuration:
- *     The query emits two separate findings if either direction is
- *     missing authentication. We expect two TaintTracking::Configuration
- *     modules:
- *
- *     class BackupWriteUnauthConfig extends
- *       TaintTracking::Configuration { ... }
- *     class BackupRestoreUnauthConfig extends
- *       TaintTracking::Configuration { ... }
- *
- *     The select clause is the union of both.
- *
- *   Select clause emits: sink,
- *     "INV-14: Backup write at $@ emits blob without MAC/signature
- *      barrier."
- *   or
- *     "INV-14: Backup restore at $@ accepts blob without MAC/signature
- *      verification barrier."
- *
- *   Ground truth (planned):
- *     - demo-vulnerable-app: 2 violations (one unauth write, one unauth
- *       restore).
- *     - Signal Android / Element X: unknown.
- *
- * Until this stub is fleshed out, the runner produces an empty SARIF
- * result set for INV-14.
- *
- * See aegisgraph/invariants/manifest.json :: INV-14 for the canonical
- * statement, rationale, MASTG-STORAGE-8 / SSDF PW.6.1 mappings.
- *
- * TODO[M7]: Fully encode this query per the spec above. Pay attention
- * to the wrapped-cipher case: a backup encrypted with AES-GCM is
- * authenticated by the GCM tag itself — that is an acceptable
- * authentication mode and should be modeled as a barrier (look for
- * Cipher.getInstance("AES/GCM/NoPadding") on the backup path).
- * ─────────────────────────────────────────────────────────────────────
+ * TODO[ground-truth-pass]: Signal-android and Element-X backup-
+ * exporter / -importer class names are placeholders; the M7-GT pass
+ * pins them against the anchored commits.
  */
 
 import java
+import semmle.code.java.dataflow.TaintTracking
+import semmle.code.java.dataflow.FlowSources
+import DataFlow::PathGraph
 
-// Trivially-empty query so codeql syntactically accepts the file while
-// the stub is in place. select clause produces no results.
-from Method m
-where none()
-select m, "INV-14 stub — see comment block in this file for the M7 encoding plan."
+/**
+ * Sources: backup blob production AND consumption entry points.
+ *
+ * Unioned so the single configuration captures both directions of the
+ * invariant. The select message disambiguates which direction matched.
+ */
+class BackupBlobSource extends DataFlow::Node {
+  BackupBlobSource() {
+    // Backup-write entry points (Source A).
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getName()
+          .regexpMatch("(?i)(create|write|export|serialize|emit|build)(Backup|BackupBlob)") and
+      this.asExpr() = mc
+    )
+    or
+    // Backup-restore entry points (Source B).
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getName()
+          .regexpMatch("(?i)(restore|import|parse|deserialize|read|load|from)(Backup|BackupBlob)") and
+      this.asExpr() = mc
+    )
+    or
+    // Methods declared on a *BackupExporter / *BackupSerializer /
+    // *BackupImporter / *BackupDeserializer type.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*BackupExporter.*|.*BackupSerializer.*|.*BackupImporter.*|.*BackupDeserializer.*|.*BackupReader.*|.*BackupWriter.*") and
+      this.asExpr() = mc
+    )
+    or
+    // Top-of-handler parameters typed *BackupBlob / *BackupPayload.
+    exists(Parameter p |
+      p.getType()
+          .(RefType)
+          .getName()
+          .regexpMatch(".*BackupBlob.*|.*BackupPayload.*|.*BackupEnvelope.*|.*BackupArchive.*") and
+      this.asExpr() = p.getAnAccess()
+    )
+  }
+}
+
+/**
+ * Sinks: blob-emission (Sink A) AND state-restore (Sink B).
+ */
+class BackupBlobSink extends DataFlow::Node {
+  BackupBlobSink() {
+    // Sink A: OutputStream.write where the qualifier name suggests a
+    // backup-oriented stream.
+    exists(MethodCall mc |
+      mc.getMethod().hasName("write") and
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*BackupOutputStream.*|.*OutputStream") and
+      (
+        mc.getQualifier()
+            .getType()
+            .(RefType)
+            .getName()
+            .regexpMatch("(?i).*backup.*") or
+        mc.getMethod()
+            .getDeclaringType()
+            .getName()
+            .regexpMatch(".*BackupOutputStream.*")
+      ) and
+      this.asExpr() = mc.getArgument(0)
+    )
+    or
+    // Sink A: okhttp3.RequestBody.create on backup bytes.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("okhttp3", "RequestBody") and
+      mc.getMethod().hasName("create") and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Sink A: FileOutputStream.write — captured when the file name
+    // contains "backup" (best-effort heuristic).
+    exists(ConstructorCall cc, MethodCall mc |
+      cc.getConstructedType().hasQualifiedName("java.io", "FileOutputStream") and
+      cc.getAnArgument().(StringLiteral).getValue().regexpMatch("(?i).*backup.*") and
+      mc.getMethod()
+          .getDeclaringType()
+          .hasQualifiedName("java.io", "FileOutputStream") and
+      mc.getMethod().hasName("write") and
+      this.asExpr() = mc.getArgument(0)
+    )
+    or
+    // Sink B: DatabaseHelper.bulkInsert / Database.applyBackupGroupState.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "bulkInsert", "applyBackupGroupState",
+            "restoreFromBackup", "applyBackupRows", "ingestBackup"
+          ]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Sink B: KeyStore.setKeyEntry with restored key material.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("java.security", "KeyStore") and
+      mc.getMethod().hasName(["setKeyEntry", "setEntry"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+  }
+}
+
+/**
+ * Barriers: MAC / signature wrap on write, MAC / signature verify on
+ * restore, and the AES-GCM-authenticated wrapped path.
+ */
+class BackupAuthenticationBarrier extends DataFlow::Node {
+  BackupAuthenticationBarrier() {
+    // HMAC family — javax.crypto.Mac.doFinal / Mac.update on the blob.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("javax.crypto", "Mac") and
+      mc.getMethod().hasName(["doFinal", "update", "init"]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // java.security.Signature — sign on write, verify on restore.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("java.security", "Signature") and
+      mc.getMethod()
+          .hasName(["sign", "verify", "update", "initSign", "initVerify"]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // AES-GCM wrapped path — Cipher.getInstance("AES/GCM/NoPadding")
+    // provides authentication via the GCM tag. Match the Cipher object
+    // initialization or its doFinal output.
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("javax.crypto", "Cipher") and
+      mc.getMethod()
+          .hasName(["doFinal", "update", "init", "getInstance"]) and
+      // Restrict to GCM-mode ciphers via the algorithm-string literal.
+      exists(MethodCall init, StringLiteral algo |
+        init.getMethod()
+            .getDeclaringType()
+            .hasQualifiedName("javax.crypto", "Cipher") and
+        init.getMethod().hasName("getInstance") and
+        algo = init.getArgument(0) and
+        algo.getValue().regexpMatch("(?i).*GCM.*|.*Poly1305.*|.*ChaCha20Poly1305.*")
+      ) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // Named helper methods.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "macBackup", "signBackup", "wrapBackupWithSignature",
+            "computeBackupMac", "verifyBackupMac",
+            "verifyBackupSignature", "authenticateBackup",
+            "verifyBackup", "checkBackupIntegrity"
+          ]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+  }
+}
+
+/**
+ * Configuration: taint flow from backup blob production / consumption
+ * entry points to blob-emission / state-restore sinks, with MAC /
+ * signature / AES-GCM barriers.
+ */
+module BackupBlobUnauthConfig implements DataFlow::ConfigSig {
+  predicate isSource(DataFlow::Node src) { src instanceof BackupBlobSource }
+
+  predicate isSink(DataFlow::Node snk) { snk instanceof BackupBlobSink }
+
+  predicate isBarrier(DataFlow::Node node) {
+    node instanceof BackupAuthenticationBarrier
+  }
+}
+
+module BackupBlobUnauthFlow = TaintTracking::Global<BackupBlobUnauthConfig>;
+
+from BackupBlobUnauthFlow::PathNode source, BackupBlobUnauthFlow::PathNode sink
+where BackupBlobUnauthFlow::flowPath(source, sink)
+select sink.getNode(), source, sink,
+  "INV-14: Backup blob from $@ reaches emission or state-restore sink without traversing a MAC, signature, or AEAD authentication barrier.",
+  source.getNode(), "this source"

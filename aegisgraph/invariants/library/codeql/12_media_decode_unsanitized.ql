@@ -1,8 +1,9 @@
 /**
  * @id aegisgraph/inv-12-media-decode-unsanitized
- * @name InvariantCheck INV-12: Media decode without dimension-bound or sanitization (STUB — M7 deliverable)
+ * @name InvariantCheck INV-12: Media decode without dimension-bound or sanitization
  * @description Incoming media (images, video, audio thumbnails) must not
  *              be decoded via BitmapFactory.decodeStream /
+ *              BitmapFactory.decodeByteArray /
  *              android.media.MediaCodec / Glide / Coil without an
  *              intervening dimension-bound check (width × height ×
  *              bytes-per-pixel against an explicit upper limit) or a
@@ -16,7 +17,7 @@
  *              by checking whether the host SMA implements its own
  *              upstream defenses against the parser bugs the witnesses
  *              chase.
- * @kind problem
+ * @kind path-problem
  * @problem.severity error
  * @precision medium
  * @id-mapping INV-12
@@ -27,76 +28,190 @@
  *       aegisgraph-invariantcheck
  *       mastg-platform-11
  *       ssdf-pw-7-1
- *       stub
  */
 
 /*
- * ─────────────────────────────────────────────────────────────────────
- * STUB QUERY — NOT YET FULLY ENCODED (M7 deliverable)
- * ─────────────────────────────────────────────────────────────────────
+ * Encoding notes:
  *
- * This file is committed so the M5.3 manifest entry for INV-12 resolves
- * to a real file on disk. The full encoding is scheduled for M7
- * alongside the PolyDiff image-family ground-truth pass.
+ *   Sources: inbound-media getters / streams — Attachment.getInputStream,
+ *            MediaItem.getStream, getBytes/getByteArray on a *Media or
+ *            *Attachment type.
  *
- * Intended encoding sketch (drives the M7 work):
+ *   Sinks: decoder calls — BitmapFactory.decode*, Glide load, Coil load,
+ *          MediaCodec.queueInputBuffer.
  *
- *   Sources (inbound-media getters / streams):
- *     - Attachment.getInputStream / Attachment.getBytes
- *     - MediaItem.getStream / MediaItem.getByteArray
- *     - Top-of-handler parameters typed as a *Bitmap source InputStream
- *       arriving from a message receiver.
+ *   Barriers: BitmapFactory.Options with inJustDecodeBounds=true
+ *             followed by a width/height check, or helper methods named
+ *             isImageSafe / checkImageDimensions / validateImageBounds /
+ *             sanitizeImage / downsampleToSafeSize.
  *
- *   Sinks (decoders):
- *     - android.graphics.BitmapFactory.decodeStream / decodeByteArray /
- *       decodeFile / decodeResourceStream
- *     - android.media.MediaCodec.queueInputBuffer when invoked on a
- *       handler whose input is attacker-controllable
- *     - com.bumptech.glide.Glide.with(...).load(...) / RequestBuilder.load
- *     - coil.ImageLoader.execute / coil.Coil.imageLoader.execute /
- *       AsyncImage / SubcomposeAsyncImage in Compose
- *     - Native JNI hops into libwebp / libavif / libheif decoders
- *
- *   Barriers (dimension / sanitization checks):
- *     - BitmapFactory.Options with inJustDecodeBounds=true followed by
- *       a width × height check before the actual decode.
- *     - Methods named ["isImageSafe", "checkImageDimensions",
- *       "validateImageBounds", "sanitizeImage", "downsampleToSafeSize",
- *       "rejectOversizedImage"]
- *     - Pre-decode magic-bytes / first-frame inspection (e.g.
- *       readFirstChunk + signature comparison).
- *
- *   Configuration:
- *     class MediaDecodeUnsanitizedConfig extends
- *       TaintTracking::Configuration { ... }
- *     module MediaDecodeUnsanitizedFlow =
- *       TaintTracking::Global<MediaDecodeUnsanitizedConfig>;
- *
- *   Select clause emits: sink, "INV-12: Inbound media from $@ reaches
- *     decoder without a dimension-bound or sanitization barrier."
- *
- *   Ground truth (planned):
- *     - demo-vulnerable-app: 3 violations (BitmapFactory direct, Glide
- *       direct, Coil direct).
- *     - Signal Android / Element X: unknown.
- *
- * Until this stub is fleshed out, the runner produces an empty SARIF
- * result set for INV-12.
- *
- * See aegisgraph/invariants/manifest.json :: INV-12 for the canonical
- * statement, rationale, MASTG-PLATFORM-11 / SSDF PW.7.1 mappings.
- *
- * TODO[M7]: Fully encode this query per the spec above. Cross-reference
- * with aegisgraph/polydiff/extended_axes/{libwebp,libavif,libheif,
- * glide,coil} so witness IDs in the PolyDiff family can be linked to
- * INV-12 violations on the same target.
- * ─────────────────────────────────────────────────────────────────────
+ * TODO[ground-truth-pass]: Signal-android and Element-X attachment-
+ * decoder class names are placeholders rooted in public Android API
+ * naming; the M7-GT pass pins them against the anchored commits.
  */
 
 import java
+import semmle.code.java.dataflow.TaintTracking
+import semmle.code.java.dataflow.FlowSources
+import DataFlow::PathGraph
 
-// Trivially-empty query so codeql syntactically accepts the file while
-// the stub is in place. select clause produces no results.
-from Method m
-where none()
-select m, "INV-12 stub — see comment block in this file for the M7 encoding plan."
+/**
+ * Sources: inbound-media byte streams or byte arrays.
+ */
+class InboundMediaSource extends DataFlow::Node {
+  InboundMediaSource() {
+    // Attachment.getInputStream / Attachment.getBytes / getByteArray.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*Attachment.*|.*MediaItem.*|.*ImageMessage.*|.*VideoMessage.*|.*MediaPayload.*|.*Thumbnail.*") and
+      mc.getMethod()
+          .hasName([
+            "getInputStream", "getBytes", "getByteArray",
+            "getStream", "getData", "getRawBytes", "getBuffer",
+            "getContent", "openStream"
+          ]) and
+      this.asExpr() = mc
+    )
+    or
+    // Top-of-handler parameters typed *InputStream / *byte[] arriving
+    // from a message receiver.
+    exists(Parameter p |
+      (
+        p.getType().(RefType).hasQualifiedName("java.io", "InputStream") or
+        p.getType().(RefType).hasQualifiedName("java.nio", "ByteBuffer") or
+        p.getType().getName() = "byte[]"
+      ) and
+      p.getCallable()
+          .getName()
+          .regexpMatch("(?i).*(handle|process|decode|onMedia|onAttachment|onImage|onVideo|receive)(Attachment|Media|Image|Video|Thumbnail|Bitmap).*") and
+      this.asExpr() = p.getAnAccess()
+    )
+  }
+}
+
+/**
+ * Sinks: media-decoder calls.
+ */
+class MediaDecoderSink extends DataFlow::Node {
+  MediaDecoderSink() {
+    // android.graphics.BitmapFactory.decode* — the bytes/stream arg.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .hasQualifiedName("android.graphics", "BitmapFactory") and
+      mc.getMethod()
+          .hasName([
+            "decodeStream", "decodeByteArray", "decodeFile",
+            "decodeFileDescriptor", "decodeResourceStream"
+          ]) and
+      this.asExpr() = mc.getArgument(0)
+    )
+    or
+    // android.media.MediaCodec.queueInputBuffer — the buffer arg.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .hasQualifiedName("android.media", "MediaCodec") and
+      mc.getMethod()
+          .hasName(["queueInputBuffer", "getInputBuffer", "writeInputBuffer"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // Glide: RequestManager.load / RequestBuilder.load — first arg.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*RequestManager.*|.*RequestBuilder.*|com\\.bumptech\\.glide\\..*") and
+      mc.getMethod().hasName("load") and
+      this.asExpr() = mc.getArgument(0)
+    )
+    or
+    // Coil: ImageLoader.execute / Coil.imageLoader.execute — request arg.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*ImageLoader.*|coil\\..*|.*Coil$") and
+      mc.getMethod()
+          .hasName(["execute", "enqueue", "load", "loadAny"]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    // BitmapRegionDecoder.newInstance — the bytes/stream arg.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .hasQualifiedName("android.graphics", "BitmapRegionDecoder") and
+      mc.getMethod().hasName("newInstance") and
+      this.asExpr() = mc.getArgument(0)
+    )
+  }
+}
+
+/**
+ * Barriers: dimension-bound and sanitization predicates.
+ */
+class DimensionOrSanitizationBarrier extends DataFlow::Node {
+  DimensionOrSanitizationBarrier() {
+    // BitmapFactory.Options with inJustDecodeBounds=true. The bounds-
+    // check intent is modeled here as the barrier; downstream code that
+    // reads outWidth/outHeight to gate decoding gets the credit.
+    exists(FieldAccess fa |
+      fa.getField()
+          .getDeclaringType()
+          .hasQualifiedName("android.graphics", "BitmapFactory$Options") and
+      fa.getField()
+          .getName()
+          .regexpMatch("inJustDecodeBounds|outWidth|outHeight|inSampleSize|outMimeType") and
+      this.asExpr() = fa
+    )
+    or
+    // Explicit sanitizer helpers.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName([
+            "isImageSafe", "checkImageDimensions",
+            "validateImageBounds", "sanitizeImage",
+            "downsampleToSafeSize", "rejectOversizedImage",
+            "validateImageHeader", "checkMaxDimensions",
+            "isWithinSafePixelBudget", "verifyImageSignature"
+          ]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+    or
+    // Magic-bytes inspection — read first N bytes and compare.
+    exists(MethodCall mc |
+      mc.getMethod()
+          .hasName(["readFirstChunk", "readMagicBytes", "checkMagicBytes"]) and
+      this.asExpr() = [mc, mc.getAnArgument()]
+    )
+  }
+}
+
+/**
+ * Configuration: taint flow from inbound-media sources to decoder
+ * sinks, with dimension-bound / sanitization helpers as barriers.
+ */
+module MediaDecodeUnsanitizedConfig implements DataFlow::ConfigSig {
+  predicate isSource(DataFlow::Node src) { src instanceof InboundMediaSource }
+
+  predicate isSink(DataFlow::Node snk) { snk instanceof MediaDecoderSink }
+
+  predicate isBarrier(DataFlow::Node node) {
+    node instanceof DimensionOrSanitizationBarrier
+  }
+}
+
+module MediaDecodeUnsanitizedFlow =
+  TaintTracking::Global<MediaDecodeUnsanitizedConfig>;
+
+from
+  MediaDecodeUnsanitizedFlow::PathNode source,
+  MediaDecodeUnsanitizedFlow::PathNode sink
+where MediaDecodeUnsanitizedFlow::flowPath(source, sink)
+select sink.getNode(), source, sink,
+  "INV-12: Inbound media from $@ reaches decoder sink without traversing a dimension-bound or sanitization barrier.",
+  source.getNode(), "this source"
