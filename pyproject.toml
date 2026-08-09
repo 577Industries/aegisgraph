@@ -21,6 +21,23 @@ dev = [
 [project.scripts]
 aegisgraph = "aegisgraph.cli:main"
 
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# Without this, setuptools tries to auto-discover packages and fails on the
+# flat layout: `Multiple top-level packages discovered in a flat-layout:
+# ['schema', 'reports', 'exports', 'crosssma', 'smabench', ...]`. Most of those
+# top-level directories are data, docs, or scripts — not importable packages.
+#
+# Only four trees are importable. `extraction` is included because
+# `aegisgraph/extraction.py` imports `extraction.adapters.assemble`; it has no
+# top-level `__init__.py` and is picked up as a PEP 420 namespace package,
+# which is why `namespaces` stays on.
+[tool.setuptools.packages.find]
+include = ["aegisgraph*", "smabench*", "validator*", "extraction*"]
+namespaces = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
