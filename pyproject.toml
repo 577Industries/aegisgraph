@@ -11,6 +11,13 @@ dependencies = [
   "httpx>=0.27",
   "whatwg-url>=0.7",
   "jinja2>=3.1,<4",
+  # Required, not optional: the committed ring-1 media corpus was generated
+  # with the Pillow encoder (`corpus.metadata.json` records `encoding: pil`).
+  # Without it `_try_import_pil()` falls back to fixed byte constants that
+  # ignore the per-sample colour, so every round emits identical files and
+  # `write_corpus` aborts on a sha8 collision — the corpus cannot be
+  # regenerated or verified at all.
+  "pillow>=10",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +27,23 @@ dev = [
 
 [project.scripts]
 aegisgraph = "aegisgraph.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# Without this, setuptools tries to auto-discover packages and fails on the
+# flat layout: `Multiple top-level packages discovered in a flat-layout:
+# ['schema', 'reports', 'exports', 'crosssma', 'smabench', ...]`. Most of those
+# top-level directories are data, docs, or scripts — not importable packages.
+#
+# Only four trees are importable. `extraction` is included because
+# `aegisgraph/extraction.py` imports `extraction.adapters.assemble`; it has no
+# top-level `__init__.py` and is picked up as a PEP 420 namespace package,
+# which is why `namespaces` stays on.
+[tool.setuptools.packages.find]
+include = ["aegisgraph*", "smabench*", "validator*", "extraction*"]
+namespaces = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
