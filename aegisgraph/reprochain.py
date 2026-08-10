@@ -207,7 +207,12 @@ def build(root: Path) -> dict[str, Any]:
         reason = sentinel.get("reprochain_reason", "blocked_pending_toolchain")
         manifest["status"] = reason if reason.startswith("blocked_") else f"blocked_{reason}"
         manifest["reason"] = reason
-        manifest["detail"] = sentinel.get("reprochain_detail", "")
+        # Redact before this lands in committed evidence. build.sh emits
+        # absolute paths here — e.g. "could not init libwebp submodule at
+        # $UPSTREAM" — and this manifest is checked in, so an unredacted
+        # detail leaks the developer's filesystem layout. The
+        # blocked_build_failed branch below already does this.
+        manifest["detail"] = _redact_path(sentinel.get("reprochain_detail", ""), root)
     else:
         manifest["status"] = "blocked_build_failed"
         manifest["reason"] = "nonzero_exit"
