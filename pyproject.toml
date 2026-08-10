@@ -11,6 +11,13 @@ dependencies = [
   "httpx>=0.27",
   "whatwg-url>=0.7",
   "jinja2>=3.1,<4",
+  # Required, not optional: the committed ring-1 media corpus was generated
+  # with the Pillow encoder (`corpus.metadata.json` records `encoding: pil`).
+  # Without it `_try_import_pil()` falls back to fixed byte constants that
+  # ignore the per-sample colour, so every round emits identical files and
+  # `write_corpus` aborts on a sha8 collision — the corpus cannot be
+  # regenerated or verified at all.
+  "pillow>=10",
 ]
 
 [project.optional-dependencies]
