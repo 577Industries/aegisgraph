@@ -171,6 +171,27 @@ def _semgrep_available() -> bool:
     return shutil.which("semgrep") is not None
 
 
+def _codeql_env() -> dict[str, str]:
+    """Environment for manual codeql invocations, scrubbed of the
+    codeql-action/init tracing session.
+
+    CI uses codeql-action/init only to INSTALL the pinned CLI bundle, but
+    init also exports a half-configured tracing session job-wide:
+    LD_PRELOAD tracer libraries plus CODEQL_EXTRACTOR_JAVA_* /
+    CODEQL_TRACER_* paths pointing at the ACTION's own WIP database under
+    the runner temp dir. An out-of-band `codeql database create` that
+    inherits those extracts into the action's database instead of its
+    own — finalize then sees zero processed files and exits 32
+    ("could not process any of it using the 'none' build mode").
+    PATH is untouched (the workflow puts the CLI on PATH explicitly).
+    """
+    return {
+        k: v
+        for k, v in os.environ.items()
+        if not (k.startswith(("CODEQL_", "SEMMLE_")) or k == "LD_PRELOAD")
+    }
+
+
 def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
     """Build a CodeQL DB from the fixture Java/Kotlin sources.
     Returns the DB path."""
@@ -189,7 +210,7 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
         # sources directly, which is what the ground-truth pass needs.
         "--build-mode=none",
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, env=_codeql_env())
     if result.returncode != 0:
         # Never swallow the extractor's own diagnostics: a bare
         # CalledProcessError shows argv only, which hid the real failure
@@ -213,7 +234,7 @@ def _run_codeql_query(db: Path, query_path: Path, sarif_out: Path) -> int:
         "--output", str(sarif_out),
         "--rerun",
     ]
-    subprocess.run(cmd, check=True, capture_output=True, text=True)
+    subprocess.run(cmd, check=True, capture_output=True, text=True, env=_codeql_env())
     sarif = load_json(sarif_out)
     total = 0
     for run in sarif.get("runs", []):
