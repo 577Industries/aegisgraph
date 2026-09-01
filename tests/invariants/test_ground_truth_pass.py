@@ -183,12 +183,25 @@ def _codeql_env() -> dict[str, str]:
     inherits those extracts into the action's database instead of its
     own — finalize then sees zero processed files and exits 32
     ("could not process any of it using the 'none' build mode").
+    JAVA_HOME and the runner's JAVA_HOME_<N>_X64 toolchain exports are
+    scrubbed too: buildless JDK inference obeys them (steered by the
+    fixture's sourceCompatibility recommendation), and the 2.26.x
+    buildless frontend silently processed ZERO files under the runner's
+    temurin-11 and temurin-17 picks (exit 32 at finalize, no per-file
+    diagnostics). With no toolchain vars visible, inference falls back
+    to the CodeQL bundle's own JDK (21.0.11 in bundle 2.26.4) — the
+    configuration every verified-good local run actually used — making
+    the harness hermetic instead of runner-image-dependent.
+
     PATH is untouched (the workflow puts the CLI on PATH explicitly).
     """
     return {
         k: v
         for k, v in os.environ.items()
-        if not (k.startswith(("CODEQL_", "SEMMLE_")) or k == "LD_PRELOAD")
+        if not (
+            k.startswith(("CODEQL_", "SEMMLE_", "JAVA_HOME_"))
+            or k in ("LD_PRELOAD", "JAVA_HOME")
+        )
     }
 
 
