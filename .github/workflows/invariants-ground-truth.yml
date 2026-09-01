@@ -74,6 +74,15 @@ jobs:
           languages: java-kotlin
           tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.20.6/codeql-bundle-linux64.tar.gz
 
+      # codeql-action/init stages a scanning environment (CODEQL_DIST etc.)
+      # but does NOT put the CLI on PATH — the first real run of this
+      # workflow died on `codeql: command not found` (run 33403159264).
+      - name: Add CodeQL CLI to PATH
+        run: |
+          test -n "$CODEQL_DIST" || { echo "CODEQL_DIST not exported by init"; exit 1; }
+          test -x "$CODEQL_DIST/codeql" || { echo "no codeql binary under $CODEQL_DIST"; exit 1; }
+          echo "$CODEQL_DIST" >> "$GITHUB_PATH"
+
       - name: Verify CodeQL CLI on PATH
         run: |
           codeql --version
