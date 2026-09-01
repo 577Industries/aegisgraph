@@ -189,7 +189,15 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
         # sources directly, which is what the ground-truth pass needs.
         "--build-mode=none",
     ]
-    subprocess.run(cmd, check=True, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        # Never swallow the extractor's own diagnostics: a bare
+        # CalledProcessError shows argv only, which hid the real failure
+        # mode across this harness's first-ever executions.
+        raise RuntimeError(
+            f"codeql database create failed (exit {result.returncode})\n"
+            f"--- stdout ---\n{result.stdout}\n--- stderr ---\n{result.stderr}"
+        )
     return dest
 
 
