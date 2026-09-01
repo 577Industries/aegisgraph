@@ -182,7 +182,12 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
         "--language=java",
         "--source-root", str(fixture_dir),
         "--overwrite",
-        "--command=true",  # Don't try to actually compile; use autobuild stub.
+        # Extract WITHOUT building: the fixture is deliberately not a
+        # compilable project. `--command=true` (the old flag here) makes the
+        # tracer observe a no-op build and extract NOTHING — codeql exits 32
+        # ("no code seen"). Build-mode none (CodeQL >= 2.16) parses the Java
+        # sources directly, which is what the ground-truth pass needs.
+        "--build-mode=none",
     ]
     subprocess.run(cmd, check=True, capture_output=True, text=True)
     return dest
