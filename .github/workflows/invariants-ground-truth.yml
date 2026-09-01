@@ -93,22 +93,32 @@ jobs:
           pip install "semgrep==1.86.0"
           semgrep --version
 
-      # TEMPORARY (debug, remove once green): one direct buildless create,
-      # bypassing pytest, plus the database's own extractor logs — the
-      # zero-files exit 32 reproduces on CI only and its cause never
-      # reaches stdout/stderr.
-      - name: Debug direct buildless create
+      # TEMPORARY (debug, remove once green): bisect WHICH ambient CI
+      # context zero-extracts buildless creates. Three creates:
+      #   A) env -i hermetic            — poison is env-carried if this passes
+      #   B) A + GitHub convention vars — fingers GITHUB_*/RUNNER_TEMP if it fails
+      #   C) full step env (control)    — known-failing shape
+      - name: Debug bisect buildless create
         run: |
-          env | sort | grep -E '^(JAVA|CODEQL|SEMMLE|LD_)' || echo "(no JAVA*/CODEQL*/SEMMLE*/LD_* vars)"
-          codeql database create /tmp/dbg-db --language=java \
-            --source-root tests/fixtures/demo-vulnerable-app \
-            --overwrite --build-mode=none || echo "DIRECT CREATE FAILED ($?)"
-          echo "=== source root after create ==="
-          ls -la tests/fixtures/demo-vulnerable-app
-          git status --porcelain tests/fixtures/demo-vulnerable-app || true
-          echo "=== db log files ==="
-          ls -la /tmp/dbg-db/log 2>/dev/null || true
-          for f in /tmp/dbg-db/log/*; do echo "--- $f (tail)"; tail -60 "$f"; done 2>/dev/null || true
+          set +e
+          CQ="$CODEQL_DIST"
+          probe() {
+            label="$1"; shift
+            rm -rf tests/fixtures/demo-vulnerable-app/.gradle \
+                   tests/fixtures/demo-vulnerable-app/gradle \
+                   tests/fixtures/demo-vulnerable-app/gradlew /tmp/dbg-$label
+            "$@" "$CQ/codeql" database create "/tmp/dbg-$label" --language=java \
+              --source-root tests/fixtures/demo-vulnerable-app \
+              --overwrite --build-mode=none >/tmp/out-$label.log 2>&1
+            echo "PROBE[$label] exit=$?"
+            grep -c "Importing TRAP" /tmp/out-$label.log | sed "s/^/PROBE[$label] trap-import-lines: /"
+          }
+          echo "RUNNER_TEMP codeql state: $(ls -d "$RUNNER_TEMP"/codeql_databases 2>/dev/null || echo none)"
+          probe A env -i PATH=/usr/bin:/bin HOME="$HOME"
+          probe B env -i PATH=/usr/bin:/bin HOME="$HOME" GITHUB_ACTIONS=true RUNNER_TEMP="$RUNNER_TEMP" GITHUB_WORKSPACE="$GITHUB_WORKSPACE"
+          probe C env
+          echo "=== tail of failing C ==="; tail -8 /tmp/out-C.log
+          echo "=== tail of A ==="; tail -8 /tmp/out-A.log
 
       - name: Run ground-truth pass
         run: |
