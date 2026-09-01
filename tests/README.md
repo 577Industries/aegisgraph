@@ -22,7 +22,7 @@ Tests live in `tests/` at the repo root. They are organized by stream:
 
 Some tests gate on environment variables. The defaults are honest about toolchain availability outside the pinned devcontainer:
 
-- `AEGISGRAPH_FULL_TOOLCHAIN=1` — strict-coverage tests for extraction (gate on CodeQL CLI 2.20.6 + JDK 21 + Android SDK 34 availability). Without this flag, extraction coverage tests record `coverage=0.0` and pass against a `blocked_pending_toolchain` build status.
+- `AEGISGRAPH_FULL_TOOLCHAIN=1` — strict-coverage tests for extraction (gate on CodeQL CLI 2.26.4 + JDK 21 + Android SDK 34 availability). Without this flag, extraction coverage tests record `coverage=0.0` and pass against a `blocked_pending_toolchain` build status.
 - `AEGISGRAPH_VALIDATOR_NON_MUTATING=1` — validator runs without writing `validation-report.json`. Used by CI / external reviewers who must not alter tracked files.
 - `AEGISGRAPH_RELEASE_AUTHORIZED=1` — public-sanitized export gate. Works with `--dry-run` for tests that exercise the full export contract without writing files. See ADR 0011.
 - `AEGISGRAPH_STRICT_TOOLING=1` — strict tooling check (CI mode). Without this, `make tooling-strict` exits 1 outside the devcontainer (intentional fail-closed).

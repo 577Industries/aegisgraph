@@ -12,7 +12,7 @@
 #   * OpenJDK 21 (Temurin) — required by CodeQL Java packs and for SMA
 #                            (Signal/Element-X Android) source extraction.
 #   * Android SDK 34.0.0 build-tools + NDK r26d — Android SMA builds.
-#   * CodeQL CLI 2.20.6 — pinned to match Java/Python query packs below.
+#   * CodeQL CLI 2.26.4 — pinned to match Java/Python query packs below.
 #   * Semgrep 1.86.0 — installed via pipx in post-create.sh.
 #   * Go 1.22.5 — polydiff Go parser corpus.
 #   * Rust 1.79.0 — polydiff Rust parser corpus.
@@ -111,8 +111,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
  && apt-get install -y --no-install-recommends nodejs \
  && rm -rf /var/lib/apt/lists/*
 
-# CodeQL CLI 2.20.6 + Java/Python query packs.
-ARG CODEQL_VERSION=2.20.6
+# CodeQL CLI 2.26.4 + Java/Python query packs.
+ARG CODEQL_VERSION=2.26.4
 ARG CODEQL_INSTALL=/opt/codeql
 RUN curl -fsSL "https://github.com/github/codeql-cli-binaries/releases/download/v${CODEQL_VERSION}/codeql-linux64.zip" \
         -o /tmp/codeql.zip \

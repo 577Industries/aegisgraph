@@ -1,0 +1,39 @@
+// Synthetic ground-truth fixture for InvariantCheck library v3.
+// Not based on any real product code.
+//
+// Minimal Gradle build descriptor so CodeQL `codeql database create
+// --language=java --command='./gradlew assembleDebug'` (or the autobuild
+// shipped with codeql-action) has a real entry point. The actual Java
+// compilation step is exercised inside the GitHub Actions workflow
+// `.github/workflows/invariants-ground-truth.yml` on the self-hosted
+// runner.
+//
+// NOTE (2026-09-01): the hosted-runner ground-truth pass now uses
+// `--build-mode=none` under CodeQL >= 2.26.4, which TOLERATES this
+// file's failing classpath probe (2.20.6 treated it as fatal — do not
+// downgrade the workflow's bundle pin below 2.26.x while this file
+// exists).
+
+apply plugin: 'java'
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'fixtures']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    // No runtime dependencies — the fixture compiles against synthetic
+    // stubs only. CodeQL extraction works against the source on disk
+    // without resolving these to real artifacts.
+}

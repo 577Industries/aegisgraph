@@ -16,7 +16,7 @@ name: tier3-research-invariants-ground-truth
 #     toolchains are caught.
 #
 # Toolchain pins (per devcontainer/Dockerfile + Phase II plan T-M4.1):
-#   CodeQL CLI 2.20.6
+#   CodeQL CLI 2.26.4
 #   Semgrep   1.86
 #
 # Security posture: this workflow consumes only repo-controlled inputs
@@ -68,11 +68,11 @@ jobs:
           pip install -e .
           pip install pytest
 
-      - name: Setup CodeQL CLI 2.20.6
+      - name: Setup CodeQL CLI 2.26.4
         uses: github/codeql-action/init@v3
         with:
           languages: java-kotlin
-          tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.20.6/codeql-bundle-linux64.tar.gz
+          tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.26.4/codeql-bundle-linux64.tar.gz
 
       # codeql-action/init stages a scanning environment (CODEQL_DIST etc.)
       # but does NOT put the CLI on PATH — the first real run of this
