@@ -60,7 +60,7 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
-import DataFlow::PathGraph
+import BackupBlobUnauthFlow::PathGraph
 
 /**
  * Sources: backup blob production AND consumption entry points.

@@ -87,7 +87,12 @@ PRODUCTION_ENCODINGS = _production_encodings()
 EXPECTED_FIXTURE_FILES = (
     "README.md",
     "AndroidManifest.xml",
-    "build.gradle",
+    # Renamed from build.gradle: CodeQL 2.20.6's build-mode=none FATALLY
+    # requires its Gradle classpath probe to succeed when a build.gradle
+    # is visible (runBuildlessExtractor), and this fixture deliberately
+    # does not build. With no build file, buildless extraction is pure
+    # source parsing and succeeds.
+    "build.gradle.disabled",
     "fixtures/Allowlist.java",
     "fixtures/KexCompletion.java",
     "fixtures/PolicyChecker.java",

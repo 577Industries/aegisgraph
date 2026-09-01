@@ -25,7 +25,7 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
-import DataFlow::PathGraph
+import KeyStorageNoKeystoreFlow::PathGraph
 
 /**
  * Sources: private-key material producers.

@@ -53,7 +53,7 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
-import DataFlow::PathGraph
+import MediaDecodeUnsanitizedFlow::PathGraph
 
 /**
  * Sources: inbound-media byte streams or byte arrays.
