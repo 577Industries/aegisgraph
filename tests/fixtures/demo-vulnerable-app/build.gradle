@@ -16,8 +16,12 @@
 
 apply plugin: 'java'
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+// 17, not 11: CodeQL buildless JDK inference obeys this recommendation,
+// and on hosted runners (which export JAVA_HOME_11_X64) a value of 11
+// steered extraction onto JDK 11, where the 2.26.x buildless frontend
+// processes no files at all (exit 32). 17 is also Gradle 9.x's floor.
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 sourceSets {
     main {
