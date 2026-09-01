@@ -68,20 +68,21 @@ jobs:
           pip install -e .
           pip install pytest
 
-      - name: Setup CodeQL CLI 2.26.4
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java-kotlin
-          tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.26.4/codeql-bundle-linux64.tar.gz
-
-      # codeql-action/init stages a scanning environment (CODEQL_DIST etc.)
-      # but does NOT put the CLI on PATH — the first real run of this
-      # workflow died on `codeql: command not found` (run 33403159264).
-      - name: Add CodeQL CLI to PATH
+      # Direct pinned-bundle install — deliberately NOT codeql-action/init.
+      # init is a code-scanning workflow primitive: it stages an in-progress
+      # scan session on the machine (a database cluster under $RUNNER_TEMP
+      # plus tracer env), and `codeql database create` detects that session
+      # and joins it — every manual create then finalizes EMPTY (exit 32,
+      # "could not process any of it"), even under a fully scrubbed env -i
+      # (bisected on run 33547-era attempts). This harness drives the raw
+      # CLI itself, so it needs a bare toolchain, not a scan session.
+      - name: Install CodeQL CLI 2.26.4 (pinned bundle)
         run: |
-          test -n "$CODEQL_DIST" || { echo "CODEQL_DIST not exported by init"; exit 1; }
-          test -x "$CODEQL_DIST/codeql" || { echo "no codeql binary under $CODEQL_DIST"; exit 1; }
-          echo "$CODEQL_DIST" >> "$GITHUB_PATH"
+          curl -sSfL -o "$RUNNER_TEMP/codeql-bundle.tar.gz" \
+            "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.26.4/codeql-bundle-linux64.tar.gz"
+          echo "48e1ab8b874d57bd6fd7c90fefee75addc5a45e9bd063982df9beb45a62dd5d3  $RUNNER_TEMP/codeql-bundle.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/codeql-bundle.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/codeql" >> "$GITHUB_PATH"
 
       - name: Verify CodeQL CLI on PATH
         run: |
@@ -93,32 +94,14 @@ jobs:
           pip install "semgrep==1.86.0"
           semgrep --version
 
-      # TEMPORARY (debug, remove once green): bisect WHICH ambient CI
-      # context zero-extracts buildless creates. Three creates:
-      #   A) env -i hermetic            — poison is env-carried if this passes
-      #   B) A + GitHub convention vars — fingers GITHUB_*/RUNNER_TEMP if it fails
-      #   C) full step env (control)    — known-failing shape
-      - name: Debug bisect buildless create
+      # The buildless probe litters wrapper files into the fixture
+      # (gradlew, gradle/, .gradle/) — keep the tree clean so the
+      # fixture-presence assertions and later creates see pristine state.
+      - name: Clean fixture build-probe litter
         run: |
-          set +e
-          CQ="$CODEQL_DIST"
-          probe() {
-            label="$1"; shift
-            rm -rf tests/fixtures/demo-vulnerable-app/.gradle \
-                   tests/fixtures/demo-vulnerable-app/gradle \
-                   tests/fixtures/demo-vulnerable-app/gradlew /tmp/dbg-$label
-            "$@" "$CQ/codeql" database create "/tmp/dbg-$label" --language=java \
-              --source-root tests/fixtures/demo-vulnerable-app \
-              --overwrite --build-mode=none >/tmp/out-$label.log 2>&1
-            echo "PROBE[$label] exit=$?"
-            grep -c "Importing TRAP" /tmp/out-$label.log | sed "s/^/PROBE[$label] trap-import-lines: /"
-          }
-          echo "RUNNER_TEMP codeql state: $(ls -d "$RUNNER_TEMP"/codeql_databases 2>/dev/null || echo none)"
-          probe A env -i PATH=/usr/bin:/bin HOME="$HOME"
-          probe B env -i PATH=/usr/bin:/bin HOME="$HOME" GITHUB_ACTIONS=true RUNNER_TEMP="$RUNNER_TEMP" GITHUB_WORKSPACE="$GITHUB_WORKSPACE"
-          probe C env
-          echo "=== tail of failing C ==="; tail -8 /tmp/out-C.log
-          echo "=== tail of A ==="; tail -8 /tmp/out-A.log
+          rm -rf tests/fixtures/demo-vulnerable-app/.gradle \
+                 tests/fixtures/demo-vulnerable-app/gradle \
+                 tests/fixtures/demo-vulnerable-app/gradlew
 
       - name: Run ground-truth pass
         run: |
