@@ -93,6 +93,23 @@ jobs:
           pip install "semgrep==1.86.0"
           semgrep --version
 
+      # TEMPORARY (debug, remove once green): one direct buildless create,
+      # bypassing pytest, plus the database's own extractor logs — the
+      # zero-files exit 32 reproduces on CI only and its cause never
+      # reaches stdout/stderr.
+      - name: Debug direct buildless create
+        run: |
+          env | sort | grep -E '^(JAVA|CODEQL|SEMMLE|LD_)' || echo "(no JAVA*/CODEQL*/SEMMLE*/LD_* vars)"
+          codeql database create /tmp/dbg-db --language=java \
+            --source-root tests/fixtures/demo-vulnerable-app \
+            --overwrite --build-mode=none || echo "DIRECT CREATE FAILED ($?)"
+          echo "=== source root after create ==="
+          ls -la tests/fixtures/demo-vulnerable-app
+          git status --porcelain tests/fixtures/demo-vulnerable-app || true
+          echo "=== db log files ==="
+          ls -la /tmp/dbg-db/log 2>/dev/null || true
+          for f in /tmp/dbg-db/log/*; do echo "--- $f (tail)"; tail -60 "$f"; done 2>/dev/null || true
+
       - name: Run ground-truth pass
         run: |
           python3 -m pytest tests/invariants/test_ground_truth_pass.py -v --tb=short
