@@ -12,7 +12,7 @@ the current host env, partial outputs are emitted with honest
 
 | Tool | Source-of-truth committed | Runnable now (host) | Runnable in devcontainer | Used to build current `extraction/output/*/graph.json`? |
 |---|---|---|---|---|
-| AegisGraph SMA CodeQL queries (8) | yes (`extraction/codeql/queries/*.ql`) | NO — `codeql` CLI absent | YES — pinned 2.20.6 | NO — emits `skipped_pending_toolchain` |
+| AegisGraph SMA CodeQL queries (8) | yes (`extraction/codeql/queries/*.ql`) | NO — `codeql` CLI absent | YES — pinned 2.26.4 | NO — emits `skipped_pending_toolchain` |
 | Semgrep rules (4) | yes (`extraction/semgrep/rules/*.yml`) | YES — `semgrep` 1.157.0 in PATH; rules require target-source clone | YES | NO — clone of target source not present in this worktree |
 | AndroidManifest analyzer | yes (`extraction/manifest/manifest_analyzer.py`) | YES — pure Python with lxml; needs target-source clone for real input | YES | NO — clone of target source not present; analyzer is exercised by `tests/test_extraction_manifest_analyzer.py` |
 | MobSF runner | yes (`extraction/mobsf/run_mobsf.py`, `Dockerfile`) | NO — Docker present but MobSF image not pulled; APK acquisition requires F-Droid network | YES | NO — emits `skipped_pending_toolchain` |

@@ -16,7 +16,7 @@ name: tier3-research-invariants-ground-truth
 #     toolchains are caught.
 #
 # Toolchain pins (per devcontainer/Dockerfile + Phase II plan T-M4.1):
-#   CodeQL CLI 2.20.6
+#   CodeQL CLI 2.26.4
 #   Semgrep   1.86
 #
 # Security posture: this workflow consumes only repo-controlled inputs
@@ -68,11 +68,21 @@ jobs:
           pip install -e .
           pip install pytest
 
-      - name: Setup CodeQL CLI 2.20.6
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java-kotlin
-          tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.20.6/codeql-bundle-linux64.tar.gz
+      # Direct pinned-bundle install — deliberately NOT codeql-action/init.
+      # init is a code-scanning workflow primitive: it stages an in-progress
+      # scan session on the machine (a database cluster under $RUNNER_TEMP
+      # plus tracer env), and `codeql database create` detects that session
+      # and joins it — every manual create then finalizes EMPTY (exit 32,
+      # "could not process any of it"), even under a fully scrubbed env -i
+      # (bisected on run 33547-era attempts). This harness drives the raw
+      # CLI itself, so it needs a bare toolchain, not a scan session.
+      - name: Install CodeQL CLI 2.26.4 (pinned bundle)
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/codeql-bundle.tar.gz" \
+            "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.26.4/codeql-bundle-linux64.tar.gz"
+          echo "48e1ab8b874d57bd6fd7c90fefee75addc5a45e9bd063982df9beb45a62dd5d3  $RUNNER_TEMP/codeql-bundle.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/codeql-bundle.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/codeql" >> "$GITHUB_PATH"
 
       - name: Verify CodeQL CLI on PATH
         run: |
@@ -83,6 +93,15 @@ jobs:
         run: |
           pip install "semgrep==1.86.0"
           semgrep --version
+
+      # The buildless probe litters wrapper files into the fixture
+      # (gradlew, gradle/, .gradle/) — keep the tree clean so the
+      # fixture-presence assertions and later creates see pristine state.
+      - name: Clean fixture build-probe litter
+        run: |
+          rm -rf tests/fixtures/demo-vulnerable-app/.gradle \
+                 tests/fixtures/demo-vulnerable-app/gradle \
+                 tests/fixtures/demo-vulnerable-app/gradlew
 
       - name: Run ground-truth pass
         run: |

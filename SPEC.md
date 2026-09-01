@@ -603,7 +603,7 @@ Each query produces SARIF; SARIF is normalized into the evidence graph by an ada
 
 Acceptance: `make extract-signal` runs the full query pack against Signal Android at the pinned commit, produces a graph in the AegisGraph schema, and the graph is checked into the evidence package.
 
-*Environment note*: Coverage 0.0 in environments without CodeQL CLI 2.20.6 + Java 21; the test contract gates strict ≥0.8 coverage on `AEGISGRAPH_FULL_TOOLCHAIN=1`. See `extraction/BUILD_STATUS.md` for the toolchain availability matrix.
+*Environment note*: Coverage 0.0 in environments without CodeQL CLI 2.26.4 + Java 21; the test contract gates strict ≥0.8 coverage on `AEGISGRAPH_FULL_TOOLCHAIN=1`. See `extraction/BUILD_STATUS.md` for the toolchain availability matrix.
 
 ### 6.3 Phase C2 — Semgrep ruleset
 

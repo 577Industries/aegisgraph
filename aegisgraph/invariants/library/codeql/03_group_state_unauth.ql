@@ -49,7 +49,7 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
-import DataFlow::PathGraph
+import GroupStateUnauthFlow::PathGraph
 
 /**
  * Sources: inbound group-event payload accessors.

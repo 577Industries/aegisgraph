@@ -52,7 +52,7 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
-import DataFlow::PathGraph
+import PqDowngradeFlow::PathGraph
 
 /**
  * Sources: hybrid PQ-handshake initiation outputs.
