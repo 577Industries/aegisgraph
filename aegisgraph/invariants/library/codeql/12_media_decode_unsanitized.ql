@@ -37,8 +37,10 @@
  *            MediaItem.getStream, getBytes/getByteArray on a *Media or
  *            *Attachment type.
  *
- *   Sinks: decoder calls — BitmapFactory.decode*, Glide load, Coil load,
- *          MediaCodec.queueInputBuffer.
+ *   Sinks: decoder calls — BitmapFactory.decode*, BitmapRegionDecoder,
+ *          Glide load, Coil load, and ByteBuffer.put on a MediaCodec input
+ *          buffer (the bytes' real entry into the codec; queueInputBuffer
+ *          only carries integers — ADR 0024).
  *
  *   Barriers: BitmapFactory.Options with inJustDecodeBounds=true
  *             followed by a width/height check, or helper methods named
@@ -83,9 +85,12 @@ class InboundMediaSource extends DataFlow::Node {
         p.getType().(RefType).hasQualifiedName("java.nio", "ByteBuffer") or
         p.getType().getName() = "byte[]"
       ) and
+      // A decode/handle/process/receive verb and a media noun anywhere
+      // in the name: decodeImage, decodeWithGlide, handleInboundThumbnail,
+      // onAttachmentReceived… but not decodeSafe.
       p.getCallable()
           .getName()
-          .regexpMatch("(?i).*(handle|process|decode|onMedia|onAttachment|onImage|onVideo|receive)(Attachment|Media|Image|Video|Thumbnail|Bitmap).*") and
+          .regexpMatch("(?i).*(handle|process|decode|receive|on).*(attachment|media|image|video|thumbnail|bitmap|glide|coil|frame).*") and
       this.asExpr() = p.getAnAccess()
     )
   }
@@ -109,14 +114,16 @@ class MediaDecoderSink extends DataFlow::Node {
       this.asExpr() = mc.getArgument(0)
     )
     or
-    // android.media.MediaCodec.queueInputBuffer — the buffer arg.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .getDeclaringType()
-          .hasQualifiedName("android.media", "MediaCodec") and
-      mc.getMethod()
-          .hasName(["queueInputBuffer", "getInputBuffer", "writeInputBuffer"]) and
-      this.asExpr() = mc.getAnArgument()
+    // android.media.MediaCodec: the attacker's bytes enter the decoder
+    // through ByteBuffer.put on a buffer obtained from getInputBuffer
+    // (queueInputBuffer itself only carries index/size/flags integers).
+    exists(MethodCall put, MethodCall gib |
+      put.getMethod().getDeclaringType().hasQualifiedName("java.nio", "ByteBuffer") and
+      put.getMethod().hasName("put") and
+      gib.getMethod().getDeclaringType().hasQualifiedName("android.media", "MediaCodec") and
+      gib.getMethod().hasName(["getInputBuffer", "getInputBuffers"]) and
+      DataFlow::localExprFlow(gib, put.getQualifier()) and
+      this.asExpr() = put.getArgument(0)
     )
     or
     // Glide: RequestManager.load / RequestBuilder.load — first arg.

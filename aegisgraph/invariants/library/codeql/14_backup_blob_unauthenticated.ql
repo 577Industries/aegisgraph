@@ -38,11 +38,14 @@
  *   Sources B (backup restore): restoreBackup / importBackup /
  *            parseBackup / deserializeBackup / fromBackupBlob returns.
  *
- *   Sinks A (network/disk emission): OutputStream.write where qualifier
- *          is a *BackupOutputStream, okhttp3.RequestBody.create on
- *          backup blob, FileOutputStream with "backup" in the path.
+ *   Sinks A (network/disk emission): any OutputStream.write / Files.write
+ *          of the blob, okhttp3.RequestBody.create on it. The source side
+ *          already restricts flows to backup-typed blobs, so the stream's
+ *          name is not a signal (ADR 0023).
  *   Sinks B (state restore): DatabaseHelper.bulkInsert, KeyStore.
- *          setKeyEntry, GroupDatabase.applyBackupGroupState.
+ *          setKeyEntry, GroupDatabase.applyBackupGroupState, and
+ *          restore/import/apply/ingest/load methods on a
+ *          *BackupRestorer / *BackupImporter / *BackupStore type.
  *
  *   Barriers (both directions):
  *     - javax.crypto.Mac.doFinal (HMAC family) applied to the blob.
@@ -112,26 +115,20 @@ class BackupBlobSource extends DataFlow::Node {
  */
 class BackupBlobSink extends DataFlow::Node {
   BackupBlobSink() {
-    // Sink A: OutputStream.write where the qualifier name suggests a
-    // backup-oriented stream.
+    // Sink A: the blob leaves the process — any OutputStream.write /
+    // Files.write. The SOURCE side already restricts flows to backup-
+    // typed blobs, so the stream's name carries no information: real
+    // exporters write through a plain FileOutputStream or a socket.
     exists(MethodCall mc |
       mc.getMethod().hasName("write") and
-      mc.getMethod()
-          .getDeclaringType()
-          .getName()
-          .regexpMatch(".*BackupOutputStream.*|.*OutputStream") and
-      (
-        mc.getQualifier()
-            .getType()
-            .(RefType)
-            .getName()
-            .regexpMatch("(?i).*backup.*") or
-        mc.getMethod()
-            .getDeclaringType()
-            .getName()
-            .regexpMatch(".*BackupOutputStream.*")
-      ) and
+      mc.getMethod().getDeclaringType().getASourceSupertype*().hasQualifiedName("java.io", "OutputStream") and
       this.asExpr() = mc.getArgument(0)
+    )
+    or
+    exists(MethodCall mc |
+      mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Files") and
+      mc.getMethod().hasName(["write", "writeString"]) and
+      this.asExpr() = mc.getArgument(1)
     )
     or
     // Sink A: okhttp3.RequestBody.create on backup bytes.
@@ -141,25 +138,27 @@ class BackupBlobSink extends DataFlow::Node {
       this.asExpr() = mc.getAnArgument()
     )
     or
-    // Sink A: FileOutputStream.write — captured when the file name
-    // contains "backup" (best-effort heuristic).
-    exists(ConstructorCall cc, MethodCall mc |
-      cc.getConstructedType().hasQualifiedName("java.io", "FileOutputStream") and
-      cc.getAnArgument().(StringLiteral).getValue().regexpMatch("(?i).*backup.*") and
-      mc.getMethod()
-          .getDeclaringType()
-          .hasQualifiedName("java.io", "FileOutputStream") and
-      mc.getMethod().hasName("write") and
-      this.asExpr() = mc.getArgument(0)
-    )
-    or
-    // Sink B: DatabaseHelper.bulkInsert / Database.applyBackupGroupState.
+    // Sink B: state-restore entry points — DatabaseHelper.bulkInsert,
+    // Database.applyBackupGroupState, and restore/import/apply/ingest/
+    // load methods on a *BackupRestorer / *BackupImporter / *BackupStore
+    // / *BackupManager type.
     exists(MethodCall mc |
       mc.getMethod()
           .hasName([
             "bulkInsert", "applyBackupGroupState",
             "restoreFromBackup", "applyBackupRows", "ingestBackup"
           ]) and
+      this.asExpr() = mc.getAnArgument()
+    )
+    or
+    exists(MethodCall mc |
+      mc.getMethod()
+          .getDeclaringType()
+          .getName()
+          .regexpMatch(".*Backup(Restorer|Importer|Reader|Deserializer|Store|Manager).*") and
+      mc.getMethod()
+          .getName()
+          .regexpMatch("(?i)(restore|import|apply|ingest|load)(Backup|BackupBlob|BackupRows|BackupGroupState|FromBackup)?") and
       this.asExpr() = mc.getAnArgument()
     )
     or

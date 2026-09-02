@@ -40,6 +40,14 @@
  *             *X3DH / *NoiseHandshake / *MlsKeyAgreement type named
  *             complete / verify / finalize / ratchet / confirmRoundTrip;
  *             field comparisons against kexConfirmed-style booleans.
+ *             Applied to the payload they are data-flow barriers; used as
+ *             a condition (`if (!handshake.complete(peer)) return;`) they
+ *             are control-flow guards and a provisioning call they control
+ *             is not a sink (kexGuardedSink).
+ *
+ *   Steps: field reads and no-arg getters on a tainted *LinkCode /
+ *          *ProvisioningEnvelope object carry its data onward
+ *          (linkPayloadMemberStep) — `LinkCode.parse(text).deviceId`.
  *
  * TODO[ground-truth-pass]: confirm Signal-android DeviceRegistrationStore
  * and Element-X DeviceLinkCode class names against pinned commits.
@@ -48,7 +56,35 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
+import semmle.code.java.controlflow.Guards
 import DeviceLinkKexFlow::PathGraph
+
+/**
+ * A parsed link-code / provisioning payload type. Once the object that
+ * `LinkCode.parse(text)` returns is tainted, every field it exposes and
+ * every getter on it carries the attacker's linking data onward —
+ * generic taint tracking does not follow reads out of a tainted object,
+ * so those steps are added explicitly below.
+ */
+private predicate linkPayloadType(RefType t) {
+  t.getName()
+      .regexpMatch(".*LinkCode.*|.*ProvisioningCode.*|.*ProvisioningEnvelope.*|.*DeviceLinkPayload.*|.*ProvisionMessage.*|.*LinkRequest.*")
+}
+
+predicate linkPayloadMemberStep(DataFlow::Node pred, DataFlow::Node succ) {
+  exists(FieldAccess fa |
+    linkPayloadType(fa.getQualifier().getType()) and
+    pred.asExpr() = fa.getQualifier() and
+    succ.asExpr() = fa
+  )
+  or
+  exists(MethodCall mc |
+    linkPayloadType(mc.getQualifier().getType()) and
+    mc.getMethod().getNumberOfParameters() = 0 and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
+}
 
 /**
  * Sources: device-linking entry points.
@@ -157,45 +193,64 @@ class DeviceProvisioningSink extends DataFlow::Node {
 }
 
 /**
- * Barriers: KEX-completion predicates and verified-handshake guards.
+ * A KEX-completion check: the expression whose truth means the
+ * key-exchange round-trip finished.
+ */
+predicate kexCompletionCheck(Expr e) {
+  // Method calls on a *KeyExchange / *X3DH / *Noise / *MLS / *PQXDH
+  // type named complete / verify / finalize / ratchet.
+  exists(MethodCall mc | mc = e |
+    mc.getMethod()
+        .getDeclaringType()
+        .getName()
+        .regexpMatch(".*KeyExchange.*|.*X3DH.*|.*PQXDH.*|.*NoiseHandshake.*|.*MlsKeyAgreement.*|.*MlsHandshake.*|.*HandshakeState.*") and
+    mc.getMethod()
+        .hasName([
+          "complete", "verify", "finalize", "ratchet",
+          "confirmRoundTrip", "checkComplete", "isComplete",
+          "verifyEphemeral", "verifyHandshake"
+        ])
+  )
+  or
+  // Boolean field access for a *kexConfirmed / *handshakeVerified flag.
+  e.(FieldAccess)
+      .getField()
+      .getName()
+      .regexpMatch("(?i).*(kex|handshake|provisioning|deviceLink)(Confirmed|Verified|Complete|Done)")
+  or
+  // Explicit barrier helpers in the device-linking code.
+  e.(MethodCall)
+      .getMethod()
+      .hasName([
+        "isHandshakeComplete", "verifyKex", "assertKexComplete",
+        "ensureLinkVerified", "verifyDeviceLink", "verifyProvisioningEnvelope"
+      ])
+}
+
+/**
+ * Barriers: KEX-completion predicates applied to the payload itself
+ * (verifyProvisioningEnvelope(envelope) and friends).
  */
 class KexCompletionBarrier extends DataFlow::Node {
   KexCompletionBarrier() {
-    // Method calls on a *KeyExchange / *X3DH / *Noise / *MLS / *PQXDH
-    // type named complete / verify / finalize / ratchet.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .getDeclaringType()
-          .getName()
-          .regexpMatch(".*KeyExchange.*|.*X3DH.*|.*PQXDH.*|.*NoiseHandshake.*|.*MlsKeyAgreement.*|.*MlsHandshake.*|.*HandshakeState.*") and
-      mc.getMethod()
-          .hasName([
-            "complete", "verify", "finalize", "ratchet",
-            "confirmRoundTrip", "checkComplete", "isComplete",
-            "verifyEphemeral", "verifyHandshake"
-          ]) and
-      this.asExpr() = [mc, mc.getAnArgument()]
-    )
+    exists(MethodCall mc | kexCompletionCheck(mc) | this.asExpr() = [mc, mc.getAnArgument()])
     or
-    // Boolean field access for a *kexConfirmed / *handshakeVerified flag.
-    exists(FieldAccess fa |
-      fa.getField()
-          .getName()
-          .regexpMatch("(?i).*(kex|handshake|provisioning|deviceLink)(Confirmed|Verified|Complete|Done)") and
-      this.asExpr() = fa
-    )
-    or
-    // Generic name-based barrier — explicit barrier helpers in the
-    // device-linking code.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .hasName([
-            "isHandshakeComplete", "verifyKex", "assertKexComplete",
-            "ensureLinkVerified", "verifyDeviceLink", "verifyProvisioningEnvelope"
-          ]) and
-      this.asExpr() = [mc, mc.getAnArgument()]
-    )
+    exists(FieldAccess fa | kexCompletionCheck(fa) | this.asExpr() = fa)
   }
+}
+
+/**
+ * A provisioning call that only executes once a KEX-completion check has
+ * evaluated to true (`if (!handshake.complete(peer)) return;` and then
+ * the register call) is guarded. The check does not touch the payload,
+ * so it cannot be a data-flow barrier; it is a control-flow guard on the
+ * sink instead.
+ */
+predicate kexGuardedSink(DataFlow::Node snk) {
+  exists(Guard g |
+    kexCompletionCheck(g) and
+    g.controls(snk.asExpr().getBasicBlock(), true)
+  )
 }
 
 /**
@@ -205,9 +260,15 @@ class KexCompletionBarrier extends DataFlow::Node {
 module DeviceLinkKexConfig implements DataFlow::ConfigSig {
   predicate isSource(DataFlow::Node src) { src instanceof DeviceLinkSource }
 
-  predicate isSink(DataFlow::Node snk) { snk instanceof DeviceProvisioningSink }
+  predicate isSink(DataFlow::Node snk) {
+    snk instanceof DeviceProvisioningSink and not kexGuardedSink(snk)
+  }
 
   predicate isBarrier(DataFlow::Node node) { node instanceof KexCompletionBarrier }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    linkPayloadMemberStep(pred, succ)
+  }
 }
 
 module DeviceLinkKexFlow = TaintTracking::Global<DeviceLinkKexConfig>;

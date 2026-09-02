@@ -49,7 +49,40 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
+import semmle.code.java.controlflow.Guards
 import GroupStateUnauthFlow::PathGraph
+
+/** A sender-role / membership check call. */
+predicate roleCheckCall(MethodCall mc) {
+  mc.getMethod()
+      .hasName([
+        "isAdmin", "isCoAdmin", "isModerator", "isOwner",
+        "hasPermissionToMutate", "isGroupMember", "isAuthorizedSender",
+        "checkGroupAdminRole", "requireAdminPermission", "verifyAdminRole",
+        "verifySenderRole", "verifyMembership", "isSenderAdmin",
+        "canModifyGroup", "canKickMember", "hasAdminRole",
+        "isAuthorizedToChange", "requireAdmin", "assertSenderIsAdmin"
+      ])
+  or
+  mc.getMethod()
+      .getDeclaringType()
+      .getName()
+      .regexpMatch(".*GroupAuthority.*|.*PermissionChecker.*|.*RoleChecker.*|.*AccessControl.*")
+}
+
+/**
+ * A mutation that only runs once a role check has evaluated to true
+ * (`if (!event.verifyAdminRole()) return` and then the write) is
+ * guarded. Every access of the handler's payload parameter is a source,
+ * so a data-flow barrier on the checked access cannot cover the later
+ * accesses; the guard on the sink can.
+ */
+predicate roleGuardedSink(DataFlow::Node snk) {
+  exists(Guard g |
+    roleCheckCall(g) and
+    g.controls(snk.asExpr().getBasicBlock(), true)
+  )
+}
 
 /**
  * Sources: inbound group-event payload accessors.
@@ -91,15 +124,44 @@ class GroupEventSource extends DataFlow::Node {
     )
     or
     // Top-level parameter access on a handler that takes a typed
-    // group-event payload (e.g. `void handleAddMember(GroupV2Update u)`).
+    // group-event payload (e.g. `void handleAddMember(GroupV2Update u)`,
+    // `fun applyGroupAddMember(event: GroupAddMemberEvent, …)`).
     exists(Parameter p |
-      p.getType()
-          .(RefType)
-          .getName()
-          .regexpMatch(".*Group(V2)?(Update|Change|Event|Action).*|.*MembershipEvent.*|.*RoomMemberContent.*") and
+      groupEventType(p.getType()) and
       this.asExpr() = p.getAnAccess()
     )
   }
+}
+
+/**
+ * A group-management event payload type: `Group…Update` / `…Change` /
+ * `…Event` / `…Action` with any words in between, or the Matrix
+ * membership / member-content shapes.
+ */
+private predicate groupEventType(Type t) {
+  t.getName()
+      .regexpMatch(".*Group.*(Update|Change|Event|Action).*|.*MembershipEvent.*|.*RoomMemberContent.*")
+}
+
+/**
+ * Data read out of a tainted group-event payload stays tainted: field
+ * reads and no-arg getters (which is what a Kotlin property read
+ * compiles to — `event.memberId` is `getMemberId()`).
+ */
+predicate groupEventMemberStep(DataFlow::Node pred, DataFlow::Node succ) {
+  exists(FieldAccess fa |
+    groupEventType(fa.getQualifier().getType()) and
+    pred.asExpr() = fa.getQualifier() and
+    succ.asExpr() = fa
+  )
+  or
+  exists(MethodCall mc |
+    groupEventType(mc.getQualifier().getType()) and
+    mc.getMethod().getNumberOfParameters() = 0 and
+    not mc.getMethod().getReturnType() instanceof BooleanType and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
 }
 
 /**
@@ -110,12 +172,12 @@ class GroupEventSource extends DataFlow::Node {
  */
 class GroupStateMutationSink extends DataFlow::Node {
   GroupStateMutationSink() {
-    // GroupDatabase / RoomDatabase mutation methods.
+    // GroupDatabase / RoomDatabase / GroupStateStore mutation methods.
     exists(MethodCall mc |
       mc.getMethod()
           .getDeclaringType()
           .getName()
-          .regexpMatch(".*GroupDatabase.*|.*RoomDatabase.*|.*GroupTable.*|.*LocalGroupAuthority.*") and
+          .regexpMatch(".*GroupDatabase.*|.*RoomDatabase.*|.*GroupTable.*|.*LocalGroupAuthority.*|.*GroupState.*|.*GroupStore.*|.*GroupRepository.*") and
       mc.getMethod()
           .hasName([
             "updateMembers", "addMember", "removeMember",
@@ -162,17 +224,21 @@ class GroupStateMutationSink extends DataFlow::Node {
 class SenderAuthorizationBarrier extends DataFlow::Node {
   SenderAuthorizationBarrier() {
     // Direct role-check method names — covers most messenger lineages.
+    // The check's QUALIFIER is a barrier too: `event.verifyAdminRole()`
+    // validates the event itself, so every later read of that event
+    // (`event.memberId` on the next line) is covered through the
+    // use-use chain.
     exists(MethodCall mc |
       mc.getMethod()
           .hasName([
             "isAdmin", "isCoAdmin", "isModerator", "isOwner",
             "hasPermissionToMutate", "isGroupMember", "isAuthorizedSender",
-            "checkGroupAdminRole", "requireAdminPermission",
+            "checkGroupAdminRole", "requireAdminPermission", "verifyAdminRole",
             "verifySenderRole", "verifyMembership", "isSenderAdmin",
             "canModifyGroup", "canKickMember", "hasAdminRole",
-            "isAuthorizedToChange"
+            "isAuthorizedToChange", "requireAdmin", "assertSenderIsAdmin"
           ]) and
-      this.asExpr() = [mc, mc.getAnArgument()]
+      this.asExpr() = [mc, mc.getAnArgument(), mc.getQualifier()]
     )
     or
     // Field/enum comparison against a role constant — handles the
@@ -208,10 +274,16 @@ class SenderAuthorizationBarrier extends DataFlow::Node {
 module GroupStateUnauthConfig implements DataFlow::ConfigSig {
   predicate isSource(DataFlow::Node src) { src instanceof GroupEventSource }
 
-  predicate isSink(DataFlow::Node snk) { snk instanceof GroupStateMutationSink }
+  predicate isSink(DataFlow::Node snk) {
+    snk instanceof GroupStateMutationSink and not roleGuardedSink(snk)
+  }
 
   predicate isBarrier(DataFlow::Node node) {
     node instanceof SenderAuthorizationBarrier
+  }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    groupEventMemberStep(pred, succ)
   }
 }
 

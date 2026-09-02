@@ -98,7 +98,7 @@ jobs:
           pip install "semgrep==1.86.0"
           semgrep --version
 
-      # -rxX: pyproject sets addopts = "-q", so without it the ten recorded
+      # -rxX: pyproject sets addopts = "-q", so without it the recorded
       # xfail reasons — the actual product of this job — never reach the log.
       # The CodeQL database is built once per session (see the codeql_db
       # fixture); twelve identical creates used to cost ~17 of the job's

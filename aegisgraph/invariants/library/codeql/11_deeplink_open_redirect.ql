@@ -26,8 +26,9 @@
  * Encoding notes:
  *
  *   Sources: deep-link URL-bearing values obtained from an inbound
- *            Intent — getData() / getDataString() / Uri.parse on an
- *            extra with a "DEEP_LINK" / "LINK" / "URL" key.
+ *            Intent — getData() / getDataString() / an extra with a
+ *            "DEEP_LINK" / "LINK" / "URL" key. Uri.parse is a taint STEP
+ *            on the way, never a source of its own (uriParseStep).
  *
  *   Sinks: outbound URL loads — Context.startActivity (when the
  *          inner intent's data is taint-reachable),
@@ -48,7 +49,33 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
+import semmle.code.java.controlflow.Guards
 import DeeplinkOpenRedirectFlow::PathGraph
+
+/** An allowlist / scheme-verifier helper call. */
+predicate allowlistCheckCall(MethodCall mc) {
+  mc.getMethod()
+      .hasName([
+        "isAllowedDeeplink", "isAllowedHost", "checkSchemeAllowlist",
+        "validateDeeplinkTarget", "isInternalScheme",
+        "verifyDeeplinkOrigin", "isTrustedDeeplink", "enforceSchemeAllowlist",
+        "isHttpsScheme", "isCustomScheme", "verifyScheme"
+      ])
+}
+
+/**
+ * An outbound load that only runs once an allowlist check has evaluated
+ * to true (`if (url == null || !Allowlist.isAllowedDeeplink(url)) return`
+ * and then the load) is guarded. Kotlin wraps the checked argument in an
+ * implicit smart-cast node, so a barrier on the argument alone can miss
+ * the later uses; the guard on the sink does not depend on that.
+ */
+predicate allowlistGuardedSink(DataFlow::Node snk) {
+  exists(Guard g |
+    allowlistCheckCall(g) and
+    g.controls(snk.asExpr().getBasicBlock(), true)
+  )
+}
 
 /**
  * Sources: attacker-controllable URLs sourced from an inbound Intent.
@@ -79,16 +106,23 @@ class DeeplinkUrlSource extends DataFlow::Node {
       mc.getArgument(0).(StringLiteral).getValue().regexpMatch("(?i).*(deep[_-]?link|^link$|^url$|target[_-]?url|redirect[_-]?url).*") and
       this.asExpr() = mc
     )
-    or
-    // Uri.parse called with a value derived from an Intent (heuristic
-    // structural match — the result of Uri.parse is treated as a source
-    // when the argument is itself attacker-controlled).
-    exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("android.net", "Uri") and
-      mc.getMethod().hasName("parse") and
-      this.asExpr() = mc
-    )
   }
+}
+
+/**
+ * Uri.parse(str) carries the taint of its argument — a STEP, not a
+ * source. Treating every Uri.parse as a source made the clean control
+ * fire (its post-allowlist `Uri.parse(urlStr)` was a fresh source) and
+ * double-counted violation 2 (getDataString AND Uri.parse both reached
+ * launchUrl).
+ */
+predicate uriParseStep(DataFlow::Node pred, DataFlow::Node succ) {
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("android.net", "Uri") and
+    mc.getMethod().hasName(["parse", "withAppendedPath"]) and
+    pred.asExpr() = mc.getArgument(0) and
+    succ.asExpr() = mc
+  )
 }
 
 /**
@@ -147,15 +181,10 @@ class OutboundLoadSink extends DataFlow::Node {
  */
 class AllowlistBarrier extends DataFlow::Node {
   AllowlistBarrier() {
-    // Allowlist helper methods — name-based.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .hasName([
-            "isAllowedDeeplink", "isAllowedHost", "checkSchemeAllowlist",
-            "validateDeeplinkTarget", "isInternalScheme",
-            "verifyDeeplinkOrigin", "isTrustedDeeplink", "enforceSchemeAllowlist"
-          ]) and
-      this.asExpr() = [mc, mc.getAnArgument()]
+    // Allowlist helper methods — name-based. The argument is a barrier
+    // with any implicit (Kotlin smart-cast / not-null) wrapper stripped.
+    exists(MethodCall mc | allowlistCheckCall(mc) |
+      this.asExpr() = [mc, mc.getAnArgument(), mc.getAnArgument().(CastingExpr).getExpr()]
     )
     or
     // String.startsWith / String.equals on a trusted-scheme prefix
@@ -171,14 +200,6 @@ class AllowlistBarrier extends DataFlow::Node {
           .regexpMatch("(?i)^(https?:|signal:|element:|matrix:|sgnl:|app:|mxc:|internal:)(/{0,2}.*)?$") and
       this.asExpr() = mc.getQualifier()
     )
-    or
-    // Uri.getScheme() comparisons routed through name-based scheme
-    // verifiers.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .hasName(["isHttpsScheme", "isCustomScheme", "verifyScheme"]) and
-      this.asExpr() = [mc, mc.getAnArgument()]
-    )
   }
 }
 
@@ -189,9 +210,15 @@ class AllowlistBarrier extends DataFlow::Node {
 module DeeplinkOpenRedirectConfig implements DataFlow::ConfigSig {
   predicate isSource(DataFlow::Node src) { src instanceof DeeplinkUrlSource }
 
-  predicate isSink(DataFlow::Node snk) { snk instanceof OutboundLoadSink }
+  predicate isSink(DataFlow::Node snk) {
+    snk instanceof OutboundLoadSink and not allowlistGuardedSink(snk)
+  }
 
   predicate isBarrier(DataFlow::Node node) { node instanceof AllowlistBarrier }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    uriParseStep(pred, succ)
+  }
 }
 
 module DeeplinkOpenRedirectFlow = TaintTracking::Global<DeeplinkOpenRedirectConfig>;
