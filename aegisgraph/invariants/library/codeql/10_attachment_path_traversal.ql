@@ -28,13 +28,20 @@
  *   Sources: attachment-name getters on inbound messages — Attachment,
  *            MediaItem, DocumentMessage, AttachmentPointer.
  *
- *   Sinks: file-write surfaces — java.io.File constructor (name arg),
- *          FileOutputStream constructor, Files.write, Path.resolve.
+ *   Sinks: the write itself — FileOutputStream / FileWriter constructor,
+ *          Files.write / writeString / newOutputStream / newBufferedWriter
+ *          / createFile (the Path written), Files.copy / move (the target).
+ *          Building a File / Path from the name is a taint STEP, not a
+ *          sink (ADR 0022): one finding per planted flow, and the
+ *          canonicalisation barrier that callers apply to that object
+ *          covers the write that follows.
  *
- *   Barriers: File.getCanonicalPath() followed by a prefix check,
- *             Path.normalize() + startsWith, or any helper method named
- *             isPathSafe / stripPathTraversal / sanitizeAttachmentName /
- *             ensureInsideRoot.
+ *   Barriers: canonicalise-then-check — File.getCanonicalPath/File or
+ *             Path.normalize/toAbsolutePath/toRealPath whose result flows
+ *             into a String/Path startsWith or equals; or any helper
+ *             method named isPathSafe / stripPathTraversal /
+ *             sanitizeAttachmentName / ensureInsideRoot (…); or
+ *             Pattern.matches against a safe-filename regex.
  *
  * TODO[ground-truth-pass]: Signal-android Attachment.getFileName and
  * Element-X MediaItem.getOriginalName placeholder method names are
@@ -82,89 +89,118 @@ class AttachmentNameSource extends DataFlow::Node {
 }
 
 /**
- * Sinks: file-write surfaces that consume the attacker-controlled name.
+ * Sinks: the file-write surfaces themselves.
+ *
+ * Constructing a java.io.File / java.nio.file.Path from the attacker-
+ * controlled name is NOT a sink — nothing has touched the file system
+ * yet, and the canonicalisation barrier is normally applied to exactly
+ * that object before the write. Those constructions are modelled as
+ * taint steps below, so the finding lands on the write (one report per
+ * planted flow) instead of once on the File and again on the stream.
  */
 class FileWriteSink extends DataFlow::Node {
   FileWriteSink() {
-    // new java.io.File(parent, name) — the name argument (2-arg ctor).
+    // new java.io.FileOutputStream(file_or_path) / new FileWriter(...).
     exists(ConstructorCall cc |
-      cc.getConstructedType().hasQualifiedName("java.io", "File") and
-      this.asExpr() = cc.getAnArgument()
+      cc.getConstructedType().hasQualifiedName("java.io", ["FileOutputStream", "FileWriter"]) and
+      this.asExpr() = cc.getArgument(0)
     )
     or
-    // new java.io.FileOutputStream(file_or_path).
-    exists(ConstructorCall cc |
-      cc.getConstructedType().hasQualifiedName("java.io", "FileOutputStream") and
-      this.asExpr() = cc.getAnArgument()
-    )
-    or
-    // java.nio.file.Files.write / Files.writeString — first arg is the
-    // Path target.
+    // java.nio.file.Files write surfaces — the Path being written.
     exists(MethodCall mc |
       mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Files") and
       mc.getMethod()
-          .hasName([
-            "write", "writeString", "newOutputStream", "createFile",
-            "copy", "move"
-          ]) and
+          .hasName(["write", "writeString", "newOutputStream", "newBufferedWriter", "createFile"]) and
       this.asExpr() = mc.getArgument(0)
     )
     or
-    // java.nio.file.Paths.get(name) — the name argument.
+    // Files.copy / Files.move — the *target* path (arg 1) is where a
+    // traversal name escapes the attachment directory.
     exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Paths") and
-      mc.getMethod().hasName("get") and
-      this.asExpr() = mc.getAnArgument()
-    )
-    or
-    // java.nio.file.Path.resolve(name) — the resolved name is taint.
-    exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Path") and
-      mc.getMethod().hasName(["resolve", "resolveSibling"]) and
-      this.asExpr() = mc.getArgument(0)
-    )
-    or
-    // okio.Path.resolve — same shape as java.nio.file.Path.
-    exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("okio", "Path") and
-      mc.getMethod().hasName("resolve") and
-      this.asExpr() = mc.getArgument(0)
+      mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Files") and
+      mc.getMethod().hasName(["copy", "move"]) and
+      this.asExpr() = mc.getArgument(1)
     )
   }
 }
 
 /**
- * Barriers: path-canonicalization and containment checks.
+ * Path-construction steps: the name taints the File / Path built from it.
+ */
+predicate pathConstructionStep(DataFlow::Node pred, DataFlow::Node succ) {
+  // new java.io.File(parent, name) / new File(name).
+  exists(ConstructorCall cc |
+    cc.getConstructedType().hasQualifiedName("java.io", "File") and
+    pred.asExpr() = cc.getAnArgument() and
+    succ.asExpr() = cc
+  )
+  or
+  // Paths.get(name...) and Path.of(name...).
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", ["Paths", "Path"]) and
+    mc.getMethod().hasName(["get", "of"]) and
+    pred.asExpr() = mc.getAnArgument() and
+    succ.asExpr() = mc
+  )
+  or
+  // Path.resolve(name) / resolveSibling — java.nio and okio alike.
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName(["java.nio.file", "okio"], "Path") and
+    mc.getMethod().hasName(["resolve", "resolveSibling"]) and
+    pred.asExpr() = [mc.getQualifier(), mc.getArgument(0)] and
+    succ.asExpr() = mc
+  )
+  or
+  // File.toPath() / Path.toFile() carry the taint across the two APIs.
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName(["java.io", "java.nio.file"], ["File", "Path"]) and
+    mc.getMethod().hasName(["toPath", "toFile"]) and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
+}
+
+/**
+ * A canonicalising call: File.getCanonicalPath/getCanonicalFile or
+ * Path.normalize/toAbsolutePath/toRealPath.
+ */
+private predicate canonicalisingCall(MethodCall mc) {
+  mc.getMethod().getDeclaringType().hasQualifiedName("java.io", "File") and
+  mc.getMethod().hasName(["getCanonicalPath", "getCanonicalFile"])
+  or
+  mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Path") and
+  mc.getMethod().hasName(["normalize", "toAbsolutePath", "toRealPath"])
+}
+
+/**
+ * A containment check: String/Path.startsWith or equals on the
+ * canonical form, i.e. the comparison against the attachment-root prefix.
+ */
+private predicate containmentCheck(MethodCall chk) {
+  chk.getMethod().hasName(["startsWith", "equals"]) and
+  chk.getMethod()
+      .getDeclaringType()
+      .hasQualifiedName(["java.lang", "java.nio.file"], ["String", "Path"])
+}
+
+/**
+ * Barriers: canonicalise-THEN-check, or an explicit sanitiser helper.
+ *
+ * Canonicalising alone is not a barrier — `getCanonicalPath()` whose
+ * result is never compared against the attachment root removes nothing.
+ * Likewise a bare `startsWith` on an un-canonicalised name is not a
+ * barrier (`"../x".startsWith("..")` tells you nothing about the root).
+ * The value is safe only when the canonical form flows into a
+ * containment check; the barrier is placed on the canonicalised object
+ * so every later use of it (the actual write) is covered.
  */
 class PathCanonicalizationBarrier extends DataFlow::Node {
   PathCanonicalizationBarrier() {
-    // java.io.File.getCanonicalPath / getAbsolutePath — once a path is
-    // canonicalized AND the calling code performs a startsWith check
-    // against the attachment-root prefix, the value is safe. We model
-    // the canonical helper itself as the barrier (the prefix-check
-    // intent is assumed when callers use these methods on the same
-    // value flow).
-    exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("java.io", "File") and
-      mc.getMethod().hasName(["getCanonicalPath", "getCanonicalFile"]) and
-      this.asExpr() = [mc, mc.getQualifier()]
-    )
-    or
-    // java.nio.file.Path.normalize / toAbsolutePath.
-    exists(MethodCall mc |
-      mc.getMethod().getDeclaringType().hasQualifiedName("java.nio.file", "Path") and
-      mc.getMethod().hasName(["normalize", "toAbsolutePath", "toRealPath"]) and
-      this.asExpr() = [mc, mc.getQualifier()]
-    )
-    or
-    // String.startsWith / Path.startsWith comparison against an
-    // attachment-root prefix.
-    exists(MethodCall mc |
-      mc.getMethod().hasName("startsWith") and
-      mc.getMethod()
-          .getDeclaringType()
-          .hasQualifiedName(["java.lang", "java.nio.file"], ["String", "Path"]) and
-      this.asExpr() = mc.getQualifier()
+    exists(MethodCall canon, MethodCall chk |
+      canonicalisingCall(canon) and
+      containmentCheck(chk) and
+      DataFlow::localExprFlow(canon, [chk.getQualifier(), chk.getAnArgument()]) and
+      this.asExpr() = [canon, canon.getQualifier()]
     )
     or
     // Sanitizer helper methods.
@@ -199,6 +235,10 @@ module AttachmentPathTraversalConfig implements DataFlow::ConfigSig {
 
   predicate isBarrier(DataFlow::Node node) {
     node instanceof PathCanonicalizationBarrier
+  }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    pathConstructionStep(pred, succ)
   }
 }
 

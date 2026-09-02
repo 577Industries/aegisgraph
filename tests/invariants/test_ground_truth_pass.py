@@ -372,8 +372,9 @@ def _run_semgrep_rule(rule_path: Path, fixture_dir: Path) -> tuple[int, list[dic
 #   model-calibration — Java fixture extracted fine, but the query's
 #     source/sink/barrier model does not bind the planted violations.
 #   precision-calibration — query fires more results than planted
-#     violations (INV-10: both statements of each planted flow report,
-#     lines 24/25 and 33/34, plus one extra at line 40).
+#     violations (INV-10 did until ADR 0022 made the write the sink:
+#     both statements of each planted flow reported, plus the safe
+#     control's `new File`).
 # ────────────────────────────────────────────────────────────────────
 
 _KOTLIN_BUILDLESS = (
@@ -387,13 +388,11 @@ _TRACED_KOTLIN_UNBOUND = (
     "but this query reports 0 — sink/model calibration, not extraction"
 )
 
-_MODEL_CALIBRATION: dict[str, tuple[int, str]] = {
-    "INV-04": (0, "model-calibration: DeviceLinkNoKex.java extracted but no flow binds"),
-    "INV-14": (0, "model-calibration: BackupBlobUnauth.java extracted but no flow binds"),
-    "INV-10": (5, "precision-calibration: 2 planted flows report 2 statements each + 1 extra"),
-    "INV-12": (1, "model-calibration: only VIOLATION 1 of 3 binds (line 23)"),
-}
-
+# Calibration pass 2026-09-02 (ADR 0022 INV-10, 0023 INV-14, 0024 INV-12;
+# INV-04 and INV-05 were query-model fixes with no fixture change): the
+# Java invariants INV-04 / -05 / -10 / -14 now measure their manifest
+# counts under buildless and are absent from both tables. INV-12 binds
+# V1/V2 everywhere; V3 needs android.jar (see below).
 GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
     # inv_id: (observed_count, reason)
     "buildless": {
@@ -402,22 +401,20 @@ GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
         "INV-11": (0, _KOTLIN_BUILDLESS),
         "INV-13": (0, _KOTLIN_BUILDLESS),
         "INV-15": (0, _KOTLIN_BUILDLESS),
-        # Buildless extraction cannot resolve SharedPreferences.edit() (member-less
-        # stub type) nor summarise Base64.encodeToString — re-measured under traced.
-        "INV-05": (0, "model-calibration: KeyStorageNoKeystore.java extracted but no flow binds"),
-        **_MODEL_CALIBRATION,
+        # The buildless extractor emits no call node at all for
+        # `codec.getInputBuffer(index)` (V3, line 39 — only the `codec` and
+        # `index` reads survive), so the MediaCodec input-buffer sink can
+        # only be measured with android.jar on the classpath (ADR 0024).
+        "INV-12": (2, "extraction: buildless drops the codec.getInputBuffer(index) call (V3); V1/V2 bind"),
     },
     # Traced: Kotlin fixtures extract and android.jar resolves the Android
     # types. First measurement = run 33587018753 (2026-09-02): INV-13 matched
-    # its manifest (Kotlin extraction proven) and is deliberately absent here;
-    # the rest are the observed counts, not targets — the strict contract
-    # below fails loudly the moment a query starts matching.
+    # its manifest (Kotlin extraction proven). The Java invariants are
+    # expected to match here too after the calibration pass — none is
+    # listed, so the strict contract fails loudly if one does not. The
+    # Kotlin entries are observed counts, not targets.
     "traced": {
-        **_MODEL_CALIBRATION,
-        "INV-04": (2, "model-calibration: traced binds 2 flows against 1 planted (buildless: 0)"),
         "INV-03": (0, _TRACED_KOTLIN_UNBOUND),
-        "INV-05": (0, "model-calibration: 0 under traced as well — android.jar resolves "
-                      "SharedPreferences yet no flow binds; query/model work, not extraction"),
         "INV-06": (0, _TRACED_KOTLIN_UNBOUND),
         "INV-11": (4, "precision-calibration: traced reports 4 against 3 planted (1 extra)"),
         "INV-15": (0, _TRACED_KOTLIN_UNBOUND),

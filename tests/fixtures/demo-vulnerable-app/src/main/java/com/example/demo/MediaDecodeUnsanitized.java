@@ -5,7 +5,8 @@
 //   * decodeImage: BitmapFactory.decodeStream() called without
 //     dimension-bound check.
 //   * decodeWithGlide: Glide.with().load(bytes) without dimension limits.
-//   * decodeMediaCodec: MediaCodec.configure() called without sanitization gate.
+//   * decodeMediaCodec: inbound frame bytes queued into a MediaCodec input
+//     buffer without a sanitization gate.
 //
 // Clean control: decodeSafe checks BitmapFactory.Options.outWidth/Height bound.
 package com.example.demo;
@@ -13,8 +14,8 @@ package com.example.demo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaCodec;
-import android.media.MediaFormat;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 public class MediaDecodeUnsanitized {
 
@@ -30,10 +31,14 @@ public class MediaDecodeUnsanitized {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    public void decodeMediaCodec(MediaFormat format) throws Exception {
-        // VIOLATION 3: MediaCodec.configure without sanitization gate.
+    public void decodeMediaCodec(byte[] frame) throws Exception {
+        // VIOLATION 3: attacker frame bytes reach the decoder input buffer
+        // without a sanitization gate.
         MediaCodec codec = MediaCodec.createDecoderByType("video/avc");
-        codec.configure(format, null, null, 0);
+        int index = codec.dequeueInputBuffer(10_000);
+        ByteBuffer input = codec.getInputBuffer(index);
+        input.put(frame);
+        codec.queueInputBuffer(index, 0, frame.length, 0, 0);
     }
 
     // Clean control: dimension-bound check barrier present.

@@ -198,6 +198,47 @@ class KeystoreOrEncryptedStorageBarrier extends DataFlow::Node {
  * Configuration: taint flow from private-key sources to unprotected-
  * storage sinks, with Keystore-rooted barriers as sanitizers.
  */
+/**
+ * Key material stays key material through serialisation and re-encoding:
+ * Key.getEncoded(), android.util.Base64 / java.util.Base64 encode and
+ * decode, and hex helpers. Generic taint tracking has no summaries for
+ * these (android.util.Base64 in particular), so the steps are explicit.
+ */
+predicate keyMaterialEncodingStep(DataFlow::Node pred, DataFlow::Node succ) {
+  // PrivateKey / SecretKey / Key.getEncoded() — the raw bytes of the key.
+  exists(MethodCall mc |
+    mc.getMethod().hasName("getEncoded") and
+    mc.getMethod().getDeclaringType().getASourceSupertype*().hasQualifiedName("java.security", "Key") and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
+  or
+  // android.util.Base64.encodeToString / encode / decode(bytes, flags).
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("android.util", "Base64") and
+    mc.getMethod().hasName(["encodeToString", "encode", "decode"]) and
+    pred.asExpr() = mc.getArgument(0) and
+    succ.asExpr() = mc
+  )
+  or
+  // java.util.Base64.Encoder / Decoder.
+  exists(MethodCall mc |
+    mc.getMethod()
+        .getDeclaringType()
+        .hasQualifiedName("java.util", ["Base64$Encoder", "Base64$Decoder"]) and
+    mc.getMethod().hasName(["encodeToString", "encode", "decode"]) and
+    pred.asExpr() = mc.getArgument(0) and
+    succ.asExpr() = mc
+  )
+  or
+  // Hex / string re-encodings by name (Hex.encodeHex, toHexString, bytesToHex…).
+  exists(MethodCall mc |
+    mc.getMethod().getName().regexpMatch("(?i)(encodeHex|toHex|toHexString|bytesToHex|hexEncode|encodeBase64|base64Encode)") and
+    pred.asExpr() = mc.getAnArgument() and
+    succ.asExpr() = mc
+  )
+}
+
 module KeyStorageNoKeystoreConfig implements DataFlow::ConfigSig {
   predicate isSource(DataFlow::Node src) { src instanceof PrivateKeyMaterialSource }
 
@@ -205,6 +246,10 @@ module KeyStorageNoKeystoreConfig implements DataFlow::ConfigSig {
 
   predicate isBarrier(DataFlow::Node node) {
     node instanceof KeystoreOrEncryptedStorageBarrier
+  }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    keyMaterialEncodingStep(pred, succ)
   }
 }
 

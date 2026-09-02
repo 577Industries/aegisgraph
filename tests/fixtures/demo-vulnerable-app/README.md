@@ -32,11 +32,13 @@ barrier-present case alongside the violating case.
 | `MetadataLeakOutsideEnvelope.kt` | INV-15 | 2 |
 
 **Total**: 28 violations across 15 invariants — the *planted* counts. What the
-current toolchain actually measures is recorded in
-`tests/invariants/test_ground_truth_pass.py::GROUND_TRUTH_XFAIL`: INV-01 and
-INV-02 reproduce exactly under the buildless CodeQL database; the ten entries
-there are honest deviations (Kotlin extraction, model or precision calibration),
-each with its observed count and reason.
+current toolchain actually measures is recorded per extraction mode in
+`tests/invariants/test_ground_truth_pass.py::GROUND_TRUTH_XFAIL_BY_MODE`
+(buildless Java-only database vs the traced java-kotlin build under
+`../demo-vulnerable-app-traced/`). Invariants absent from a mode's table
+reproduce exactly there; every entry present is an honest deviation (Kotlin
+extraction, model or precision calibration) with its observed count and
+reason. Fixture-line changes ship with an ADR in `docs/decision-log/`.
 
 ## Test harness
 
