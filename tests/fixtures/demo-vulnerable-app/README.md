@@ -4,9 +4,11 @@
 library v3 (M7-GT-v3, Wave 8A).** Not based on any real product code.
 
 Each source file under `src/main/java/com/example/demo/` is a small (<60
-LoC) synthetic snippet that intentionally violates exactly one of the 15
-InvariantCheck invariants documented in
-`aegisgraph/invariants/manifest.json`. The shared "good" barrier helpers
+LoC) synthetic snippet planted for exactly one of the 15 InvariantCheck
+invariants documented in `aegisgraph/invariants/manifest.json`. One
+documented overlap exists: INV-04's QR-scan sources (defense-in-depth for
+INV-13) also match `QrPayloadUnverified.kt:20`, so INV-04's count is 2
+(ADR 0026). The shared "good" barrier helpers
 under `fixtures/` (`Allowlist.java`, `KexCompletion.java`,
 `PolicyChecker.java`) are referenced by some files to demonstrate the
 barrier-present case alongside the violating case.
@@ -18,7 +20,7 @@ barrier-present case alongside the violating case.
 | `UrlFetchWithoutPolicy.java` | INV-01 | 3 |
 | `NotificationLeak.java` | INV-02 | 2 |
 | `GroupStateUnauth.kt` | INV-03 | 1 |
-| `DeviceLinkNoKex.java` | INV-04 | 1 |
+| `DeviceLinkNoKex.java` (+ overlap in `QrPayloadUnverified.kt`) | INV-04 | 2 |
 | `KeyStorageNoKeystore.java` | INV-05 | 1 |
 | `PqDowngrade.kt` | INV-06 | 1 |
 | `AndroidManifest.xml` | INV-07 | 2 |
@@ -31,7 +33,8 @@ barrier-present case alongside the violating case.
 | `BackupBlobUnauth.java` | INV-14 | 2 |
 | `MetadataLeakOutsideEnvelope.kt` | INV-15 | 2 |
 
-**Total**: 28 violations across 15 invariants — the *planted* counts. What the
+**Total**: 28 planted violations across 15 invariants (29 expected results,
+counting the INV-04/INV-13 shared location once per query). What the
 current toolchain actually measures is recorded per extraction mode in
 `tests/invariants/test_ground_truth_pass.py::GROUND_TRUTH_XFAIL_BY_MODE`
 (buildless Java-only database vs the traced java-kotlin build under

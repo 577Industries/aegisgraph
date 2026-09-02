@@ -38,8 +38,9 @@
  *            / TypingIndicator object — recipient_id, group_id,
  *            timestamp, thread_id, read_receipt_id.
  *
- *   Sinks: network-egress emission points — okhttp3.Request.Builder,
- *          OkHttpClient.newCall, HttpURLConnection.connect,
+ *   Sinks: network-egress emission points — OkHttpClient.newCall (the
+ *          Request.Builder chain and RequestBody.create are taint steps
+ *          into it, ADR 0025), HttpURLConnection.connect,
  *          io.ktor.client.HttpClient.request, WebSocket.send,
  *          RetrofitService methods annotated @POST/@PUT.
  *
@@ -113,17 +114,10 @@ class MessageMetadataSource extends DataFlow::Node {
  */
 class NetworkEgressSink extends DataFlow::Node {
   NetworkEgressSink() {
-    // OkHttp Request.Builder.body / .post / .put — the body argument.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .getDeclaringType()
-          .hasQualifiedName("okhttp3", "Request$Builder") and
-      mc.getMethod()
-          .hasName(["post", "put", "patch", "delete", "method"]) and
-      this.asExpr() = mc.getAnArgument()
-    )
-    or
-    // OkHttpClient.newCall — the Request argument.
+    // OkHttpClient.newCall — the Request that leaves the process. The
+    // Request.Builder chain (url / post / put / build) and
+    // RequestBody.create are taint STEPS into this one sink, so a leak is
+    // reported once per request, not once per builder call.
     exists(MethodCall mc |
       mc.getMethod()
           .getDeclaringType()
@@ -217,12 +211,49 @@ class EnvelopeWrapBarrier extends DataFlow::Node {
  * Configuration: taint flow from message-metadata sources to network-
  * egress sinks, with envelope-wrap helpers as barriers.
  */
+/**
+ * okhttp3 request assembly carries taint from metadata to the outgoing
+ * Request: RequestBody.create(mediaType, content) → body; Request.Builder
+ * .url(str) / .post(body) / .put / .patch / .method / .header /
+ * .addHeader → the builder (both the qualifier and the argument flow
+ * into the result); Builder.build() → the Request. okhttp is a compiled
+ * dependency, so CodeQL sees no bodies for these and needs the summary.
+ */
+predicate okhttpRequestAssemblyStep(DataFlow::Node pred, DataFlow::Node succ) {
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("okhttp3", "RequestBody") and
+    mc.getMethod().hasName("create") and
+    pred.asExpr() = mc.getAnArgument() and
+    succ.asExpr() = mc
+  )
+  or
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("okhttp3", "Request$Builder") and
+    mc.getMethod()
+        .hasName(["url", "post", "put", "patch", "delete", "method", "header", "addHeader", "tag", "build"]) and
+    pred.asExpr() = [mc.getQualifier(), mc.getAnArgument()] and
+    succ.asExpr() = mc
+  )
+  or
+  // new Request.Builder() seeded from an existing Request (newBuilder()).
+  exists(MethodCall mc |
+    mc.getMethod().getDeclaringType().hasQualifiedName("okhttp3", "Request") and
+    mc.getMethod().hasName("newBuilder") and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
+}
+
 module MetadataLeakConfig implements DataFlow::ConfigSig {
   predicate isSource(DataFlow::Node src) { src instanceof MessageMetadataSource }
 
   predicate isSink(DataFlow::Node snk) { snk instanceof NetworkEgressSink }
 
   predicate isBarrier(DataFlow::Node node) { node instanceof EnvelopeWrapBarrier }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    okhttpRequestAssemblyStep(pred, succ)
+  }
 }
 
 module MetadataLeakFlow = TaintTracking::Global<MetadataLeakConfig>;

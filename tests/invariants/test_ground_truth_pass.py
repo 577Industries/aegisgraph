@@ -228,7 +228,13 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
     if GT_MODE == "traced":
         # Compile the fixture through the overlay project under the tracer.
         # In-process Kotlin compilation keeps kotlinc inside the traced
-        # process tree (the Kotlin daemon would escape it).
+        # process tree (the Kotlin daemon would escape it). The first
+        # network-dependent step in this harness: Gradle fetches the Kotlin
+        # plugin from Maven Central, which occasionally answers 403 from
+        # hosted runners (PR #9, run 33591582731) — the overlay's
+        # gradle-with-retry.sh runs the build up to three times. It is a
+        # script because codeql tokenises `--command` on whitespace and does
+        # its own `$` expansion, so a shell one-liner cannot be passed here.
         cmd = [
             "codeql", "database", "create", str(dest),
             "--language=java-kotlin",
@@ -236,9 +242,7 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
             "--overwrite",
             "--build-mode=manual",
             "--working-dir", str(TRACED_OVERLAY),
-            "--command",
-            "gradle --no-daemon --console=plain "
-            "-Pkotlin.compiler.execution.strategy=in-process compileKotlin compileJava",
+            "--command", "bash gradle-with-retry.sh",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, env=_codeql_env())
         if result.returncode != 0:
@@ -388,11 +392,11 @@ _TRACED_KOTLIN_UNBOUND = (
     "but this query reports 0 — sink/model calibration, not extraction"
 )
 
-# Calibration pass 2026-09-02 (ADR 0022 INV-10, 0023 INV-14, 0024 INV-12;
-# INV-04 and INV-05 were query-model fixes with no fixture change): the
-# Java invariants INV-04 / -05 / -10 / -14 now measure their manifest
-# counts under buildless and are absent from both tables. INV-12 binds
-# V1/V2 everywhere; V3 needs android.jar (see below).
+# Calibration pass 2026-09-02 (ADRs 0022–0026). Every one of the twelve
+# CodeQL invariants measures its manifest count under the traced build,
+# so the traced table is EMPTY — the strict contract fails the traced job
+# loudly if any query drifts. Buildless (Java-only extraction) keeps the
+# entries that are extraction limits, not model gaps.
 GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
     # inv_id: (observed_count, reason)
     "buildless": {
@@ -401,24 +405,20 @@ GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
         "INV-11": (0, _KOTLIN_BUILDLESS),
         "INV-13": (0, _KOTLIN_BUILDLESS),
         "INV-15": (0, _KOTLIN_BUILDLESS),
+        # The second INV-04 finding is the by-design overlap with INV-13 in
+        # QrPayloadUnverified.kt:20 (ADR 0026) — a Kotlin file.
+        "INV-04": (1, "kotlin-extraction: the by-design INV-13 overlap (QrPayloadUnverified.kt:20) is Kotlin; DeviceLinkNoKex.java binds"),
         # The buildless extractor emits no call node at all for
         # `codec.getInputBuffer(index)` (V3, line 39 — only the `codec` and
         # `index` reads survive), so the MediaCodec input-buffer sink can
         # only be measured with android.jar on the classpath (ADR 0024).
         "INV-12": (2, "extraction: buildless drops the codec.getInputBuffer(index) call (V3); V1/V2 bind"),
     },
-    # Traced: Kotlin fixtures extract and android.jar resolves the Android
-    # types. First measurement = run 33587018753 (2026-09-02): INV-13 matched
-    # its manifest (Kotlin extraction proven). The Java invariants are
-    # expected to match here too after the calibration pass — none is
-    # listed, so the strict contract fails loudly if one does not. The
-    # Kotlin entries are observed counts, not targets.
-    "traced": {
-        "INV-03": (0, _TRACED_KOTLIN_UNBOUND),
-        "INV-06": (0, _TRACED_KOTLIN_UNBOUND),
-        "INV-11": (4, "precision-calibration: traced reports 4 against 3 planted (1 extra)"),
-        "INV-15": (0, _TRACED_KOTLIN_UNBOUND),
-    },
+    # Traced: Gradle + Kotlin 2.4.0 + android.jar. Measured 2026-09-02 after
+    # the calibration pass: 12 of 12 match (INV-01 3, INV-02 2, INV-03 1,
+    # INV-04 2, INV-05 1, INV-06 1, INV-10 2, INV-11 3, INV-12 3, INV-13 2,
+    # INV-14 2, INV-15 2). Nothing is listed on purpose.
+    "traced": {},
 }
 
 GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = GROUND_TRUTH_XFAIL_BY_MODE[GT_MODE]

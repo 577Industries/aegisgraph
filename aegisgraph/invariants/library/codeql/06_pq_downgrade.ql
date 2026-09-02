@@ -52,7 +52,93 @@
 import java
 import semmle.code.java.dataflow.TaintTracking
 import semmle.code.java.dataflow.FlowSources
+import semmle.code.java.controlflow.Guards
 import PqDowngradeFlow::PathGraph
+
+/** A negotiated-handshake result type (`*PqResult`, `*HandshakeResult`, …). */
+private predicate handshakeResultType(Type t) {
+  t.getName()
+      .regexpMatch(".*PqResult.*|.*HandshakeResult.*|.*KemResult.*|.*PqCapabilities.*|.*KemNegotiation.*|.*NegotiationResult.*")
+}
+
+/**
+ * Reading a flag or field off the handshake result keeps the taint:
+ * `pqResult.ok`, `result.getAgreedKem()` (a Kotlin property read is a
+ * getter call).
+ */
+predicate handshakeResultMemberStep(DataFlow::Node pred, DataFlow::Node succ) {
+  exists(FieldAccess fa |
+    handshakeResultType(fa.getQualifier().getType()) and
+    pred.asExpr() = fa.getQualifier() and
+    succ.asExpr() = fa
+  )
+  or
+  exists(MethodCall mc |
+    handshakeResultType(mc.getQualifier().getType()) and
+    mc.getMethod().getNumberOfParameters() = 0 and
+    pred.asExpr() = mc.getQualifier() and
+    succ.asExpr() = mc
+  )
+}
+
+/** A call into a classical-only handshake helper. */
+predicate classicalHandshakeCall(MethodCall mc) {
+  mc.getMethod()
+      .getDeclaringType()
+      .getName()
+      .regexpMatch(".*X25519Only.*|.*Curve25519Handshake.*|.*ClassicalHandshake.*|.*LegacyHandshake.*") and
+  mc.getMethod().hasName(["initiate", "complete", "perform", "negotiate"])
+}
+
+/** A user-visible downgrade notification / consent record. */
+predicate downgradeNotificationCall(MethodCall mc) {
+  mc.getMethod()
+      .hasName([
+        "notifyPqDowngrade", "showPqDowngradeAlert",
+        "logPqDowngradeEvent", "alertSecurityDowngrade",
+        "emitDowngradeNotice", "reportDowngrade",
+        "userNotifiedOfDowngrade", "warnPqDowngrade"
+      ])
+  or
+  mc.getMethod().getDeclaringType().hasQualifiedName("android.content", "SharedPreferences$Editor") and
+  mc.getMethod().hasName("putBoolean") and
+  mc.getArgument(0)
+      .(StringLiteral)
+      .getValue()
+      .regexpMatch("(?i).*pq.*(downgrade|fallback).*consent.*|.*classical.*opt[_-]?in.*")
+  or
+  mc.getMethod().hasName(["post", "emit", "publish", "send"]) and
+  mc.getAnArgument()
+      .getType()
+      .(RefType)
+      .getName()
+      .regexpMatch(".*PqDowngradeNotice.*|.*SecurityDowngradeEvent.*|.*DowngradeAlert.*")
+}
+
+/**
+ * The downgrade DECISION: a condition derived from the handshake result
+ * that controls a classical-only handshake call, with no downgrade
+ * notification on the same branch. This is control dependency, not data
+ * flow — the classical call's arguments (the peer) are never tainted, the
+ * *reason* the call runs is. The sink is therefore the condition
+ * expression (its tainted sub-expression), and a branch that also
+ * notifies the user is not a sink at all.
+ */
+predicate silentDowngradeDecision(Expr condPart) {
+  exists(Guard g, MethodCall classical, boolean branch |
+    classicalHandshakeCall(classical) and
+    g.controls(classical.getBasicBlock(), branch) and
+    condPart = g.(Expr).getAChildExpr*() and
+    // One node per decision: the member read (`pqResult.ok`), not also
+    // the qualifier it is read from (`pqResult`).
+    not exists(MethodCall reader | reader.getQualifier() = condPart) and
+    not exists(FieldAccess reader | reader.getQualifier() = condPart) and
+    not exists(MethodCall notify |
+      downgradeNotificationCall(notify) and
+      g.controls(notify.getBasicBlock(), branch)
+    )
+  )
+}
 
 /**
  * Sources: hybrid PQ-handshake initiation outputs.
@@ -131,16 +217,13 @@ class ClassicalDowngradeSink extends DataFlow::Node {
     )
     or
     // Call to a classical-only handshake helper from a hybrid-context
-    // source.
-    exists(MethodCall mc |
-      mc.getMethod()
-          .getDeclaringType()
-          .getName()
-          .regexpMatch(".*X25519Only.*|.*Curve25519Handshake.*|.*ClassicalHandshake.*|.*LegacyHandshake.*") and
-      mc.getMethod()
-          .hasName(["initiate", "complete", "perform", "negotiate"]) and
-      this.asExpr() = mc.getAnArgument()
-    )
+    // source — the handshake result handed straight to the fallback.
+    exists(MethodCall mc | classicalHandshakeCall(mc) | this.asExpr() = mc.getAnArgument())
+    or
+    // The silent downgrade decision itself: `if (!pqResult.ok) return
+    // ClassicalHandshake.negotiate(peer)` with no notification on that
+    // branch (see silentDowngradeDecision).
+    silentDowngradeDecision(this.asExpr())
   }
 }
 
@@ -201,6 +284,10 @@ module PqDowngradeConfig implements DataFlow::ConfigSig {
 
   predicate isBarrier(DataFlow::Node node) {
     node instanceof DowngradeNotificationBarrier
+  }
+
+  predicate isAdditionalFlowStep(DataFlow::Node pred, DataFlow::Node succ) {
+    handshakeResultMemberStep(pred, succ)
   }
 }
 

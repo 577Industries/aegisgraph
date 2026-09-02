@@ -136,7 +136,8 @@
       "ground_truth": [
         {
           "target": "demo-vulnerable-app",
-          "expected_violations": 1
+          "expected_violations": 2,
+          "note": "1 planted (DeviceLinkNoKex.java) + 1 by-design overlap: QrPayloadUnverified.kt:20 is also INV-13 violation 1 — INV-04 matches QR-scan sources for defense-in-depth (ADR 0026)"
         },
         {
           "target": "signal_android@1043851",
