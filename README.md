@@ -8,9 +8,9 @@
 [![Schema](https://img.shields.io/badge/schema-v2%20%28additive%29-blue)](docs/decision-log/)
 [![ADRs](https://img.shields.io/badge/ADRs-14-orange)](docs/decision-log/)
 
-![AegisGraph 6-engine architecture — the evidence graph plans, six engines hunt, findings flow back as new evidence](https://raw.githubusercontent.com/577-Industries/asema-feasibility-artifacts/v1.0.0-asema-dp2-feasibility/figures/F15-engine-architecture.png)
+![AegisGraph 6-engine architecture — the evidence graph plans, six engines hunt, findings flow back as new evidence](https://raw.githubusercontent.com/577Industries/asema-feasibility-artifacts/v1.0.0-asema-dp2-feasibility/figures/F15-engine-architecture.png)
 
-> **Looking for evaluator-facing artifacts?** The sanitized public feasibility release lives at [`577-Industries/asema-feasibility-artifacts`](https://github.com/577-Industries/asema-feasibility-artifacts) at tag `v1.0.0-asema-dp2-feasibility`. Start there if you're verifying claims in the ASEMA proposal.
+> **Looking for evaluator-facing artifacts?** The sanitized public feasibility release lives at [`577Industries/asema-feasibility-artifacts`](https://github.com/577Industries/asema-feasibility-artifacts) at tag `v1.0.0-asema-dp2-feasibility`. Start there if you're verifying claims in the ASEMA proposal.
 
 ---
 
@@ -104,7 +104,7 @@ The 14 ADRs in [`docs/decision-log/`](docs/decision-log/) document every archite
 - **v1.0.0-tier3-research** (current, May 2026) — full 6-engine ensemble, 1030 passing tests, Schema v2, 82-claim CETM
 - **v0.3.0-tier3-research** (May 2026) — v0.3 baseline (preserved as historical anchor)
 
-The matching public feasibility release lives at [`577-Industries/asema-feasibility-artifacts`](https://github.com/577-Industries/asema-feasibility-artifacts):
+The matching public feasibility release lives at [`577Industries/asema-feasibility-artifacts`](https://github.com/577Industries/asema-feasibility-artifacts):
 - **v1.0.0-asema-dp2-feasibility** (current) — F15-F22 figure pack, 82-claim CETM, baseline-tool-delta, polydiff v1.0 schema, full traceability matrix
 - **v0.3.0-asema-dp2-feasibility** — historical anchor; preserved verbatim
 
