@@ -22,6 +22,7 @@ jobs:
   reproduce:
     runs-on: self-hosted
     if: ${{ false }}
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
       - name: Strict tooling gate

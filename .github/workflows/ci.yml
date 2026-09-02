@@ -19,9 +19,15 @@ on:
       - "stream/**"
       - "team/**"
 
+# Cancel superseded pull-request runs only; push runs always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   safe-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,6 +56,7 @@ jobs:
   tooling-strict-self-hosted:
     runs-on: self-hosted
     if: ${{ false }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Strict tooling gate

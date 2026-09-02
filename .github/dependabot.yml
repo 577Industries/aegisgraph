@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      github-actions:
+        patterns: ["*"]
+    ignore:
+      # The ground-truth harness installs a sha256-pinned CodeQL bundle and
+      # must never regain codeql-action/init (see CLAUDE.md); a version bump
+      # here would look harmless and reintroduce exactly that.
+      - dependency-name: "github/codeql-action"
