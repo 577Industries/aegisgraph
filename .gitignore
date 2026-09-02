@@ -78,3 +78,8 @@ extraction/output/*/mobsf-results.json
 
 # Editable-install metadata (pip install -e . / uv --with-editable)
 *.egg-info/
+
+# Traced-compile overlay outputs (tests/fixtures/demo-vulnerable-app-traced/).
+tests/fixtures/demo-vulnerable-app-traced/build/
+tests/fixtures/demo-vulnerable-app-traced/.gradle/
+tests/fixtures/demo-vulnerable-app-traced/.kotlin/
