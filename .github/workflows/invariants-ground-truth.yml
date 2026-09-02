@@ -50,8 +50,10 @@ permissions:
 
 jobs:
   ground-truth-pass:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Pinned image, not -latest: the JDK / Kotlin / Gradle the image ships are
+    # part of this job's reproducibility claim once the traced job lands.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
 
     steps:
       - name: Checkout repository
@@ -94,22 +96,27 @@ jobs:
           pip install "semgrep==1.86.0"
           semgrep --version
 
-      # The buildless probe litters wrapper files into the fixture
-      # (gradlew, gradle/, .gradle/) — keep the tree clean so the
-      # fixture-presence assertions and later creates see pristine state.
-      - name: Clean fixture build-probe litter
-        run: |
-          rm -rf tests/fixtures/demo-vulnerable-app/.gradle \
-                 tests/fixtures/demo-vulnerable-app/gradle \
-                 tests/fixtures/demo-vulnerable-app/gradlew
-
+      # -rxX: pyproject sets addopts = "-q", so without it the ten recorded
+      # xfail reasons — the actual product of this job — never reach the log.
+      # The CodeQL database is built once per session (see the codeql_db
+      # fixture); twelve identical creates used to cost ~17 of the job's
+      # 27 minutes.
       - name: Run ground-truth pass
         run: |
-          python3 -m pytest tests/invariants/test_ground_truth_pass.py -v --tb=short
+          python3 -m pytest tests/invariants/test_ground_truth_pass.py -v -rxX --tb=short
 
-      - name: Run full invariants test suite
+      - name: Run the rest of the invariants suite
         run: |
-          python3 -m pytest tests/invariants/ -v --tb=short
+          python3 -m pytest tests/invariants/ -v -rxX --tb=short \
+            --ignore=tests/invariants/test_ground_truth_pass.py
+
+      # The buildless probe writes Gradle wrapper litter (gradlew, gradle/,
+      # .gradle/) into the fixture; it is gitignored, so a clean porcelain
+      # here means no TRACKED fixture file was touched by the run.
+      - name: Assert the fixture tree is unchanged
+        run: |
+          git status --porcelain --ignored=matching tests/fixtures/demo-vulnerable-app || true
+          test -z "$(git status --porcelain tests/fixtures/demo-vulnerable-app)"
 
       - name: Upload SARIF artifacts on failure
         if: failure()
@@ -117,6 +124,6 @@ jobs:
         with:
           name: ground-truth-sarif
           path: |
-            /tmp/codeql-*.sarif
+            /tmp/pytest-of-*/pytest-*/**/*.sarif
             /tmp/semgrep-*.json
           if-no-files-found: ignore
