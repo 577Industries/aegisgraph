@@ -49,5 +49,9 @@ kotlin {
 
 dependencies {
     compileOnly files("$androidHome/platforms/android-34/android.jar")
-    compileOnly 'com.squareup.okhttp3:okhttp:4.12.0'
+    // okhttp 3.x, not 4.x: the fixture calls MediaType.parse / RequestBody.create
+    // the Java way, and okhttp 4 marks those as DeprecationLevel.ERROR for Kotlin
+    // callers. The fixture is published ground truth and is not edited to suit
+    // a dependency; 3.14.9 is the last 3.x release and compiles it as written.
+    compileOnly 'com.squareup.okhttp3:okhttp:3.14.9'
 }
