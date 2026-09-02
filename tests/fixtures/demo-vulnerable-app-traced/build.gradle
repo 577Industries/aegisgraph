@@ -1,0 +1,57 @@
+// Traced-compile overlay for tests/fixtures/demo-vulnerable-app/.
+// Synthetic ground-truth fixture tooling. Not based on any real product code.
+//
+// The fixture itself is deliberately not a buildable project (java plugin only,
+// empty dependencies) so the buildless CodeQL pass can extract it as-is. Kotlin,
+// however, is never extracted under --build-mode=none, so the traced job compiles
+// the SAME sources from here: this project points its source sets back at the
+// fixture and supplies only what a real compile needs — android.jar from the
+// runner's SDK (compileOnly), okhttp from Maven Central (compileOnly), and two
+// AndroidX stubs (AARs are not consumable by a plain JVM build). Nothing is
+// added under demo-vulnerable-app/ itself.
+//
+// Kotlin plugin 2.4.0: the CodeQL 2.26.4 Kotlin extractor is built against
+// versions up to 2.4.0 — do not bump past the bundle's ceiling.
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.4.0'
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+def fixtureRoot = file("$projectDir/../demo-vulnerable-app")
+def androidHome = System.getenv('ANDROID_HOME') ?: System.getenv('ANDROID_SDK_ROOT')
+if (androidHome == null) {
+    throw new GradleException('ANDROID_HOME / ANDROID_SDK_ROOT must point at an SDK with platforms/android-34')
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["$fixtureRoot/src/main/java", "$fixtureRoot/fixtures", "$projectDir/stubs"]
+        kotlin.srcDirs = ["$fixtureRoot/src/main/java", "$fixtureRoot/fixtures", "$projectDir/stubs"]
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+dependencies {
+    compileOnly files("$androidHome/platforms/android-34/android.jar")
+    // okhttp 3.x, not 4.x: the fixture calls MediaType.parse / RequestBody.create
+    // the Java way, and okhttp 4 marks those as DeprecationLevel.ERROR for Kotlin
+    // callers. The fixture is published ground truth and is not edited to suit
+    // a dependency; 3.14.9 is the last 3.x release and compiles it as written.
+    compileOnly 'com.squareup.okhttp3:okhttp:3.14.9'
+}

@@ -1,0 +1,9 @@
+// Traced-compile overlay for the InvariantCheck ground-truth fixture.
+// Synthetic ground-truth fixture tooling. Not based on any real product code.
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+rootProject.name = 'demo-vulnerable-app-traced'

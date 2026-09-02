@@ -32,12 +32,14 @@ on:
     paths:
       - "aegisgraph/invariants/library/**"
       - "tests/fixtures/demo-vulnerable-app/**"
+      - "tests/fixtures/demo-vulnerable-app-traced/**"
       - "tests/invariants/test_ground_truth_pass.py"
       - ".github/workflows/invariants-ground-truth.yml"
   pull_request:
     paths:
       - "aegisgraph/invariants/library/**"
       - "tests/fixtures/demo-vulnerable-app/**"
+      - "tests/fixtures/demo-vulnerable-app-traced/**"
       - "tests/invariants/test_ground_truth_pass.py"
       - ".github/workflows/invariants-ground-truth.yml"
   workflow_dispatch:
@@ -126,4 +128,66 @@ jobs:
           path: |
             /tmp/pytest-of-*/pytest-*/**/*.sarif
             /tmp/semgrep-*.json
+          if-no-files-found: ignore
+
+  # Traced compile of the same fixture through tests/fixtures/demo-vulnerable-app-traced/
+  # (Gradle + Kotlin plugin 2.4.0 + android.jar). --build-mode=none never extracts
+  # Kotlin, so INV-03/06/11/13/15 can only be measured here. Hosted ubuntu-24.04
+  # ships Gradle, Temurin 17 (JAVA_HOME) and the android-34 platform, so no
+  # self-hosted runner is involved. Independent of the buildless job above; its
+  # xfail table is the "traced" entry in GROUND_TRUTH_XFAIL_BY_MODE.
+  ground-truth-traced:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AEGISGRAPH_GT_MODE: traced
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python package + test deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest
+
+      - name: Install CodeQL CLI 2.26.4 (pinned bundle)
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/codeql-bundle.tar.gz" \
+            "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.26.4/codeql-bundle-linux64.tar.gz"
+          echo "48e1ab8b874d57bd6fd7c90fefee75addc5a45e9bd063982df9beb45a62dd5d3  $RUNNER_TEMP/codeql-bundle.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/codeql-bundle.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/codeql" >> "$GITHUB_PATH"
+
+      # The traced build needs the runner's own JDK, Gradle and Android SDK —
+      # record exactly which versions produced this run's counts.
+      - name: Record the traced toolchain
+        run: |
+          codeql --version | head -1
+          java -version 2>&1 | head -1
+          gradle --version | grep -E 'Gradle|Kotlin|JVM'
+          ls "${ANDROID_HOME:-$ANDROID_SDK_ROOT}/platforms/android-34/android.jar"
+
+      - name: Run ground-truth pass (traced)
+        run: |
+          python3 -m pytest tests/invariants/test_ground_truth_pass.py -v -rxX --tb=short -k "codeql or fixture"
+
+      - name: Assert the fixture tree is unchanged
+        run: |
+          git status --porcelain --ignored=matching tests/fixtures/demo-vulnerable-app tests/fixtures/demo-vulnerable-app-traced || true
+          test -z "$(git status --porcelain tests/fixtures/demo-vulnerable-app tests/fixtures/demo-vulnerable-app-traced)"
+
+      - name: Upload SARIF artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ground-truth-traced-sarif
+          path: |
+            /tmp/pytest-of-*/pytest-*/**/*.sarif
           if-no-files-found: ignore

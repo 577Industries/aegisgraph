@@ -40,6 +40,14 @@ MANIFEST_PATH = repo_root() / "aegisgraph" / "invariants" / "manifest.json"
 LIBRARY_DIR = repo_root() / "aegisgraph" / "invariants" / "library"
 FIXTURE_DIR = repo_root() / "tests" / "fixtures" / "demo-vulnerable-app"
 
+# Extraction mode. "buildless" (default) parses the Java sources directly and
+# never sees the Kotlin fixtures; "traced" compiles the same sources through the
+# Gradle overlay in TRACED_OVERLAY under the CodeQL tracer, which is the only
+# way to extract Kotlin. The two modes carry separate GROUND_TRUTH_XFAIL tables.
+GT_MODE = os.environ.get("AEGISGRAPH_GT_MODE", "buildless")
+assert GT_MODE in ("buildless", "traced"), f"AEGISGRAPH_GT_MODE={GT_MODE!r}"
+TRACED_OVERLAY = repo_root() / "tests" / "fixtures" / "demo-vulnerable-app-traced"
+
 
 def _load_manifest_entries() -> list[dict[str, Any]]:
     return load_json(MANIFEST_PATH)["invariants"]
@@ -196,8 +204,11 @@ def _codeql_env() -> dict[str, str]:
 
     PATH is untouched (the workflow puts the CLI on PATH explicitly).
     A traced build (`--command=...`) needs a real JDK and the tracer's own
-    environment — do NOT reuse this scrub for one.
+    environment, so in traced mode only the CODEQL_*/SEMMLE_* residue of a
+    foreign scan session is removed and JAVA_HOME* / LD_PRELOAD stay.
     """
+    if GT_MODE == "traced":
+        return {k: v for k, v in os.environ.items() if not k.startswith(("CODEQL_", "SEMMLE_"))}
     return {
         k: v
         for k, v in os.environ.items()
@@ -214,6 +225,28 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists():
         shutil.rmtree(dest)
+    if GT_MODE == "traced":
+        # Compile the fixture through the overlay project under the tracer.
+        # In-process Kotlin compilation keeps kotlinc inside the traced
+        # process tree (the Kotlin daemon would escape it).
+        cmd = [
+            "codeql", "database", "create", str(dest),
+            "--language=java-kotlin",
+            "--source-root", str(fixture_dir),
+            "--overwrite",
+            "--build-mode=manual",
+            "--working-dir", str(TRACED_OVERLAY),
+            "--command",
+            "gradle --no-daemon --console=plain "
+            "-Pkotlin.compiler.execution.strategy=in-process compileKotlin compileJava",
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, env=_codeql_env())
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"codeql database create (traced) failed (exit {result.returncode})\n"
+                f"--- stdout ---\n{result.stdout}\n--- stderr ---\n{result.stderr}"
+            )
+        return dest
     cmd = [
         "codeql", "database", "create", str(dest),
         "--language=java",
@@ -349,19 +382,49 @@ _KOTLIN_BUILDLESS = (
     "traced-compile job"
 )
 
-GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = {
-    # inv_id: (observed_count, reason)
-    "INV-03": (0, _KOTLIN_BUILDLESS),
-    "INV-06": (0, _KOTLIN_BUILDLESS),
-    "INV-11": (0, _KOTLIN_BUILDLESS),
-    "INV-13": (0, _KOTLIN_BUILDLESS),
-    "INV-15": (0, _KOTLIN_BUILDLESS),
+_TRACED_KOTLIN_UNBOUND = (
+    "traced-calibration: Kotlin source extracts under traced (INV-13 binds) "
+    "but this query reports 0 — sink/model calibration, not extraction"
+)
+
+_MODEL_CALIBRATION: dict[str, tuple[int, str]] = {
     "INV-04": (0, "model-calibration: DeviceLinkNoKex.java extracted but no flow binds"),
-    "INV-05": (0, "model-calibration: KeyStorageNoKeystore.java extracted but no flow binds"),
     "INV-14": (0, "model-calibration: BackupBlobUnauth.java extracted but no flow binds"),
     "INV-10": (5, "precision-calibration: 2 planted flows report 2 statements each + 1 extra"),
     "INV-12": (1, "model-calibration: only VIOLATION 1 of 3 binds (line 23)"),
 }
+
+GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
+    # inv_id: (observed_count, reason)
+    "buildless": {
+        "INV-03": (0, _KOTLIN_BUILDLESS),
+        "INV-06": (0, _KOTLIN_BUILDLESS),
+        "INV-11": (0, _KOTLIN_BUILDLESS),
+        "INV-13": (0, _KOTLIN_BUILDLESS),
+        "INV-15": (0, _KOTLIN_BUILDLESS),
+        # Buildless extraction cannot resolve SharedPreferences.edit() (member-less
+        # stub type) nor summarise Base64.encodeToString — re-measured under traced.
+        "INV-05": (0, "model-calibration: KeyStorageNoKeystore.java extracted but no flow binds"),
+        **_MODEL_CALIBRATION,
+    },
+    # Traced: Kotlin fixtures extract and android.jar resolves the Android
+    # types. First measurement = run 33587018753 (2026-09-02): INV-13 matched
+    # its manifest (Kotlin extraction proven) and is deliberately absent here;
+    # the rest are the observed counts, not targets — the strict contract
+    # below fails loudly the moment a query starts matching.
+    "traced": {
+        **_MODEL_CALIBRATION,
+        "INV-04": (2, "model-calibration: traced binds 2 flows against 1 planted (buildless: 0)"),
+        "INV-03": (0, _TRACED_KOTLIN_UNBOUND),
+        "INV-05": (0, "model-calibration: 0 under traced as well — android.jar resolves "
+                      "SharedPreferences yet no flow binds; query/model work, not extraction"),
+        "INV-06": (0, _TRACED_KOTLIN_UNBOUND),
+        "INV-11": (4, "precision-calibration: traced reports 4 against 3 planted (1 extra)"),
+        "INV-15": (0, _TRACED_KOTLIN_UNBOUND),
+    },
+}
+
+GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = GROUND_TRUTH_XFAIL_BY_MODE[GT_MODE]
 
 
 @pytest.mark.parametrize(
