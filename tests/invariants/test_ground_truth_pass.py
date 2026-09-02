@@ -6,15 +6,15 @@ Parametrizes over the 15 production-encoded invariants. For each:
     for Semgrep rules) is absent, the test is skipped — the harness is
     binary-agnostic by design so the unit-test suite stays green on
     machines that don't ship the toolchains.
-  * Otherwise: build a CodeQL DB from `tests/fixtures/demo-vulnerable-app/`
-    (CodeQL queries) or invoke `semgrep --config=<rule> --json <fixture>`
-    (Semgrep rules); parse the SARIF/JSON output; count violations;
-    assert the count equals the manifest's `expected_violations` for the
-    `demo-vulnerable-app` target.
+  * Otherwise: analyze the session-wide CodeQL DB built from
+    `tests/fixtures/demo-vulnerable-app/` (CodeQL queries) or invoke
+    `semgrep --config=<rule> --json <fixture>` (Semgrep rules); parse the
+    SARIF/JSON output; count violations; assert the count equals the
+    manifest's `expected_violations` for the `demo-vulnerable-app` target.
 
-Live-binary execution runs on the self-hosted runner via
-`.github/workflows/invariants-ground-truth.yml`. This unit-test file is
-the in-repo skipif-guarded harness.
+Live-binary execution runs in `.github/workflows/invariants-ground-truth.yml`
+(GitHub-hosted ubuntu-24.04, sha256-pinned CodeQL bundle). This unit-test
+file is the in-repo skipif-guarded harness.
 
 In addition to the binary-gated assertions, this file also carries a
 small set of always-on fixture-presence tests so the suite catches a
@@ -27,7 +27,6 @@ import json
 import os
 import shutil
 import subprocess
-import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -172,17 +171,19 @@ def _semgrep_available() -> bool:
 
 
 def _codeql_env() -> dict[str, str]:
-    """Environment for manual codeql invocations, scrubbed of the
+    """Environment for manual codeql invocations, scrubbed of any
     codeql-action/init tracing session.
 
-    CI uses codeql-action/init only to INSTALL the pinned CLI bundle, but
-    init also exports a half-configured tracing session job-wide:
+    codeql-action/init is a code-scanning primitive: besides installing a
+    CLI it exports a half-configured tracing session job-wide —
     LD_PRELOAD tracer libraries plus CODEQL_EXTRACTOR_JAVA_* /
     CODEQL_TRACER_* paths pointing at the ACTION's own WIP database under
     the runner temp dir. An out-of-band `codeql database create` that
     inherits those extracts into the action's database instead of its
     own — finalize then sees zero processed files and exits 32
-    ("could not process any of it using the 'none' build mode").
+    ("could not process any of it using the 'none' build mode"). The
+    workflow no longer uses init at all, but the scrub stays so a future
+    workflow edit cannot silently reintroduce the failure.
     JAVA_HOME and the runner's JAVA_HOME_<N>_X64 toolchain exports are
     scrubbed too: buildless JDK inference obeys them (steered by the
     fixture's sourceCompatibility recommendation), and the 2.26.x
@@ -194,6 +195,8 @@ def _codeql_env() -> dict[str, str]:
     the harness hermetic instead of runner-image-dependent.
 
     PATH is untouched (the workflow puts the CLI on PATH explicitly).
+    A traced build (`--command=...`) needs a real JDK and the tracer's own
+    environment — do NOT reuse this scrub for one.
     """
     return {
         k: v
@@ -233,6 +236,22 @@ def _build_codeql_db(fixture_dir: Path, dest: Path) -> Path:
             f"--- stdout ---\n{result.stdout}\n--- stderr ---\n{result.stderr}"
         )
     return dest
+
+
+@pytest.fixture(scope="session")
+def codeql_db(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """One buildless CodeQL database per test session.
+
+    All twelve CodeQL invariants analyze the same 19-file fixture; building
+    a database per parametrized case cost ~17 of the ground-truth job's
+    27 minutes. `database analyze --rerun` writes only under the database's
+    own results/ directory and pytest runs the cases sequentially, so one
+    shared database is safe. Skips (rather than fails) when the CLI is
+    absent, exactly like the per-case tests did.
+    """
+    if not _codeql_available():
+        pytest.skip("codeql binary not on PATH; runs in the invariants-ground-truth workflow")
+    return _build_codeql_db(FIXTURE_DIR, tmp_path_factory.mktemp("codeql") / "db")
 
 
 def _run_codeql_query(db: Path, query_path: Path, sarif_out: Path) -> int:
@@ -277,8 +296,8 @@ def _run_semgrep_rule(rule_path: Path, fixture_dir: Path) -> tuple[int, list[dic
     We pass explicit per-file target paths to bypass semgrep's
     built-in `tests/` exclusion in its default .semgrepignore. The
     `--no-git-ignore` flag is also passed so we don't depend on the
-    fixture being git-tracked (it is, but defensively-coded for the
-    self-hosted runner that may operate on a fresh checkout).
+    fixture being git-tracked (it is, but defensively-coded for a
+    runner that may operate on a fresh checkout).
     """
     targets = _semgrep_targets(fixture_dir)
     if not targets:
@@ -313,9 +332,10 @@ def _run_semgrep_rule(rule_path: Path, fixture_dir: Path) -> tuple[int, list[dic
 # Classes:
 #   kotlin-extraction — fixture is .kt; NO CodeQL bundle extracts Kotlin
 #     under --build-mode=none (verified against 2.20.6 and 2.26.4; the
-#     kotlin-standalone jars serve the qltest path only). These need the
-#     traced compile on the self-hosted runner (Android SDK + kotlinc)
-#     to ever produce counts.
+#     kotlin-standalone jars serve the qltest path only). These need a
+#     traced compile (Gradle + android.jar) to ever produce counts; the
+#     GitHub-hosted ubuntu-24.04 image ships Kotlin 2.4.10, Gradle and
+#     android-34, so a traced job needs no self-hosted runner.
 #   model-calibration — Java fixture extracted fine, but the query's
 #     source/sink/barrier model does not bind the planted violations.
 #   precision-calibration — query fires more results than planted
@@ -326,7 +346,7 @@ def _run_semgrep_rule(rule_path: Path, fixture_dir: Path) -> tuple[int, list[dic
 _KOTLIN_BUILDLESS = (
     "kotlin-extraction: fixture is Kotlin and buildless mode extracts Java "
     "only (no bundle supports buildless Kotlin as of 2.26.4); awaits the "
-    "self-hosted traced build"
+    "traced-compile job"
 )
 
 GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = {
@@ -350,24 +370,31 @@ GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = {
     ids=lambda v: v if isinstance(v, str) else str(v),
 )
 def test_ground_truth_violation_count(
-    inv_id: str, engine: str, query_rel: str, expected: int, tmp_path: Path
+    inv_id: str,
+    engine: str,
+    query_rel: str,
+    expected: int,
+    tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    """For each production-encoded invariant, build a CodeQL DB (CodeQL
-    queries) or invoke semgrep (Semgrep rules) and assert the violation
-    count equals the manifest's demo-vulnerable-app expected count.
+    """For each production-encoded invariant, analyze the session CodeQL
+    DB (CodeQL queries) or invoke semgrep (Semgrep rules) and assert the
+    violation count equals the manifest's demo-vulnerable-app expected
+    count.
 
     Skipped if the corresponding binary is absent.
     """
     if engine == "codeql":
         if not _codeql_available():
-            pytest.skip("codeql binary not on PATH; runs on self-hosted runner")
-        db = _build_codeql_db(FIXTURE_DIR, tmp_path / "db")
+            pytest.skip("codeql binary not on PATH; runs in the invariants-ground-truth workflow")
+        # Pulled lazily so a semgrep-only or codeql-less run never builds it.
+        db: Path = request.getfixturevalue("codeql_db")
         sarif = tmp_path / f"{inv_id}.sarif"
         query_path = MANIFEST_PATH.parent / query_rel
         count = _run_codeql_query(db, query_path, sarif)
     elif engine == "semgrep":
         if not _semgrep_available():
-            pytest.skip("semgrep binary not on PATH; runs on self-hosted runner")
+            pytest.skip("semgrep binary not on PATH; runs in the invariants-ground-truth workflow")
         rule_path = MANIFEST_PATH.parent / query_rel
         count, errors = _run_semgrep_rule(rule_path, FIXTURE_DIR)
         # Toolchain-version parse errors (Rule parse error, Pattern

@@ -31,7 +31,12 @@ barrier-present case alongside the violating case.
 | `BackupBlobUnauth.java` | INV-14 | 2 |
 | `MetadataLeakOutsideEnvelope.kt` | INV-15 | 2 |
 
-**Total**: 28 violations across 15 invariants.
+**Total**: 28 violations across 15 invariants — the *planted* counts. What the
+current toolchain actually measures is recorded in
+`tests/invariants/test_ground_truth_pass.py::GROUND_TRUTH_XFAIL`: INV-01 and
+INV-02 reproduce exactly under the buildless CodeQL database; the ten entries
+there are honest deviations (Kotlin extraction, model or precision calibration),
+each with its observed count and reason.
 
 ## Test harness
 

@@ -114,8 +114,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # CodeQL CLI 2.26.4 + Java/Python query packs.
 ARG CODEQL_VERSION=2.26.4
 ARG CODEQL_INSTALL=/opt/codeql
+# CODEQL_SHA256 is the release-asset digest of codeql-linux64.zip for
+# CODEQL_VERSION (gh api repos/github/codeql-cli-binaries/releases/tags/v<ver>
+# → assets[].digest). Bump both together, and the bundle sha256 in
+# .github/workflows/invariants-ground-truth.yml plus aegisgraph.tooling.REQUIRED_TOOLS.
+ARG CODEQL_SHA256=d372d54345e058fe6f7ff8074acd155522fff6770b8d72ee1371ea89deafa193
 RUN curl -fsSL "https://github.com/github/codeql-cli-binaries/releases/download/v${CODEQL_VERSION}/codeql-linux64.zip" \
         -o /tmp/codeql.zip \
+ && echo "${CODEQL_SHA256}  /tmp/codeql.zip" | sha256sum -c - \
  && unzip -q /tmp/codeql.zip -d /opt \
  && rm /tmp/codeql.zip
 ENV PATH=${CODEQL_INSTALL}/codeql:$PATH
