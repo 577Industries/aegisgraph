@@ -382,6 +382,11 @@ _KOTLIN_BUILDLESS = (
     "traced-compile job"
 )
 
+_TRACED_KOTLIN_UNBOUND = (
+    "traced-calibration: Kotlin source extracts under traced (INV-13 binds) "
+    "but this query reports 0 — sink/model calibration, not extraction"
+)
+
 _MODEL_CALIBRATION: dict[str, tuple[int, str]] = {
     "INV-04": (0, "model-calibration: DeviceLinkNoKex.java extracted but no flow binds"),
     "INV-14": (0, "model-calibration: BackupBlobUnauth.java extracted but no flow binds"),
@@ -403,10 +408,20 @@ GROUND_TRUTH_XFAIL_BY_MODE: dict[str, dict[str, tuple[int, str]]] = {
         **_MODEL_CALIBRATION,
     },
     # Traced: Kotlin fixtures extract and android.jar resolves the Android
-    # types. No Kotlin or INV-05 entry here on purpose — their first traced
-    # run is a measurement, and the strict contract below turns any deviation
-    # into a loud "re-derive" failure rather than a silent pass.
-    "traced": dict(_MODEL_CALIBRATION),
+    # types. First measurement = run 33587018753 (2026-09-02): INV-13 matched
+    # its manifest (Kotlin extraction proven) and is deliberately absent here;
+    # the rest are the observed counts, not targets — the strict contract
+    # below fails loudly the moment a query starts matching.
+    "traced": {
+        **_MODEL_CALIBRATION,
+        "INV-04": (2, "model-calibration: traced binds 2 flows against 1 planted (buildless: 0)"),
+        "INV-03": (0, _TRACED_KOTLIN_UNBOUND),
+        "INV-05": (0, "model-calibration: 0 under traced as well — android.jar resolves "
+                      "SharedPreferences yet no flow binds; query/model work, not extraction"),
+        "INV-06": (0, _TRACED_KOTLIN_UNBOUND),
+        "INV-11": (4, "precision-calibration: traced reports 4 against 3 planted (1 extra)"),
+        "INV-15": (0, _TRACED_KOTLIN_UNBOUND),
+    },
 }
 
 GROUND_TRUTH_XFAIL: dict[str, tuple[int, str]] = GROUND_TRUTH_XFAIL_BY_MODE[GT_MODE]
